@@ -1,0 +1,212 @@
+---
+import type { Locale } from '../i18n/languages';
+import { t } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const VPS_SETUP_SCRIPT = `apt-get update && apt-get install -y git curl ca-certificates
+
+# Docker, if not already installed
+command -v docker >/dev/null || curl -fsSL https://get.docker.com | sh
+docker compose version
+
+if [ ! -f /swapfile ]; then
+  fallocate -l 4G /swapfile && chmod 600 /swapfile
+  mkswap /swapfile && swapon /swapfile
+  echo '/swapfile none swap sw 0 0' >> /etc/fstab
+fi
+free -h`;
+
+const EXAMPLES: Record<Locale, { label: string; cmd: string }[]> = {
+  en: [
+    { label: 'systemctl --user disable --now x', cmd: 'systemctl --user disable --now x' },
+    { label: 'git commit -am "fix"', cmd: 'git commit -am "fix"' },
+    { label: 'docker run -d -p 8080:80 --name web nginx', cmd: 'docker run -d -p 8080:80 --name web nginx' },
+    { label: 'chmod -R 755 ./scripts', cmd: 'chmod -R 755 ./scripts' },
+    { label: 'rm -rf node_modules', cmd: 'rm -rf node_modules' },
+    { label: 'sudo apt install -y curl', cmd: 'sudo apt install -y curl' },
+    { label: 'new server: Docker + swap setup', cmd: VPS_SETUP_SCRIPT },
+  ],
+  pt: [
+    { label: 'systemctl --user disable --now x', cmd: 'systemctl --user disable --now x' },
+    { label: 'git commit -am "fix"', cmd: 'git commit -am "fix"' },
+    { label: 'docker run -d -p 8080:80 --name web nginx', cmd: 'docker run -d -p 8080:80 --name web nginx' },
+    { label: 'chmod -R 755 ./scripts', cmd: 'chmod -R 755 ./scripts' },
+    { label: 'rm -rf node_modules', cmd: 'rm -rf node_modules' },
+    { label: 'sudo apt install -y curl', cmd: 'sudo apt install -y curl' },
+    { label: 'servidor novo: Docker + swap', cmd: VPS_SETUP_SCRIPT },
+  ],
+};
+
+const legendItems: { type: string; label: string }[] = [
+  { type: 'command', label: t(locale, 'legend.command') },
+  { type: 'subcommand', label: t(locale, 'legend.subcommand') },
+  { type: 'flag-long', label: t(locale, 'legend.flag-long') },
+  { type: 'flag-short', label: t(locale, 'legend.flag-short') },
+  { type: 'arg', label: t(locale, 'legend.arg') },
+  { type: 'unknown', label: t(locale, 'legend.unknown') },
+];
+---
+
+<div data-locale={locale} class="grid gap-6 md:grid-cols-2 md:items-start">
+  <div class="flex flex-col gap-5 md:sticky md:top-24">
+    <div class="flex flex-col gap-3">
+      <div class="relative rounded-lg border border-hairline bg-surface-nested focus-within:border-accent focus-within:ring-2 focus-within:ring-accent-quiet">
+        <pre
+          id="highlight-layer"
+          aria-hidden="true"
+          class="pointer-events-none m-0 min-h-24 whitespace-pre-wrap break-words px-4 py-3.5 font-mono text-sm leading-relaxed text-default"
+        ></pre>
+        <textarea
+          id="cmd-input"
+          rows="3"
+          spellcheck="false"
+          autocomplete="off"
+          placeholder={t(locale, 'input.placeholder')}
+          class="absolute inset-0 resize-none whitespace-pre-wrap break-words bg-transparent px-4 py-3.5 font-mono text-sm leading-relaxed text-transparent caret-[var(--text-strong)] outline-none placeholder:text-faint"
+        ></textarea>
+      </div>
+      <div class="flex justify-end">
+        <button
+          id="explain-btn"
+          class="rounded-lg bg-accent px-6 py-3.5 text-sm font-semibold text-on-accent transition-colors duration-[var(--duration-fast)] hover:bg-accent-hover"
+        >
+          {t(locale, 'input.button')}
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <p class="eyebrow mb-2">{t(locale, 'examples.label')}</p>
+      <div id="examples" class="flex flex-wrap gap-2">
+        {EXAMPLES[locale].map((ex) => (
+          <button
+            type="button"
+            class="example-chip interactive rounded-md border border-hairline bg-surface-raised px-3 py-1.5 font-mono text-xs text-muted hover:text-default"
+            data-cmd={ex.cmd}
+          >
+            {ex.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div id="result" class="hidden">
+    <div id="steps" class="flex flex-col gap-3"></div>
+
+    <div id="legend" class="mt-8 flex flex-wrap gap-x-4 gap-y-2 border-t border-hairline pt-5 text-xs text-faint">
+      {legendItems.map((item) => (
+        <div class="flex items-center gap-1.5">
+          <span class="h-2 w-2 rounded-full" style={`background: var(--color-${item.type})`}></span>
+          {item.label}
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script>
+  import { analyzeScript, highlightScript, type Step, type StepType } from '../lib/analyze';
+  import { t } from '../i18n/ui';
+  import type { Locale } from '../i18n/languages';
+
+  const root = document.querySelector<HTMLElement>('[data-locale]')!;
+  const locale = root.dataset.locale as Locale;
+
+  const input = document.getElementById('cmd-input') as HTMLTextAreaElement;
+  const highlightLayer = document.getElementById('highlight-layer')!;
+  const btn = document.getElementById('explain-btn') as HTMLButtonElement;
+  const result = document.getElementById('result')!;
+  const stepsEl = document.getElementById('steps')!;
+  const examplesEl = document.getElementById('examples')!;
+
+  const TYPE_LABEL_KEY: Record<StepType, Parameters<typeof t>[1]> = {
+    command: 'type.command',
+    subcommand: 'type.subcommand',
+    'flag-long': 'type.flag-long',
+    'flag-short': 'type.flag-short',
+    arg: 'type.arg',
+    unknown: 'type.unknown',
+    comment: 'type.comment',
+    control: 'type.control',
+    test: 'type.test',
+    operator: 'type.operator',
+    redirect: 'type.redirect',
+  };
+
+  function colorVar(type: StepType) {
+    return `var(--color-${type})`;
+  }
+
+  function fillVar(type: StepType) {
+    return `var(--color-${type}-fill)`;
+  }
+
+  function escapeHtml(str: string) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function renderHighlight() {
+    const spans = highlightScript(input.value);
+    highlightLayer.innerHTML = spans
+      .map((s) => (s.type ? `<span style="color:${colorVar(s.type)}">${escapeHtml(s.text)}</span>` : escapeHtml(s.text)))
+      .join('');
+  }
+
+  function render(command: string) {
+    const steps: Step[] = analyzeScript(command, locale);
+    if (!steps.length) return;
+
+    stepsEl.innerHTML = '';
+    steps.forEach((s, i) => {
+      const el = document.createElement('div');
+      el.className = 'surface flex gap-3.5 p-4';
+      el.style.borderLeft = `3px solid ${colorVar(s.type)}`;
+      el.innerHTML = `
+        <div class="min-w-5 pt-0.5 font-mono text-xs font-semibold text-faint">${i + 1}</div>
+        <div class="flex-1">
+          <div class="mb-1.5 flex flex-wrap items-baseline gap-2.5">
+            <span class="font-mono text-base font-bold" style="color:${colorVar(s.type)}">${escapeHtml(s.token)}</span>
+            <span class="chip" style="background:${fillVar(s.type)};border-color:color-mix(in oklab, ${colorVar(s.type)} 32%, transparent);color:${colorVar(s.type)}">${t(locale, TYPE_LABEL_KEY[s.type])}</span>
+          </div>
+          <div class="text-sm leading-relaxed text-default">${escapeHtml(s.desc)}</div>
+        </div>
+      `;
+      stepsEl.appendChild(el);
+    });
+
+    result.classList.remove('hidden');
+  }
+
+  function runExplain() {
+    const value = input.value.trim();
+    if (!value) return;
+    render(value);
+  }
+
+  input.addEventListener('input', renderHighlight);
+  btn.addEventListener('click', runExplain);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      runExplain();
+    }
+  });
+
+  examplesEl.addEventListener('click', (e) => {
+    const target = (e.target as HTMLElement).closest<HTMLElement>('.example-chip');
+    if (!target) return;
+    input.value = target.dataset.cmd ?? '';
+    renderHighlight();
+    runExplain();
+  });
+
+  renderHighlight();
+</script>

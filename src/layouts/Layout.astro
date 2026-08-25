@@ -1,0 +1,63 @@
+---
+import '../styles/global.css';
+import LanguageSwitch from '../components/LanguageSwitch.astro';
+import type { Locale } from '../i18n/languages';
+import { t } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  title?: string;
+}
+
+const { locale, title } = Astro.props;
+const pageTitle = title ?? t(locale, 'site.title');
+---
+
+<!DOCTYPE html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+  </head>
+  <body class="min-h-screen bg-surface font-sans text-default antialiased">
+    <header class="fixed top-0 right-0 left-0 z-50">
+      <div
+        id="header-surface"
+        class="absolute inset-0 transition-[background-color,border-color] duration-[var(--duration-base)] ease-[var(--ease-standard)]"
+      >
+      </div>
+
+      <div class="relative mx-auto max-w-5xl px-4">
+        <div class="flex h-16 items-center justify-between">
+          <a
+            href={`/${locale}/`}
+            class="shrink-0 text-lg font-semibold tracking-tight text-strong transition-colors duration-[var(--duration-fast)] hover:text-muted"
+          >
+            linuxxing
+          </a>
+          <LanguageSwitch />
+        </div>
+      </div>
+    </header>
+
+    <div class="h-16"></div>
+
+    <main class="mx-auto max-w-5xl px-4 pb-24 pt-10">
+      <slot />
+    </main>
+
+    <script>
+      const surface = document.getElementById('header-surface')!;
+      const onScroll = () => {
+        surface.classList.toggle('glass', window.scrollY > 8);
+        surface.classList.toggle('border-hairline', window.scrollY > 8);
+        surface.classList.toggle('border-b', window.scrollY > 8);
+      };
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+    </script>
+  </body>
+</html>
