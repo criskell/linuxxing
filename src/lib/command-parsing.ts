@@ -14,29 +14,44 @@ export type StepType =
   | 'operator'
   | 'redirect';
 
-export const CONDITIONAL_KEYWORDS = new Set(['if', 'elif', 'while', 'until']);
+const CONDITIONAL_KEYWORDS = new Set(['if', 'elif', 'while', 'until']);
+
+const COMBINED_SHORT_FLAG_LETTERS_PATTERN = /^[a-zA-Z]+$/;
+const KEY_VALUE_PATTERN = /^([a-zA-Z]+)=(.*)$/;
+const WHITESPACE_PATTERN = /\s/;
+
+const DUPLICATE_REDIRECT_PATTERN = /^(\d+)?>&(\d+)$/;
+const APPEND_REDIRECT_PATTERN = /^(\d*)(>>)(.*)$/;
+const OVERWRITE_REDIRECT_PATTERN = /^(\d*)(>)(.*)$/;
+const INPUT_REDIRECT_PATTERN = /^(\d*)(<)(.*)$/;
+
+const OPERATOR_TOKENS = ['&&', '||', '|', ';'] as const;
+
+function isQuoteCharacter(character: string): boolean {
+  return character === '"' || character === "'";
+}
 
 export function tokenize(input: string): string[] {
   const tokens: string[] = [];
   let current = '';
   let quote: string | null = null;
 
-  for (const ch of input) {
+  for (const character of input) {
     if (quote) {
-      if (ch === quote) {
+      if (character === quote) {
         quote = null;
       } else {
-        current += ch;
+        current += character;
       }
-    } else if (ch === '"' || ch === "'") {
-      quote = ch;
-    } else if (ch === ' ') {
+    } else if (isQuoteCharacter(character)) {
+      quote = character;
+    } else if (character === ' ') {
       if (current.length) {
         tokens.push(current);
         current = '';
       }
     } else {
-      current += ch;
+      current += character;
     }
   }
   if (current.length) tokens.push(current);
@@ -44,19 +59,19 @@ export function tokenize(input: string): string[] {
 }
 
 export function stripQuotesForClassification(word: string): string {
-  let out = '';
+  let stripped = '';
   let quote: string | null = null;
-  for (const ch of word) {
+  for (const character of word) {
     if (quote) {
-      if (ch === quote) quote = null;
-      else out += ch;
-    } else if (ch === '"' || ch === "'") {
-      quote = ch;
+      if (character === quote) quote = null;
+      else stripped += character;
+    } else if (isQuoteCharacter(character)) {
+      quote = character;
     } else {
-      out += ch;
+      stripped += character;
     }
   }
-  return out;
+  return stripped;
 }
 
 export function isBracketTest(text: string): boolean {
@@ -70,16 +85,16 @@ export type RedirectInfo =
   | { kind: 'input'; fileDescriptor: string; target: string };
 
 export function parseRedirect(token: string): RedirectInfo | null {
-  let match = token.match(/^(\d+)?>&(\d+)$/);
+  let match = token.match(DUPLICATE_REDIRECT_PATTERN);
   if (match) return { kind: 'dup', fileDescriptor: match[1] ?? '1', target: match[2] };
 
-  match = token.match(/^(\d*)(>>)(.*)$/);
+  match = token.match(APPEND_REDIRECT_PATTERN);
   if (match) return { kind: 'append', fileDescriptor: match[1] || '1', target: match[3] || '' };
 
-  match = token.match(/^(\d*)(>)(.*)$/);
+  match = token.match(OVERWRITE_REDIRECT_PATTERN);
   if (match) return { kind: 'overwrite', fileDescriptor: match[1] || '1', target: match[3] || '' };
 
-  match = token.match(/^(\d*)(<)(.*)$/);
+  match = token.match(INPUT_REDIRECT_PATTERN);
   if (match) return { kind: 'input', fileDescriptor: match[1] || '1', target: match[3] || '' };
 
   return null;
@@ -93,11 +108,11 @@ export function findCommentStart(line: string): number {
       if (character === quote) quote = null;
       continue;
     }
-    if (character === '"' || character === "'") {
+    if (isQuoteCharacter(character)) {
       quote = character;
       continue;
     }
-    if (character === '#' && (i === 0 || /\s/.test(line[i - 1]))) {
+    if (character === '#' && (i === 0 || WHITESPACE_PATTERN.test(line[i - 1]))) {
       return i;
     }
   }
@@ -107,6 +122,13 @@ export function findCommentStart(line: string): number {
 export interface RawChunk {
   text: string;
   kind: 'whitespace' | 'operator' | 'word';
+}
+
+function matchOperatorAt(code: string, index: number): string | null {
+  for (const operator of OPERATOR_TOKENS) {
+    if (code.startsWith(operator, index)) return operator;
+  }
+  return null;
 }
 
 export function scanChunks(code: string): RawChunk[] {
@@ -128,7 +150,7 @@ export function scanChunks(code: string): RawChunk[] {
       if (character === quote) quote = null;
       continue;
     }
-    if (character === '"' || character === "'") {
+    if (isQuoteCharacter(character)) {
       if (currentKind !== 'word') {
         flush();
         currentKind = 'word';
@@ -137,29 +159,14 @@ export function scanChunks(code: string): RawChunk[] {
       current += character;
       continue;
     }
-    if (character === '&' && code[i + 1] === '&') {
+    const operator = matchOperatorAt(code, i);
+    if (operator) {
       flush();
-      chunks.push({ text: '&&', kind: 'operator' });
-      i++;
+      chunks.push({ text: operator, kind: 'operator' });
+      i += operator.length - 1;
       continue;
     }
-    if (character === '|' && code[i + 1] === '|') {
-      flush();
-      chunks.push({ text: '||', kind: 'operator' });
-      i++;
-      continue;
-    }
-    if (character === '|') {
-      flush();
-      chunks.push({ text: '|', kind: 'operator' });
-      continue;
-    }
-    if (character === ';') {
-      flush();
-      chunks.push({ text: ';', kind: 'operator' });
-      continue;
-    }
-    if (/\s/.test(character)) {
+    if (WHITESPACE_PATTERN.test(character)) {
       if (currentKind !== 'whitespace') {
         flush();
         currentKind = 'whitespace';
@@ -244,6 +251,93 @@ export type CommandTokenClassification =
   | { type: 'unknown' }
   | { type: 'arg'; consumedValueFlag: { flag: string; kind: ValueKind } | null; keyValueMatch: [string, string] | null };
 
+function classifyRedirect(token: string): CommandTokenClassification | null {
+  return parseRedirect(token) ? { type: 'redirect' } : null;
+}
+
+function classifyLongFlag(
+  token: string,
+  knowledgeBase: CommandDef | undefined,
+  state: CommandTokenState,
+): CommandTokenClassification | null {
+  if (!token.startsWith('--')) return null;
+
+  const equalsIndex = token.indexOf('=');
+  const flagName = equalsIndex === -1 ? token : token.slice(0, equalsIndex);
+  const flagValue = equalsIndex === -1 ? null : token.slice(equalsIndex + 1);
+
+  if (flagValue === null) {
+    const kind = knowledgeBase?.valueFlags?.[flagName];
+    if (kind) state.pendingValueFlag = { flag: flagName, kind };
+  }
+
+  return { type: 'flag-long', flagName, flagValue };
+}
+
+function classifyShortFlag(
+  token: string,
+  knowledgeBase: CommandDef | undefined,
+  state: CommandTokenState,
+): CommandTokenClassification | null {
+  if (!(token.startsWith('-') && token.length > 1 && token !== '-')) return null;
+
+  const known = knowledgeBase?.flags[token];
+  if (known) {
+    const kind = knowledgeBase?.valueFlags?.[token];
+    if (kind) state.pendingValueFlag = { flag: token, kind };
+    return { type: 'flag-short', flagName: token, combinedLetters: null };
+  }
+
+  const body = token.slice(1);
+  if (body.length > 1 && COMBINED_SHORT_FLAG_LETTERS_PATTERN.test(body)) {
+    return { type: 'flag-short', flagName: token, combinedLetters: body.split('') };
+  }
+
+  return { type: 'flag-short', flagName: token, combinedLetters: null };
+}
+
+function classifyLoneDash(token: string, knowledgeBase: CommandDef | undefined): CommandTokenClassification | null {
+  if (token !== '-') return null;
+
+  const known = knowledgeBase?.flags['-'];
+  return known
+    ? { type: 'flag-short', flagName: '-', combinedLetters: null }
+    : { type: 'arg', consumedValueFlag: null, keyValueMatch: null };
+}
+
+function classifySubcommand(
+  token: string,
+  knowledgeBase: CommandDef | undefined,
+  state: CommandTokenState,
+): CommandTokenClassification | null {
+  if (state.subcommandClaimed || !knowledgeBase) return null;
+
+  if (knowledgeBase.subcommands[token]) {
+    state.subcommandClaimed = true;
+    return { type: 'subcommand', name: token };
+  }
+
+  if (Object.keys(knowledgeBase.subcommands).length) {
+    state.subcommandClaimed = true;
+    return { type: 'unknown' };
+  }
+
+  return null;
+}
+
+function classifyArgument(
+  token: string,
+  knowledgeBase: CommandDef | undefined,
+  consumedValueFlag: { flag: string; kind: ValueKind } | null,
+): CommandTokenClassification {
+  const keyValueRegexMatch = knowledgeBase?.flags ? token.match(KEY_VALUE_PATTERN) : null;
+  const keyValueMatch: [string, string] | null = keyValueRegexMatch
+    ? [keyValueRegexMatch[1], keyValueRegexMatch[2]]
+    : null;
+
+  return { type: 'arg', consumedValueFlag, keyValueMatch };
+}
+
 export function classifyCommandToken(
   token: string,
   knowledgeBase: CommandDef | undefined,
@@ -252,61 +346,12 @@ export function classifyCommandToken(
   const consumedValueFlag = state.pendingValueFlag;
   state.pendingValueFlag = null;
 
-  if (parseRedirect(token)) {
-    return { type: 'redirect' };
-  }
-
-  if (token.startsWith('--')) {
-    const equalsIndex = token.indexOf('=');
-    const flagName = equalsIndex === -1 ? token : token.slice(0, equalsIndex);
-    const flagValue = equalsIndex === -1 ? null : token.slice(equalsIndex + 1);
-
-    if (flagValue === null) {
-      const kind = knowledgeBase?.valueFlags?.[flagName];
-      if (kind) state.pendingValueFlag = { flag: flagName, kind };
-    }
-
-    return { type: 'flag-long', flagName, flagValue };
-  }
-
-  if (token.startsWith('-') && token.length > 1 && token !== '-') {
-    const body = token.slice(1);
-    const known = knowledgeBase?.flags[token];
-
-    if (known) {
-      const kind = knowledgeBase?.valueFlags?.[token];
-      if (kind) state.pendingValueFlag = { flag: token, kind };
-      return { type: 'flag-short', flagName: token, combinedLetters: null };
-    }
-
-    if (body.length > 1 && /^[a-zA-Z]+$/.test(body)) {
-      return { type: 'flag-short', flagName: token, combinedLetters: body.split('') };
-    }
-
-    return { type: 'flag-short', flagName: token, combinedLetters: null };
-  }
-
-  if (token === '-') {
-    const known = knowledgeBase?.flags['-'];
-    return known
-      ? { type: 'flag-short', flagName: '-', combinedLetters: null }
-      : { type: 'arg', consumedValueFlag: null, keyValueMatch: null };
-  }
-
-  if (!state.subcommandClaimed && knowledgeBase && knowledgeBase.subcommands[token]) {
-    state.subcommandClaimed = true;
-    return { type: 'subcommand', name: token };
-  }
-
-  if (!state.subcommandClaimed && knowledgeBase && Object.keys(knowledgeBase.subcommands).length) {
-    state.subcommandClaimed = true;
-    return { type: 'unknown' };
-  }
-
-  const keyValueRegexMatch = knowledgeBase?.flags ? token.match(/^([a-zA-Z]+)=(.*)$/) : null;
-  const keyValueMatch: [string, string] | null = keyValueRegexMatch
-    ? [keyValueRegexMatch[1], keyValueRegexMatch[2]]
-    : null;
-
-  return { type: 'arg', consumedValueFlag, keyValueMatch };
+  return (
+    classifyRedirect(token) ??
+    classifyLongFlag(token, knowledgeBase, state) ??
+    classifyShortFlag(token, knowledgeBase, state) ??
+    classifyLoneDash(token, knowledgeBase) ??
+    classifySubcommand(token, knowledgeBase, state) ??
+    classifyArgument(token, knowledgeBase, consumedValueFlag)
+  );
 }
