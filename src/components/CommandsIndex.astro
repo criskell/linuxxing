@@ -1,0 +1,37 @@
+---
+import type { Locale } from '../i18n/languages';
+import { t } from '../i18n/ui';
+import { COMMAND_CATEGORIES, COMMANDS } from '../lib/commands/registry';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const totalCommands = Object.keys(COMMANDS).length;
+---
+
+<div class="flex flex-col gap-10">
+  <p class="text-sm text-muted">{t(locale, 'commands.indexCount')(totalCommands)}</p>
+
+  {
+    COMMAND_CATEGORIES.map((category) => (
+      <div class="flex flex-col gap-3">
+        <h2 class="text-lg font-semibold text-strong">{category.title[locale]}</h2>
+        <div class="flex flex-wrap gap-2">
+          {[...category.commands]
+            .sort((a, b) => a.localeCompare(b))
+            .map((name) => (
+              <a
+                href={`${import.meta.env.BASE_URL}/${locale}/commands/${name}/`}
+                class="example-chip interactive rounded-md border border-hairline bg-surface-raised px-3 py-1.5 font-mono text-xs text-muted hover:text-default"
+              >
+                {name}
+              </a>
+            ))}
+        </div>
+      </div>
+    ))
+  }
+</div>

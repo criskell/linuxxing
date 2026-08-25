@@ -1,3 +1,4 @@
+import type { LocalizedText } from '../localized-text';
 import type { CommandKB } from './types';
 import { fileOperations } from './file-operations';
 import { permissionsUsers } from './permissions-users';
@@ -29,3 +30,57 @@ COMMANDS['systemd'] = {
     pt: "systemd é o sistema de inicialização e gerenciador de serviços. O comando usado para controlá-lo no dia a dia é 'systemctl'. Se você digitou 'systemd' diretamente, provavelmente queria dizer 'systemctl'.",
   },
 };
+
+export interface CommandCategory {
+  id: string;
+  title: LocalizedText;
+  commands: string[];
+}
+
+export const COMMAND_CATEGORIES: CommandCategory[] = [
+  {
+    id: 'file-operations',
+    title: { en: 'File Operations', pt: 'Operações com Arquivos' },
+    commands: Object.keys(fileOperations),
+  },
+  {
+    id: 'permissions-users',
+    title: { en: 'Permissions and Users', pt: 'Permissões e Usuários' },
+    commands: Object.keys(permissionsUsers),
+  },
+  {
+    id: 'process-system',
+    title: { en: 'Processes and System', pt: 'Processos e Sistema' },
+    commands: Object.keys(processSystem),
+  },
+  {
+    id: 'networking',
+    title: { en: 'Networking', pt: 'Redes' },
+    commands: Object.keys(networking),
+  },
+  {
+    id: 'package-managers',
+    title: { en: 'Package Managers', pt: 'Gerenciadores de Pacotes' },
+    commands: [...Object.keys(packageManagers), 'apt-get'],
+  },
+  {
+    id: 'development-tools',
+    title: { en: 'Development Tools', pt: 'Ferramentas de Desenvolvimento' },
+    commands: Object.keys(developmentTools),
+  },
+  {
+    id: 'shell-builtins',
+    title: { en: 'Shell Builtins', pt: 'Comandos Internos do Shell' },
+    commands: Object.keys(shellBuiltins),
+  },
+  {
+    id: 'archives-hashing',
+    title: { en: 'Archives and Hashing', pt: 'Arquivos Compactados e Hash' },
+    commands: Object.keys(archivesHashing),
+  },
+  {
+    id: 'system-info',
+    title: { en: 'System Information', pt: 'Informações do Sistema' },
+    commands: [...Object.keys(systemInfo), 'systemd'],
+  },
+];

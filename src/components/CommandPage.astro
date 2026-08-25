@@ -1,0 +1,104 @@
+---
+import type { Locale } from '../i18n/languages';
+import { t } from '../i18n/ui';
+import type { CommandDef } from '../lib/commands/types';
+import { COMMAND_CATEGORIES } from '../lib/commands/registry';
+import CommandExplainer from './CommandExplainer.astro';
+
+interface Props {
+  locale: Locale;
+  commandName: string;
+  commandDef: CommandDef;
+}
+
+const { locale, commandName, commandDef } = Astro.props;
+
+const subcommandEntries = Object.entries(commandDef.subcommands);
+const flagEntries = Object.entries(commandDef.flags);
+
+const category = COMMAND_CATEGORIES.find((c) => c.commands.includes(commandName));
+const relatedCommands = category ? category.commands.filter((name) => name !== commandName).slice(0, 8) : [];
+---
+
+<div class="flex flex-col gap-10">
+  <div class="flex flex-col gap-3">
+    {
+      category && (
+        <a href={`${import.meta.env.BASE_URL}/${locale}/commands/`} class="eyebrow interactive w-fit rounded-md">
+          {category.title[locale]}
+        </a>
+      )
+    }
+    <h1 class="display text-2xl md:text-3xl">{commandName}</h1>
+    <p class="text-base leading-relaxed text-default">{commandDef.desc[locale]}</p>
+  </div>
+
+  <CommandExplainer locale={locale} initialCommand={commandName} />
+
+  {
+    subcommandEntries.length > 0 && (
+      <div class="flex flex-col gap-3">
+        <h2 class="eyebrow">{t(locale, 'commands.subcommandsHeading')}</h2>
+        <div class="flex flex-col gap-3">
+          {subcommandEntries.map(([name, text]) => (
+            <div class="surface flex flex-col gap-1 p-4">
+              <span class="font-mono text-sm font-bold text-strong">{name}</span>
+              <p class="text-sm leading-relaxed text-default">{text[locale]}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  {
+    flagEntries.length > 0 && (
+      <div class="flex flex-col gap-3">
+        <h2 class="eyebrow">{t(locale, 'commands.flagsHeading')}</h2>
+        <div class="flex flex-col gap-3">
+          {flagEntries.map(([flag, text]) => (
+            <div class="surface flex flex-col gap-1 p-4">
+              <span class="font-mono text-sm font-bold text-strong">{flag}</span>
+              <p class="text-sm leading-relaxed text-default">{text[locale]}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  {
+    commandDef.argHint && (
+      <div class="flex flex-col gap-3">
+        <h2 class="eyebrow">{t(locale, 'commands.argumentHeading')}</h2>
+        <div class="surface p-4">
+          <p class="text-sm leading-relaxed text-default">{commandDef.argHint[locale]}</p>
+        </div>
+      </div>
+    )
+  }
+
+  {
+    relatedCommands.length > 0 && (
+      <div class="flex flex-col gap-3 border-t border-hairline pt-8">
+        <h2 class="eyebrow">{t(locale, 'commands.relatedHeading')}</h2>
+        <div class="flex flex-wrap gap-2">
+          {relatedCommands.map((name) => (
+            <a
+              href={`${import.meta.env.BASE_URL}/${locale}/commands/${name}/`}
+              class="example-chip interactive rounded-md border border-hairline bg-surface-raised px-3 py-1.5 font-mono text-xs text-muted hover:text-default"
+            >
+              {name}
+            </a>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  <div>
+    <a href={`${import.meta.env.BASE_URL}/${locale}/`} class="eyebrow interactive w-fit rounded-md">
+      {t(locale, 'commands.backToExplainer')}
+    </a>
+  </div>
+</div>

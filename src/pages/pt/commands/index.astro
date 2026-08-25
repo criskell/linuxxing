@@ -1,0 +1,22 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CommandsIndex from '../../../components/CommandsIndex.astro';
+import { t } from '../../../i18n/ui';
+
+const locale = 'pt' as const;
+---
+
+<Layout
+  locale={locale}
+  title={`${t(locale, 'commands.indexTitle')} | linuxxing`}
+  description={t(locale, 'commands.indexTagline')}
+>
+  <div class="motion-rise flex flex-col gap-3">
+    <p class="display text-2xl md:text-3xl">{t(locale, 'commands.indexTitle')}</p>
+    <p class="text-base text-muted">{t(locale, 'commands.indexTagline')}</p>
+  </div>
+
+  <div class="motion-rise stagger-1 mt-10">
+    <CommandsIndex locale={locale} />
+  </div>
+</Layout>

@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
+import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   site: 'https://criskell.github.io',
@@ -12,6 +13,7 @@ export default defineConfig({
       prefixDefaultLocale: true,
     },
   },
+  integrations: [sitemap()],
   vite: {
     plugins: [tailwindcss()],
   },

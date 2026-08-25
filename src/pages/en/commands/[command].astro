@@ -1,0 +1,38 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CommandPage from '../../../components/CommandPage.astro';
+import { t } from '../../../i18n/ui';
+import { COMMANDS } from '../../../lib/commands/registry';
+import { truncateForMeta } from '../../../lib/meta-description';
+
+export function getStaticPaths() {
+  return Object.keys(COMMANDS).map((command) => ({
+    params: { command },
+    props: { commandDef: COMMANDS[command] },
+  }));
+}
+
+const locale = 'en' as const;
+const { command } = Astro.params;
+const { commandDef } = Astro.props;
+
+const pageTitle = t(locale, 'commands.pageTitle')(command!);
+const pageDescription = truncateForMeta(commandDef.desc[locale]);
+---
+
+<Layout locale={locale} title={pageTitle} description={pageDescription}>
+  <CommandPage locale={locale} commandName={command!} commandDef={commandDef} />
+
+  <script
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'TechArticle',
+      headline: pageTitle,
+      description: pageDescription,
+      inLanguage: locale,
+      url: Astro.url.href,
+    })}
+  />
+</Layout>

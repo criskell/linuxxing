@@ -1,16 +1,31 @@
 ---
 import '../styles/global.css';
 import LanguageSwitch from '../components/LanguageSwitch.astro';
-import type { Locale } from '../i18n/languages';
+import { locales, type Locale } from '../i18n/languages';
 import { t } from '../i18n/ui';
 
 interface Props {
   locale: Locale;
   title?: string;
+  description?: string;
 }
 
-const { locale, title } = Astro.props;
+const { locale, title, description } = Astro.props;
 const pageTitle = title ?? t(locale, 'site.title');
+const pageDescription = description ?? t(locale, 'site.tagline');
+
+const base = import.meta.env.BASE_URL;
+const { pathname } = Astro.url;
+const withoutBase = pathname.startsWith(base) ? pathname.slice(base.length) : pathname;
+const segments = withoutBase.split('/').filter(Boolean);
+const rest = segments.slice(1).join('/');
+const restWithTrailingSlash = rest ? `${rest}/` : '';
+
+const canonicalUrl = new URL(pathname, Astro.site).href;
+const alternateUrls = locales.map((loc) => ({
+  locale: loc,
+  href: new URL(`${base}/${loc}/${restWithTrailingSlash}`, Astro.site).href,
+}));
 ---
 
 <!doctype html>
@@ -21,6 +36,14 @@ const pageTitle = title ?? t(locale, 'site.title');
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonicalUrl} />
+    {alternateUrls.map((alt) => <link rel="alternate" hreflang={alt.locale} href={alt.href} />)}
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="twitter:card" content="summary" />
   </head>
   <body class="min-h-screen bg-surface font-sans text-default antialiased">
     <header class="fixed top-0 right-0 left-0 z-50">
@@ -39,6 +62,12 @@ const pageTitle = title ?? t(locale, 'site.title');
             linuxxing
           </a>
           <div class="flex items-center gap-4">
+            <a
+              href={`${import.meta.env.BASE_URL}/${locale}/commands/`}
+              class="text-sm font-medium text-muted transition-colors duration-[var(--duration-fast)] hover:text-strong"
+            >
+              {t(locale, 'nav.commands')}
+            </a>
             <a
               href={`${import.meta.env.BASE_URL}/${locale}/study/`}
               class="text-sm font-medium text-muted transition-colors duration-[var(--duration-fast)] hover:text-strong"

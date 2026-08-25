@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://criskell.github.io/linuxxing/sitemap-index.xml
