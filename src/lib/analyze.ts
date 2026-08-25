@@ -1,23 +1,23 @@
 import type { Locale } from '../i18n/languages';
 import { t } from '../i18n/ui';
-import { COMMANDS, type CommandDef } from './commands';
+import { COMMANDS } from './commands/registry';
+import type { CommandDef } from './commands/types';
 import { CONTROL_KEYWORDS, OCTAL_DIGIT_MEANINGS, TEST_FLAGS } from './shell';
+import type { StepType } from './command-parsing/step-type';
+import { tokenize } from './command-parsing/tokenize';
+import { stripQuotesForClassification } from './command-parsing/strip-quotes';
+import { parseRedirect } from './command-parsing/redirects';
+import { findCommentStart } from './command-parsing/comments';
+import { type RawChunk, scanChunks } from './command-parsing/chunks';
+import { splitTopLevel } from './command-parsing/segments';
+import { dispatchSegment } from './command-parsing/segment-dispatch';
 import {
-  type StepType,
-  type RawChunk,
   type CommandTokenState,
-  tokenize,
-  stripQuotesForClassification,
-  parseRedirect,
-  findCommentStart,
-  scanChunks,
-  splitTopLevel,
-  dispatchSegment,
   createCommandTokenState,
   classifyCommandToken,
-} from './command-parsing';
+} from './command-parsing/token-classification';
 
-export type { StepType } from './command-parsing';
+export type { StepType } from './command-parsing/step-type';
 
 export interface Step {
   token: string;

@@ -1,4 +1,4 @@
-import type { CommandDef, ValueKind } from '../commands';
+import type { CommandDef, ValueKind } from '../commands/types';
 import { parseRedirect } from './redirects';
 
 const COMBINED_SHORT_FLAG_LETTERS_PATTERN = /^[a-zA-Z]+$/;

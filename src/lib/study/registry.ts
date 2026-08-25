@@ -10,8 +10,6 @@ import { systemServicesTopic, systemServicesCards } from './system-services';
 import { networkingTopic, networkingCards } from './networking';
 import { securityTopic, securityCards } from './security';
 
-export type { StudyTopic, StudyCard } from './types';
-
 export const STUDY_TOPICS: StudyTopic[] = [
   systemArchitectureTopic,
   packageManagementTopic,

@@ -1,4 +1,4 @@
-import type { StudyCard } from './study';
+import type { StudyCard } from './study/types';
 import { isDue, type ReviewState } from './spaced-repetition';
 
 const STORAGE_KEY = 'linuxxing:study:v1';

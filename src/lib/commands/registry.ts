@@ -9,8 +9,6 @@ import { shellBuiltins } from './shell-builtins';
 import { archivesHashing } from './archives-hashing';
 import { systemInfo } from './system-info';
 
-export type { LocalizedText, ValueKind, CommandDef, CommandKB } from './types';
-
 export const COMMANDS: CommandKB = {
   ...fileOperations,
   ...permissionsUsers,
