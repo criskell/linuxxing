@@ -406,6 +406,10 @@ export const fileOperations: CommandKB = {
       en: 'The file to create or update.',
       pt: 'O arquivo a criar ou atualizar.',
     },
+    commonMistake: {
+      en: "touch does not clear or reset a file's contents, only its timestamp, so running it on a file to empty it out leaves everything exactly as it was. Truncating a file to zero length needs something else entirely, > file or truncate -s 0 file, touch was never built for that job even though the two look interchangeable at a glance.",
+      pt: 'O touch não limpa nem reseta o conteúdo de um arquivo, só a data, então rodá-lo para esvaziar o arquivo deixa tudo exatamente como estava. Truncar um arquivo para tamanho zero precisa de outra coisa, > arquivo ou truncate -s 0 arquivo, o touch nunca foi feito para esse trabalho, mesmo que os dois pareçam intercambiáveis à primeira vista.',
+    },
   },
 
   less: {
@@ -449,6 +453,10 @@ export const fileOperations: CommandKB = {
     argHint: {
       en: 'The file to count.',
       pt: 'O arquivo a contar.',
+    },
+    commonMistake: {
+      en: 'wc -l counts newline characters, not lines in the everyday sense, so a file whose last line has no trailing newline is undercounted by one. A script comparing wc -l against an expected row count can be off by exactly one for a file that looks completely normal when opened in an editor.',
+      pt: 'O wc -l conta caracteres de quebra de linha, não linhas no sentido comum, então um arquivo cuja última linha não tem quebra de linha no final é contado a menos por um. Um script comparando wc -l com uma contagem esperada de linhas pode ficar errado por exatamente um, para um arquivo que parece completamente normal ao abrir num editor.',
     },
   },
 
@@ -783,6 +791,10 @@ export const fileOperations: CommandKB = {
       en: 'The format string, followed by the values to substitute into it.',
       pt: 'A string de formato, seguida dos valores a substituir nela.',
     },
+    commonMistake: {
+      en: 'printf "$value" treats value itself as the format string, so a % character anywhere inside it is read as a placeholder instead of literal text, producing garbled output or an error about a missing argument. printf "%s" "$value" keeps the format string fixed and passes value only as data to fill it, the safe pattern regardless of what characters value happens to contain.',
+      pt: 'printf "$valor" trata o próprio valor como string de formato, então qualquer caractere % dentro dele é lido como um marcador em vez de texto literal, produzindo saída bagunçada ou um erro sobre argumento faltando. printf "%s" "$valor" mantém a string de formato fixa e passa valor só como dado para preenchê-la, o padrão seguro independente de quais caracteres valor contenha.',
+    },
   },
 
   nl: {
@@ -925,6 +937,10 @@ export const fileOperations: CommandKB = {
       en: 'The symbolic link or path to resolve.',
       pt: 'O link simbólico ou caminho a resolver.',
     },
+    commonMistake: {
+      en: "Plain readlink without -f prints only the immediate target of a symlink, one level, so a chain of symlinks pointing to other symlinks comes back only half resolved. -f is what actually walks the whole chain down to the real file, and skipping it is why a script's captured path can still turn out to be another symlink instead of the file it expected.",
+      pt: 'O readlink puro, sem -f, imprime só o alvo imediato de um link simbólico, um nível, então uma cadeia de links simbólicos apontando para outros links volta só parcialmente resolvida. O -f é o que de fato percorre a cadeia inteira até o arquivo real, e pular ele é o motivo de um caminho capturado por um script ainda poder ser outro link simbólico em vez do arquivo esperado.',
+    },
   },
 
   shred: {
@@ -950,6 +966,10 @@ export const fileOperations: CommandKB = {
       en: 'The file to overwrite and optionally delete.',
       pt: 'O arquivo a sobrescrever e opcionalmente apagar.',
     },
+    commonMistake: {
+      en: "shred only overwrites the exact file path given; it does nothing about a backup, a cloud sync copy, a snapshot, or a version still sitting in git history. Deleting a file securely from one place says nothing about every other place a copy of it might already be, and shred can't reach any of them.",
+      pt: 'O shred só sobrescreve o caminho exato de arquivo dado; não faz nada sobre um backup, uma cópia sincronizada na nuvem, um snapshot, ou uma versão ainda presente no histórico do git. Apagar um arquivo com segurança de um lugar não diz nada sobre todo outro lugar onde uma cópia dele já possa estar, e o shred não consegue alcançar nenhum desses.',
+    },
   },
 
   locate: {
@@ -968,6 +988,10 @@ export const fileOperations: CommandKB = {
       en: 'The name pattern to search for in the index.',
       pt: 'O padrão de nome a procurar no índice.',
     },
+    commonMistake: {
+      en: 'locate matches the search pattern against the whole path, not just the file name, so locate report also returns every file inside a folder called reports or a project named report-generator, not only files actually named report. Anchoring the pattern more precisely, or piping the result through grep for the exact name, cuts that noise down.',
+      pt: 'O locate compara o padrão de busca contra o caminho inteiro, não só o nome do arquivo, então locate relatorio também retorna todo arquivo dentro de uma pasta chamada relatorios ou um projeto chamado gerador-de-relatorio, não só arquivos realmente chamados relatorio. Ancorar o padrão de forma mais precisa, ou encadear o resultado com grep para o nome exato, reduz esse ruído.',
+    },
   },
 
   mktemp: {
@@ -981,6 +1005,10 @@ export const fileOperations: CommandKB = {
         en: 'Creates a temporary directory instead of a file.',
         pt: 'Cria um diretório temporário em vez de um arquivo.',
       },
+    },
+    commonMistake: {
+      en: 'mktemp creates the file and hands back its path, but nothing removes it automatically, a script that exits early on an error still leaves that temporary file sitting in /tmp indefinitely. Pairing the mktemp call with a trap on EXIT that removes it is what actually guarantees cleanup, not mktemp by itself.',
+      pt: 'O mktemp cria o arquivo e devolve o caminho dele, mas nada remove esse arquivo automaticamente, um script que sai mais cedo por causa de um erro deixa esse arquivo temporário parado em /tmp indefinidamente. Combinar a chamada do mktemp com um trap no EXIT que o remove é o que de fato garante a limpeza, não o mktemp sozinho.',
     },
   },
 

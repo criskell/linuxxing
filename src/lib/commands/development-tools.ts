@@ -141,6 +141,10 @@ export const developmentTools: CommandKB = {
         pt: 'Imprime a saída compacta em uma única linha, em vez de formatada.',
       },
     },
+    commonMistake: {
+      en: "When the input piped into jq isn't valid JSON, an empty response, an HTML error page from a misbehaving API, jq's error is about the JSON syntax itself, not about what actually went wrong upstream. A parse error there usually means the previous command failed silently, and checking that command's raw output on its own, without jq in the way, finds the real problem faster than trying to make sense of jq's complaint.",
+      pt: 'Quando a entrada encanada para o jq não é um JSON válido, uma resposta vazia, uma página HTML de erro de uma API que se comportou mal, o erro do jq é sobre a sintaxe do JSON em si, não sobre o que realmente deu errado antes. Um erro de parse ali geralmente significa que o comando anterior falhou silenciosamente, e checar a saída bruta desse comando sozinho, sem o jq no meio, encontra o problema real mais rápido do que tentar entender a reclamação do jq.',
+    },
   },
 
   make: {
@@ -170,6 +174,10 @@ export const developmentTools: CommandKB = {
     argHint: {
       en: 'The name of the target to build, such as install, test, or clean.',
       pt: 'O nome do alvo a construir, como install, test ou clean.',
+    },
+    commonMistake: {
+      en: "Make requires each recipe line under a target to start with an actual tab character, not spaces, a holdover from its original 1970s implementation. A text editor that quietly converts tabs to spaces turns a perfectly readable Makefile into one that fails with 'missing separator', an error that gives no hint the actual problem is invisible whitespace.",
+      pt: 'O make exige que cada linha de receita sob um alvo comece com um caractere de tabulação de verdade, não espaços, uma herança da implementação original dos anos 1970. Um editor de texto que converte tabs em espaços silenciosamente transforma um Makefile perfeitamente legível em um que falha com "missing separator", um erro que não dá nenhuma pista de que o problema real é um espaço em branco invisível.',
     },
   },
 
@@ -208,6 +216,10 @@ export const developmentTools: CommandKB = {
       en: 'The source file to compile.',
       pt: 'O arquivo-fonte a compilar.',
     },
+    commonMistake: {
+      en: '-Wall does not mean all warnings, despite the name: several genuinely useful ones, like an unused function parameter, only turn on with the separately named -Wextra. Treating -Wall as the complete warning set leaves real bugs uncaught with no indication anything was skipped.',
+      pt: 'O -Wall não significa todos os avisos, apesar do nome: vários realmente úteis, como um parâmetro de função não utilizado, só ligam com o -Wextra, nomeado separadamente. Tratar o -Wall como o conjunto completo de avisos deixa bugs reais sem serem pegos, sem nenhuma indicação de que algo ficou de fora.',
+    },
   },
 
   python3: {
@@ -238,6 +250,10 @@ export const developmentTools: CommandKB = {
       en: 'The Python script file to run.',
       pt: 'O arquivo de script Python a rodar.',
     },
+    commonMistake: {
+      en: "python3 -m pip install and a bare pip install can quietly target two different interpreters when more than one Python is installed, so a package that installs without error still isn't importable from the python3 that actually runs the script. python3 -m pip keeps the install and the interpreter running it locked to the same one, removing that mismatch entirely.",
+      pt: 'python3 -m pip install e um pip install puro podem silenciosamente apontar para dois interpretadores diferentes quando há mais de um Python instalado, então um pacote que instala sem erro ainda assim não fica importável a partir do python3 que de fato roda o script. O python3 -m pip mantém a instalação e o interpretador que a roda travados no mesmo, eliminando essa incompatibilidade por completo.',
+    },
   },
 
   node: {
@@ -266,6 +282,10 @@ export const developmentTools: CommandKB = {
     argHint: {
       en: 'The JavaScript file to run.',
       pt: 'O arquivo JavaScript a rodar.',
+    },
+    commonMistake: {
+      en: 'Using import in a plain .js file throws \'Cannot use import statement outside a module\', while using require in a file where package.json sets "type": "module" throws the opposite error, \'require is not defined\'. Node picks which module system a file uses from that one package.json field, or the .mjs/.cjs extension, not from which syntax happens to be written inside the file.',
+      pt: 'Usar import num arquivo .js comum lança "Cannot use import statement outside a module", enquanto usar require num arquivo onde o package.json define "type": "module" lança o erro oposto, "require is not defined". O Node decide qual sistema de módulos um arquivo usa a partir desse único campo do package.json, ou da extensão .mjs/.cjs, não pela sintaxe que por acaso está escrita dentro do arquivo.',
     },
   },
 
@@ -340,6 +360,10 @@ export const developmentTools: CommandKB = {
     argHint: {
       en: 'The file to edit.',
       pt: 'O arquivo a editar.',
+    },
+    commonMistake: {
+      en: "Typing immediately after opening vim, before pressing i, doesn't insert text: normal mode treats every keystroke as a command instead, so x deletes characters, dd deletes whole lines, and a few random keys can look like vim ate half a file with no warning. Pressing i first switches to insert mode for typing, and Escape returns to normal mode, the two keys that unlock everything else.",
+      pt: 'Digitar logo depois de abrir o vim, antes de apertar i, não insere texto: o modo normal trata toda tecla como comando, então x apaga caracteres, dd apaga linhas inteiras, e algumas teclas aleatórias podem parecer que o vim comeu metade de um arquivo sem aviso nenhum. Apertar i primeiro muda para o modo de inserção, para digitar, e Esc volta ao modo normal, as duas teclas que destravam tudo o resto.',
     },
   },
 

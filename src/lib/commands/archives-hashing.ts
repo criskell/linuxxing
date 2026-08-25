@@ -99,6 +99,10 @@ export const archivesHashing: CommandKB = {
       en: 'The file to compress.',
       pt: 'O arquivo a compactar.',
     },
+    commonMistake: {
+      en: "Pointing gzip at a directory fails with an 'Is a directory' error instead of compressing its contents, since gzip has no concept of bundling multiple files together. tar first, gzip second, or tar czf archive.tar.gz folder in one step, is the fix, not a gzip flag.",
+      pt: 'Apontar o gzip para um diretório falha com um erro de "Is a directory" em vez de compactar o conteúdo, já que o gzip não tem nenhum conceito de empacotar vários arquivos juntos. tar primeiro, gzip depois, ou tar czf arquivo.tar.gz pasta em um único passo, é a solução, não uma flag do gzip.',
+    },
   },
 
   gunzip: {
@@ -275,6 +279,10 @@ export const archivesHashing: CommandKB = {
       },
     },
     flags: {},
+    commonMistake: {
+      en: 'Generating a key with openssl req without -nodes produces a private key encrypted with a passphrase, which means every service that loads it, nginx, a mail server, a boot script, stops and waits for someone to type that passphrase before it can start. -nodes skips the encryption entirely, which is what almost every self-signed certificate tutorial actually needs, even though the flag name reads like it does something else.',
+      pt: 'Gerar uma chave com openssl req sem -nodes produz uma chave privada criptografada com senha, o que significa que todo serviço que a carrega, nginx, um servidor de e-mail, um script de boot, para e espera alguém digitar essa senha antes de conseguir iniciar. O -nodes pula essa criptografia por completo, que é o que quase todo tutorial de certificado autoassinado realmente precisa, mesmo que o nome da flag pareça indicar outra coisa.',
+    },
   },
 
   gpg: {
@@ -301,6 +309,10 @@ export const archivesHashing: CommandKB = {
       },
     },
     flags: {},
+    commonMistake: {
+      en: "Importing a public key with --import only adds it to the local keyring, it does not mean gpg trusts it yet, and --verify still reports a signature as good from a key nobody has actually confirmed belongs to who it claims. Checking the key's fingerprint against a value obtained through a separate, trusted channel, the project's website, a different device, before trusting it is the step that import alone skips entirely.",
+      pt: 'Importar uma chave pública com --import só a adiciona ao chaveiro local, não significa que o gpg já confia nela, e o --verify ainda relata uma assinatura como boa vinda de uma chave que ninguém de fato confirmou pertencer a quem ela alega. Conferir a impressão digital da chave contra um valor obtido por um canal separado e confiável, o site do projeto, outro dispositivo, antes de confiar nela é o passo que o import sozinho pula por completo.',
+    },
   },
 
   sha1sum: {
