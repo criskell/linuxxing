@@ -177,5 +177,11 @@ const TYPE_LABEL_KEY: Record<StepType, Parameters<typeof t>[1]> = {
     }
   });
 
+  document.addEventListener('linuxxing:set-command', (e) => {
+    input.value = (e as CustomEvent<string>).detail;
+    renderHighlight();
+    runExplain();
+  });
+
   renderHighlight();
 </script>

@@ -4,6 +4,7 @@ import { t } from '../i18n/ui';
 import type { CommandDef } from '../lib/commands/types';
 import { COMMAND_CATEGORIES } from '../lib/commands/registry';
 import CommandExplainer from './CommandExplainer.astro';
+import CommandFlagBuilder from './CommandFlagBuilder.astro';
 
 interface Props {
   locale: Locale;
@@ -32,6 +33,12 @@ const relatedCommands = category ? category.commands.filter((name) => name !== c
     <h1 class="display text-2xl md:text-3xl">{commandName}</h1>
     <p class="text-base leading-relaxed text-default">{commandDef.desc[locale]}</p>
   </div>
+
+  {
+    flagEntries.length > 0 && (
+      <CommandFlagBuilder locale={locale} commandName={commandName} flags={Object.keys(commandDef.flags)} />
+    )
+  }
 
   <CommandExplainer locale={locale} initialCommand={commandName} />
 

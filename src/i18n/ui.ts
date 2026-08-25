@@ -22,6 +22,8 @@ export const ui = {
     'commands.relatedHeading': 'Related commands',
     'commands.tryItPrompt': 'Try it yourself, edit the command below and see it explained live.',
     'commands.backToExplainer': 'Explain any command',
+    'commands.builderHeading': 'Build your own command',
+    'commands.builderHint': 'Tap flags to add them, watch the explanation below update as you go.',
     'study.title': 'Study for the LPIC-1',
     'study.tagline':
       'A reference card for every LPIC-1 exam objective, with spaced repetition to track what you still need to review.',
@@ -139,6 +141,8 @@ export const ui = {
     'commands.relatedHeading': 'Comandos relacionados',
     'commands.tryItPrompt': 'Experimente você mesmo, edite o comando abaixo e veja a explicação ao vivo.',
     'commands.backToExplainer': 'Explicar qualquer comando',
+    'commands.builderHeading': 'Monte seu próprio comando',
+    'commands.builderHint': 'Toque nas flags para adicioná-las, veja a explicação abaixo se atualizar ao vivo.',
     'study.title': 'Estude para o LPIC-1',
     'study.tagline':
       'Um cartão de referência para cada objetivo do exame LPIC-1, com repetição espaçada para acompanhar o que ainda falta revisar.',
