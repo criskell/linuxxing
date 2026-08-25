@@ -1,20 +1,23 @@
 import type { Locale } from '../i18n/languages';
 import { t } from '../i18n/ui';
-import { COMMANDS, type CommandDef, type ValueKind } from './commands';
+import { COMMANDS, type CommandDef } from './commands';
 import { CONTROL_KEYWORDS, OCTAL_DIGIT_MEANINGS, TEST_FLAGS } from './shell';
+import {
+  type StepType,
+  type RawChunk,
+  type CommandTokenState,
+  tokenize,
+  stripQuotesForClassification,
+  parseRedirect,
+  findCommentStart,
+  scanChunks,
+  splitTopLevel,
+  dispatchSegment,
+  createCommandTokenState,
+  classifyCommandToken,
+} from './command-parsing';
 
-export type StepType =
-  | 'command'
-  | 'subcommand'
-  | 'flag-long'
-  | 'flag-short'
-  | 'arg'
-  | 'unknown'
-  | 'comment'
-  | 'control'
-  | 'test'
-  | 'operator'
-  | 'redirect';
+export type { StepType } from './command-parsing';
 
 export interface Step {
   token: string;
@@ -22,49 +25,20 @@ export interface Step {
   desc: string;
 }
 
-const CONDITIONAL_KEYWORDS = new Set(['if', 'elif', 'while', 'until']);
-
-export function tokenize(input: string): string[] {
-  const tokens: string[] = [];
-  let current = '';
-  let quote: string | null = null;
-
-  for (const ch of input) {
-    if (quote) {
-      if (ch === quote) {
-        quote = null;
-      } else {
-        current += ch;
-      }
-    } else if (ch === '"' || ch === "'") {
-      quote = ch;
-    } else if (ch === ' ') {
-      if (current.length) {
-        tokens.push(current);
-        current = '';
-      }
-    } else {
-      current += ch;
-    }
-  }
-  if (current.length) tokens.push(current);
-  return tokens;
-}
-
 function redirectDescription(token: string, locale: Locale): string | null {
-  let m = token.match(/^(\d+)?>&(\d+)$/);
-  if (m) return t(locale, 'redirect.dup')(m[1] ?? '1', m[2]);
+  const info = parseRedirect(token);
+  if (!info) return null;
 
-  m = token.match(/^(\d*)(>>)(.*)$/);
-  if (m) return t(locale, 'redirect.append')(m[1] || '1', m[3] || '');
-
-  m = token.match(/^(\d*)(>)(.*)$/);
-  if (m) return t(locale, 'redirect.overwrite')(m[1] || '1', m[3] || '');
-
-  m = token.match(/^(\d*)(<)(.*)$/);
-  if (m) return t(locale, 'redirect.input')(m[3] || '');
-
-  return null;
+  switch (info.kind) {
+    case 'dup':
+      return t(locale, 'redirect.dup')(info.fileDescriptor, info.target);
+    case 'append':
+      return t(locale, 'redirect.append')(info.fileDescriptor, info.target);
+    case 'overwrite':
+      return t(locale, 'redirect.overwrite')(info.fileDescriptor, info.target);
+    case 'input':
+      return t(locale, 'redirect.input')(info.target);
+  }
 }
 
 function matchFstabLine(token: string): [string, string, string, string, string, string] | null {
@@ -80,234 +54,138 @@ function decodeOctalMode(mode: string, locale: Locale): string {
   return t(locale, 'special.octalModeDecode')(owner, group, other);
 }
 
+function describeFlagLong(
+  flagName: string,
+  flagValue: string | null,
+  knowledgeBase: CommandDef | undefined,
+  locale: Locale,
+): string {
+  const known = knowledgeBase?.flags[flagName]?.[locale];
+  let desc = known ?? t(locale, 'fallback.flagLong')(flagName);
+  if (flagValue !== null) desc += t(locale, 'fallback.flagLongValue')(flagValue);
+  return desc;
+}
+
+function describeFlagShort(
+  flagName: string,
+  combinedLetters: string[] | null,
+  knowledgeBase: CommandDef | undefined,
+  locale: Locale,
+): string {
+  if (combinedLetters) {
+    const explained = combinedLetters
+      .map((letter) => {
+        const d = knowledgeBase?.flags['-' + letter]?.[locale];
+        return d ? `-${letter}: ${d}` : null;
+      })
+      .filter(Boolean) as string[];
+
+    let desc = t(locale, 'fallback.flagShortCombinedKnown')(combinedLetters.map((l) => '-' + l).join(', '));
+    desc += explained.length ? ' ' + explained.join(' ') : t(locale, 'fallback.flagShortCombinedUnknown');
+    return desc;
+  }
+
+  const known = knowledgeBase?.flags[flagName]?.[locale];
+  return known ?? t(locale, 'fallback.flagShort')(flagName);
+}
+
+function describeArgToken(
+  token: string,
+  baseCmd: string,
+  knowledgeBase: CommandDef | undefined,
+  consumedValueFlag: { flag: string; kind: 'generic' | 'octal-mode' } | null,
+  keyValueMatch: [string, string] | null,
+  locale: Locale,
+): string {
+  if (baseCmd === 'chmod' && /^[0-7]{3,4}$/.test(token)) {
+    return `${t(locale, 'special.chmodOctal')} ${decodeOctalMode(token, locale)}`;
+  }
+
+  const fstabFields = matchFstabLine(token);
+  if (fstabFields) {
+    const [device, mount, fstype, opts, dump, pass] = fstabFields;
+    return t(locale, 'special.fstabLine')(device, mount, fstype, opts, dump, pass);
+  }
+
+  if (consumedValueFlag) {
+    const flagDesc = knowledgeBase?.flags[consumedValueFlag.flag]?.[locale] ?? '';
+    let desc = `${flagDesc} ${t(locale, 'special.flagValue')(token)}`;
+    if (consumedValueFlag.kind === 'octal-mode' && /^[0-7]{3,4}$/.test(token)) {
+      desc += ` ${decodeOctalMode(token, locale)}`;
+    }
+    return desc;
+  }
+
+  const keyValueDesc = keyValueMatch ? knowledgeBase?.flags[keyValueMatch[0]]?.[locale] : null;
+  if (keyValueMatch && keyValueDesc) {
+    return `${keyValueDesc} ${t(locale, 'special.flagValue')(keyValueMatch[1])}`;
+  }
+
+  return knowledgeBase?.argHint?.[locale] ?? t(locale, 'fallback.arg');
+}
+
 export function analyze(tokens: string[], locale: Locale): Step[] {
   const steps: Step[] = [];
   if (!tokens.length) return steps;
 
   let startIndex = 0;
   if (tokens[0] === 'sudo') {
-    steps.push({
-      token: tokens[0],
-      type: 'command',
-      desc: COMMANDS.sudo.desc[locale],
-    });
+    steps.push({ token: tokens[0], type: 'command', desc: COMMANDS.sudo.desc[locale] });
     startIndex = 1;
   }
 
   const baseCmd = tokens[startIndex];
-  const kb = COMMANDS[baseCmd];
+  const knowledgeBase = COMMANDS[baseCmd];
 
   steps.push({
     token: tokens[startIndex],
     type: 'command',
-    desc: kb ? kb.desc[locale] : t(locale, 'fallback.command')(tokens[startIndex]),
+    desc: knowledgeBase ? knowledgeBase.desc[locale] : t(locale, 'fallback.command')(tokens[startIndex]),
   });
 
-  let subcommandClaimed = false;
-  let pendingValueFlag: { flag: string; kind: ValueKind } | null = null;
+  const state: CommandTokenState = createCommandTokenState();
 
   for (let i = startIndex + 1; i < tokens.length; i++) {
     const tok = tokens[i];
-    const valueFlag = pendingValueFlag;
-    pendingValueFlag = null;
+    const result = classifyCommandToken(tok, knowledgeBase, state);
 
-    const redirect = redirectDescription(tok, locale);
-    if (redirect) {
-      steps.push({ token: tok, type: 'redirect', desc: redirect });
-      continue;
-    }
-
-    if (tok.startsWith('--')) {
-      const eqIdx = tok.indexOf('=');
-      const flagName = eqIdx === -1 ? tok : tok.slice(0, eqIdx);
-      const flagValue = eqIdx === -1 ? null : tok.slice(eqIdx + 1);
-      const known = kb?.flags[flagName]?.[locale];
-
-      let desc = known ?? t(locale, 'fallback.flagLong')(flagName);
-      if (flagValue !== null) {
-        desc += t(locale, 'fallback.flagLongValue')(flagValue);
-      } else {
-        const kind = kb?.valueFlags?.[flagName];
-        if (kind) pendingValueFlag = { flag: flagName, kind };
+    switch (result.type) {
+      case 'redirect':
+        steps.push({ token: tok, type: 'redirect', desc: redirectDescription(tok, locale)! });
+        break;
+      case 'flag-long':
+        steps.push({
+          token: tok,
+          type: 'flag-long',
+          desc: describeFlagLong(result.flagName, result.flagValue, knowledgeBase, locale),
+        });
+        break;
+      case 'flag-short':
+        steps.push({
+          token: tok,
+          type: 'flag-short',
+          desc: describeFlagShort(result.flagName, result.combinedLetters, knowledgeBase, locale),
+        });
+        break;
+      case 'subcommand':
+        steps.push({ token: tok, type: 'subcommand', desc: knowledgeBase!.subcommands[result.name][locale] });
+        break;
+      case 'unknown': {
+        const examples = Object.keys(knowledgeBase!.subcommands).slice(0, 3).join(', ');
+        steps.push({ token: tok, type: 'unknown', desc: t(locale, 'fallback.subcommandExpected')(baseCmd, tok, examples) });
+        break;
       }
-
-      steps.push({ token: tok, type: 'flag-long', desc });
-      continue;
+      case 'arg':
+        steps.push({
+          token: tok,
+          type: 'arg',
+          desc: describeArgToken(tok, baseCmd, knowledgeBase, result.consumedValueFlag, result.keyValueMatch, locale),
+        });
+        break;
     }
-
-    if (tok.startsWith('-') && tok.length > 1 && tok !== '-') {
-      const body = tok.slice(1);
-      const known = kb?.flags[tok]?.[locale];
-
-      if (known) {
-        const kind = kb?.valueFlags?.[tok];
-        if (kind) pendingValueFlag = { flag: tok, kind };
-        steps.push({ token: tok, type: 'flag-short', desc: known });
-        continue;
-      }
-
-      if (body.length > 1 && /^[a-zA-Z]+$/.test(body)) {
-        const letters = body.split('');
-        const explained = letters
-          .map((l) => {
-            const d = kb?.flags['-' + l]?.[locale];
-            return d ? `-${l}: ${d}` : null;
-          })
-          .filter(Boolean) as string[];
-
-        let desc = t(locale, 'fallback.flagShortCombinedKnown')(letters.map((l) => '-' + l).join(', '));
-        desc += explained.length ? ' ' + explained.join(' ') : t(locale, 'fallback.flagShortCombinedUnknown');
-        steps.push({ token: tok, type: 'flag-short', desc });
-        continue;
-      }
-
-      steps.push({ token: tok, type: 'flag-short', desc: t(locale, 'fallback.flagShort')(tok) });
-      continue;
-    }
-
-    if (tok === '-') {
-      const known = kb?.flags['-']?.[locale];
-      steps.push({ token: tok, type: known ? 'flag-short' : 'arg', desc: known ?? t(locale, 'fallback.dash') });
-      continue;
-    }
-
-    if (!subcommandClaimed && kb && kb.subcommands[tok]) {
-      steps.push({ token: tok, type: 'subcommand', desc: kb.subcommands[tok][locale] });
-      subcommandClaimed = true;
-      continue;
-    }
-
-    if (!subcommandClaimed && kb && Object.keys(kb.subcommands).length) {
-      subcommandClaimed = true;
-      const examples = Object.keys(kb.subcommands).slice(0, 3).join(', ');
-      steps.push({ token: tok, type: 'unknown', desc: t(locale, 'fallback.subcommandExpected')(baseCmd, tok, examples) });
-      continue;
-    }
-
-    if (baseCmd === 'chmod' && /^[0-7]{3,4}$/.test(tok)) {
-      steps.push({ token: tok, type: 'arg', desc: `${t(locale, 'special.chmodOctal')} ${decodeOctalMode(tok, locale)}` });
-      continue;
-    }
-
-    const fstabFields = matchFstabLine(tok);
-    if (fstabFields) {
-      const [device, mount, fstype, opts, dump, pass] = fstabFields;
-      steps.push({ token: tok, type: 'arg', desc: t(locale, 'special.fstabLine')(device, mount, fstype, opts, dump, pass) });
-      continue;
-    }
-
-    if (valueFlag) {
-      const flagDesc = kb?.flags[valueFlag.flag]?.[locale] ?? '';
-      let desc = `${flagDesc} ${t(locale, 'special.flagValue')(tok)}`;
-      if (valueFlag.kind === 'octal-mode' && /^[0-7]{3,4}$/.test(tok)) {
-        desc += ` ${decodeOctalMode(tok, locale)}`;
-      }
-      steps.push({ token: tok, type: 'arg', desc });
-      continue;
-    }
-
-    const keyValue = kb?.flags ? tok.match(/^([a-zA-Z]+)=(.*)$/) : null;
-    const keyValueDesc = keyValue ? kb?.flags[keyValue[1]]?.[locale] : null;
-    if (keyValue && keyValueDesc) {
-      steps.push({ token: tok, type: 'arg', desc: `${keyValueDesc} ${t(locale, 'special.flagValue')(keyValue[2])}` });
-      continue;
-    }
-
-    steps.push({ token: tok, type: 'arg', desc: kb?.argHint?.[locale] ?? t(locale, 'fallback.arg') });
   }
 
   return steps;
-}
-
-function stripComment(line: string): { code: string; comment: string | null } {
-  let quote: string | null = null;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (quote) {
-      if (ch === quote) quote = null;
-      continue;
-    }
-    if (ch === '"' || ch === "'") {
-      quote = ch;
-      continue;
-    }
-    if (ch === '#' && (i === 0 || /\s/.test(line[i - 1]))) {
-      return { code: line.slice(0, i).trimEnd(), comment: line.slice(i).trim() };
-    }
-  }
-  return { code: line.trimEnd(), comment: null };
-}
-
-interface Segment {
-  operator: string | null;
-  text: string;
-}
-
-function splitTopLevel(code: string): Segment[] {
-  const parts: Segment[] = [];
-  let current = '';
-  let quote: string | null = null;
-  let currentOperator: string | null = null;
-
-  const flush = () => {
-    const text = current.trim();
-    if (text.length) parts.push({ operator: currentOperator, text });
-    current = '';
-  };
-
-  for (let i = 0; i < code.length; i++) {
-    const ch = code[i];
-    if (quote) {
-      current += ch;
-      if (ch === quote) quote = null;
-      continue;
-    }
-    if (ch === '"' || ch === "'") {
-      quote = ch;
-      current += ch;
-      continue;
-    }
-    if (ch === '&' && code[i + 1] === '&') {
-      flush();
-      currentOperator = '&&';
-      i++;
-      continue;
-    }
-    if (ch === '|' && code[i + 1] === '|') {
-      flush();
-      currentOperator = '||';
-      i++;
-      continue;
-    }
-    if (ch === '|') {
-      flush();
-      currentOperator = '|';
-      continue;
-    }
-    if (ch === ';') {
-      flush();
-      currentOperator = ';';
-      continue;
-    }
-    current += ch;
-  }
-  flush();
-  return parts;
-}
-
-function operatorDesc(op: string, locale: Locale): string {
-  switch (op) {
-    case '&&':
-      return t(locale, 'operator.and');
-    case '||':
-      return t(locale, 'operator.or');
-    case ';':
-      return t(locale, 'operator.seq');
-    case '|':
-      return t(locale, 'operator.pipe');
-    default:
-      return '';
-  }
 }
 
 function buildTestStep(expr: string, locale: Locale): Step {
@@ -324,29 +202,25 @@ function buildTestStep(expr: string, locale: Locale): Step {
   return { token: expr, type: 'test', desc };
 }
 
-function isBracketTest(text: string): boolean {
-  return (text.startsWith('[[') && text.endsWith(']]')) || (text.startsWith('[') && text.endsWith(']'));
-}
-
 function processSegment(text: string, locale: Locale, steps: Step[]): void {
   const trimmed = text.trim();
   if (!trimmed) return;
 
-  if (CONTROL_KEYWORDS[trimmed]) {
+  const dispatch = dispatchSegment(trimmed);
+
+  if (dispatch.kind === 'control') {
     steps.push({ token: trimmed, type: 'control', desc: CONTROL_KEYWORDS[trimmed][locale] });
     return;
   }
 
-  const firstSpace = trimmed.indexOf(' ');
-  const firstWord = firstSpace === -1 ? trimmed : trimmed.slice(0, firstSpace);
-  if (CONDITIONAL_KEYWORDS.has(firstWord) && CONTROL_KEYWORDS[firstWord]) {
-    steps.push({ token: firstWord, type: 'control', desc: CONTROL_KEYWORDS[firstWord][locale] });
-    const rest = firstSpace === -1 ? '' : trimmed.slice(firstSpace + 1).trim();
+  if (dispatch.kind === 'conditional') {
+    steps.push({ token: dispatch.keyword, type: 'control', desc: CONTROL_KEYWORDS[dispatch.keyword][locale] });
+    const rest = trimmed.slice(dispatch.keyword.length).trim();
     if (rest) processSegment(rest, locale, steps);
     return;
   }
 
-  if (isBracketTest(trimmed)) {
+  if (dispatch.kind === 'test') {
     steps.push(buildTestStep(trimmed, locale));
     return;
   }
@@ -354,6 +228,21 @@ function processSegment(text: string, locale: Locale, steps: Step[]): void {
   const tokens = tokenize(trimmed);
   if (!tokens.length) return;
   steps.push(...analyze(tokens, locale));
+}
+
+function operatorDesc(op: string, locale: Locale): string {
+  switch (op) {
+    case '&&':
+      return t(locale, 'operator.and');
+    case '||':
+      return t(locale, 'operator.or');
+    case ';':
+      return t(locale, 'operator.seq');
+    case '|':
+      return t(locale, 'operator.pipe');
+    default:
+      return '';
+  }
 }
 
 function processLineCode(code: string, locale: Locale, steps: Step[]): void {
@@ -373,7 +262,9 @@ export function analyzeScript(input: string, locale: Locale): Step[] {
   for (const rawLine of lines) {
     if (!rawLine.trim()) continue;
 
-    const { code, comment } = stripComment(rawLine);
+    const commentStart = findCommentStart(rawLine);
+    const code = commentStart === -1 ? rawLine : rawLine.slice(0, commentStart).trimEnd();
+    const comment = commentStart === -1 ? null : rawLine.slice(commentStart).trim();
     const trimmedCode = code.trim();
 
     if (!trimmedCode) {
@@ -396,104 +287,6 @@ export interface HighlightSpan {
   type: StepType | null;
 }
 
-function isRedirectToken(token: string): boolean {
-  return (
-    /^(\d+)?>&(\d+)$/.test(token) ||
-    /^(\d*)(>>)(.*)$/.test(token) ||
-    /^(\d*)(>)(.*)$/.test(token) ||
-    /^(\d*)(<)(.*)$/.test(token)
-  );
-}
-
-function stripQuotesForClassification(word: string): string {
-  let out = '';
-  let quote: string | null = null;
-  for (const ch of word) {
-    if (quote) {
-      if (ch === quote) quote = null;
-      else out += ch;
-    } else if (ch === '"' || ch === "'") {
-      quote = ch;
-    } else {
-      out += ch;
-    }
-  }
-  return out;
-}
-
-interface RawChunk {
-  text: string;
-  kind: 'ws' | 'op' | 'word';
-}
-
-function scanChunks(code: string): RawChunk[] {
-  const chunks: RawChunk[] = [];
-  let current = '';
-  let currentKind: 'ws' | 'word' | null = null;
-  let quote: string | null = null;
-
-  const flush = () => {
-    if (current) chunks.push({ text: current, kind: currentKind! });
-    current = '';
-    currentKind = null;
-  };
-
-  for (let i = 0; i < code.length; i++) {
-    const ch = code[i];
-    if (quote) {
-      current += ch;
-      if (ch === quote) quote = null;
-      continue;
-    }
-    if (ch === '"' || ch === "'") {
-      if (currentKind !== 'word') {
-        flush();
-        currentKind = 'word';
-      }
-      quote = ch;
-      current += ch;
-      continue;
-    }
-    if (ch === '&' && code[i + 1] === '&') {
-      flush();
-      chunks.push({ text: '&&', kind: 'op' });
-      i++;
-      continue;
-    }
-    if (ch === '|' && code[i + 1] === '|') {
-      flush();
-      chunks.push({ text: '||', kind: 'op' });
-      i++;
-      continue;
-    }
-    if (ch === '|') {
-      flush();
-      chunks.push({ text: '|', kind: 'op' });
-      continue;
-    }
-    if (ch === ';') {
-      flush();
-      chunks.push({ text: ';', kind: 'op' });
-      continue;
-    }
-    if (/\s/.test(ch)) {
-      if (currentKind !== 'ws') {
-        flush();
-        currentKind = 'ws';
-      }
-      current += ch;
-      continue;
-    }
-    if (currentKind !== 'word') {
-      flush();
-      currentKind = 'word';
-    }
-    current += ch;
-  }
-  flush();
-  return chunks;
-}
-
 function highlightSegment(chunks: RawChunk[], spans: HighlightSpan[]): void {
   const wordIdxs: number[] = [];
   chunks.forEach((c, i) => {
@@ -505,20 +298,20 @@ function highlightSegment(chunks: RawChunk[], spans: HighlightSpan[]): void {
     return;
   }
 
-  const logical = (i: number) => stripQuotesForClassification(chunks[i].text);
   const fullTrimmed = chunks
     .map((c) => c.text)
     .join('')
     .trim();
 
-  if (CONTROL_KEYWORDS[fullTrimmed]) {
+  const dispatch = dispatchSegment(fullTrimmed);
+
+  if (dispatch.kind === 'control') {
     chunks.forEach((c) => spans.push({ text: c.text, type: c.kind === 'word' ? 'control' : null }));
     return;
   }
 
-  const firstWordChunkIdx = wordIdxs[0];
-  const firstWordLogical = logical(firstWordChunkIdx);
-  if (CONDITIONAL_KEYWORDS.has(firstWordLogical) && CONTROL_KEYWORDS[firstWordLogical]) {
+  if (dispatch.kind === 'conditional') {
+    const firstWordChunkIdx = wordIdxs[0];
     for (let i = 0; i <= firstWordChunkIdx; i++) {
       spans.push({ text: chunks[i].text, type: chunks[i].kind === 'word' ? 'control' : null });
     }
@@ -526,15 +319,15 @@ function highlightSegment(chunks: RawChunk[], spans: HighlightSpan[]): void {
     return;
   }
 
-  if (isBracketTest(fullTrimmed)) {
+  if (dispatch.kind === 'test') {
     chunks.forEach((c) => spans.push({ text: c.text, type: 'test' }));
     return;
   }
 
   let sawCommand = false;
   let afterSudo = false;
-  let subcommandClaimed = false;
-  let kb: CommandDef | undefined;
+  let knowledgeBase: CommandDef | undefined;
+  const state: CommandTokenState = createCommandTokenState();
 
   chunks.forEach((c) => {
     if (c.kind !== 'word') {
@@ -549,52 +342,20 @@ function highlightSegment(chunks: RawChunk[], spans: HighlightSpan[]): void {
       if (value === 'sudo') {
         afterSudo = true;
       } else {
-        kb = COMMANDS[value];
+        knowledgeBase = COMMANDS[value];
       }
       return;
     }
 
     if (afterSudo) {
       afterSudo = false;
-      kb = COMMANDS[value];
+      knowledgeBase = COMMANDS[value];
       spans.push({ text: c.text, type: 'command' });
       return;
     }
 
-    if (isRedirectToken(value)) {
-      spans.push({ text: c.text, type: 'redirect' });
-      return;
-    }
-
-    if (value.startsWith('--')) {
-      spans.push({ text: c.text, type: 'flag-long' });
-      return;
-    }
-
-    if (value.startsWith('-') && value.length > 1) {
-      spans.push({ text: c.text, type: 'flag-short' });
-      return;
-    }
-
-    if (value === '-') {
-      const known = kb?.flags['-'];
-      spans.push({ text: c.text, type: known ? 'flag-short' : 'arg' });
-      return;
-    }
-
-    if (!subcommandClaimed && kb && kb.subcommands[value]) {
-      subcommandClaimed = true;
-      spans.push({ text: c.text, type: 'subcommand' });
-      return;
-    }
-
-    if (!subcommandClaimed && kb && Object.keys(kb.subcommands).length) {
-      subcommandClaimed = true;
-      spans.push({ text: c.text, type: 'unknown' });
-      return;
-    }
-
-    spans.push({ text: c.text, type: 'arg' });
+    const result = classifyCommandToken(value, knowledgeBase, state);
+    spans.push({ text: c.text, type: result.type });
   });
 }
 
@@ -603,7 +364,7 @@ function highlightCode(code: string, spans: HighlightSpan[]): void {
   let segStart = 0;
 
   chunks.forEach((chunk, i) => {
-    if (chunk.kind === 'op') {
+    if (chunk.kind === 'operator') {
       if (i > segStart) highlightSegment(chunks.slice(segStart, i), spans);
       spans.push({ text: chunk.text, type: 'operator' });
       segStart = i + 1;
@@ -614,24 +375,7 @@ function highlightCode(code: string, spans: HighlightSpan[]): void {
 }
 
 function highlightLine(line: string, spans: HighlightSpan[]): void {
-  let quote: string | null = null;
-  let commentStart = -1;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (quote) {
-      if (ch === quote) quote = null;
-      continue;
-    }
-    if (ch === '"' || ch === "'") {
-      quote = ch;
-      continue;
-    }
-    if (ch === '#' && (i === 0 || /\s/.test(line[i - 1]))) {
-      commentStart = i;
-      break;
-    }
-  }
-
+  const commentStart = findCommentStart(line);
   const code = commentStart === -1 ? line : line.slice(0, commentStart);
   const comment = commentStart === -1 ? '' : line.slice(commentStart);
 

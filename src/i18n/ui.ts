@@ -4,6 +4,10 @@ export const ui = {
   en: {
     'site.title': 'linuxxing',
     'site.tagline': 'Paste a command, or a whole script, and see every piece of it explained, step by step.',
+    'hero.count': (count: number) => `${count} commands explained, in English and Portuguese.`,
+    'empty.prompt': 'Paste a command on the left to see it explained here, piece by piece.',
+    'footer.tagline': 'An open source reference for the Linux and Unix command line.',
+    'footer.source': 'View the source code on GitHub',
     'input.placeholder': 'e.g. systemctl --user disable --now x (paste a full script too)',
     'input.button': 'Explain',
     'type.command': 'command',
@@ -79,6 +83,10 @@ export const ui = {
   pt: {
     'site.title': 'linuxxing',
     'site.tagline': 'Cole um comando, ou um script inteiro, e veja cada pedaço dele explicado, passo a passo.',
+    'hero.count': (count: number) => `${count} comandos explicados, em português e inglês.`,
+    'empty.prompt': 'Cole um comando à esquerda para ver a explicação aqui, pedaço por pedaço.',
+    'footer.tagline': 'Uma referência de código aberto para a linha de comando do Linux e do Unix.',
+    'footer.source': 'Ver o código-fonte no GitHub',
     'input.placeholder': 'ex: systemctl --user disable --now x (cole um script inteiro também)',
     'input.button': 'Explicar',
     'type.command': 'comando',

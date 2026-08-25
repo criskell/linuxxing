@@ -49,6 +49,19 @@ const pageTitle = title ?? t(locale, 'site.title');
       <slot />
     </main>
 
+    <footer class="mx-auto max-w-5xl px-4 pb-10">
+      <hr class="rule mb-6" />
+      <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-faint">
+        <p>{t(locale, 'footer.tagline')}</p>
+        <a
+          href="https://github.com/criskell/linuxxing"
+          class="eyebrow interactive rounded-md px-2 py-1 text-muted hover:text-strong"
+        >
+          {t(locale, 'footer.source')}
+        </a>
+      </div>
+    </footer>
+
     <script>
       const surface = document.getElementById('header-surface')!;
       const onScroll = () => {
