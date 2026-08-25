@@ -61,6 +61,8 @@ const TYPE_LABEL_KEY: Record<StepType, Parameters<typeof t>[1]> = {
     </div>
   </div>
 
+  <div id="pipeline-diagram" class="hidden flex-col gap-2"></div>
+
   <div id="steps" class="flex flex-col gap-3">
     {
       initialSteps.map((s, i) => (
@@ -87,7 +89,7 @@ const TYPE_LABEL_KEY: Record<StepType, Parameters<typeof t>[1]> = {
 </div>
 
 <script>
-  import { analyzeScript, highlightScript, type Step, type StepType } from '../lib/analyze';
+  import { analyzeScript, highlightScript, extractPipelineChains, type Step, type StepType } from '../lib/analyze';
   import { t } from '../i18n/ui';
   import type { Locale } from '../i18n/languages';
 
@@ -97,6 +99,7 @@ const TYPE_LABEL_KEY: Record<StepType, Parameters<typeof t>[1]> = {
   const input = document.getElementById('cmd-input') as HTMLTextAreaElement;
   const highlightLayer = document.getElementById('highlight-layer')!;
   const btn = document.getElementById('explain-btn') as HTMLButtonElement;
+  const pipelineDiagram = document.getElementById('pipeline-diagram')!;
   const stepsEl = document.getElementById('steps')!;
 
   const TYPE_LABEL_KEY: Record<StepType, Parameters<typeof t>[1]> = {
@@ -139,9 +142,43 @@ const TYPE_LABEL_KEY: Record<StepType, Parameters<typeof t>[1]> = {
       .join('');
   }
 
+  function renderPipelineDiagram(command: string) {
+    const chains = extractPipelineChains(command);
+    if (!chains.length) {
+      pipelineDiagram.classList.add('hidden');
+      pipelineDiagram.classList.remove('flex');
+      pipelineDiagram.innerHTML = '';
+      return;
+    }
+
+    pipelineDiagram.innerHTML = `
+      <p class="eyebrow">${escapeHtml(t(locale, 'pipeline.heading'))}</p>
+      ${chains
+        .map(
+          (chain) => `
+            <div class="flex flex-wrap items-center gap-2">
+              ${chain
+                .map(
+                  (name, i) => `
+                    ${i > 0 ? '<span class="text-faint">&rarr;</span>' : ''}
+                    <span class="chip" style="background:${fillVar('command')};border-color:color-mix(in oklab, ${colorVar('command')} 32%, transparent);color:${colorVar('command')}">${escapeHtml(name)}</span>
+                  `,
+                )
+                .join('')}
+            </div>
+          `,
+        )
+        .join('')}
+    `;
+    pipelineDiagram.classList.remove('hidden');
+    pipelineDiagram.classList.add('flex');
+  }
+
   function render(command: string) {
     const steps: Step[] = analyzeScript(command, locale);
     if (!steps.length) return;
+
+    renderPipelineDiagram(command);
 
     stepsEl.innerHTML = '';
     steps.forEach((s, i) => {

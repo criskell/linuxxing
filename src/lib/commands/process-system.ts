@@ -21,6 +21,10 @@ export const processSystem: CommandKB = {
       en: 'The process ID (PID) to send the signal to.',
       pt: 'O ID de processo (PID) para o qual enviar o sinal.',
     },
+    commonMistake: {
+      en: "Reaching for kill -9 immediately is a common habit, but it gives the process no chance to close open files, flush buffered writes, or clean up a lock, which can leave data corrupted or a lock file stuck. Try the plain SIGTERM first (just 'kill PID', no flag needed) and only escalate to -9 if the process genuinely doesn't respond.",
+      pt: 'Recorrer ao kill -9 direto é um hábito comum, mas ele não dá ao processo nenhuma chance de fechar arquivos abertos, gravar dados em buffer ou limpar um lock, o que pode deixar dados corrompidos ou um arquivo de lock travado. Tente primeiro o SIGTERM simples (só "kill PID", sem flag) e só escale para -9 se o processo realmente não responder.',
+    },
   },
 
   ps: {
@@ -43,6 +47,10 @@ export const processSystem: CommandKB = {
         pt: 'Combinação clássica que mostra todos os processos de todos os usuários, com detalhes, mesmo os sem terminal associado.',
       },
     },
+    commonMistake: {
+      en: "Running plain 'ps' and expecting to see every process on the system is a frequent first surprise, without aux or -ef it only shows processes attached to the CURRENT terminal, a short list on most systems. The 'aux' flags are also a BSD-style combination written without a leading dash on purpose, mixing it with dash-prefixed flags like '-aux' technically means something different (and can print a warning) on some ps implementations.",
+      pt: 'Rodar o "ps" puro esperando ver todo processo do sistema é uma surpresa comum, sem aux ou -ef ele só mostra processos ligados ao terminal ATUAL, uma lista curta na maioria dos sistemas. As flags "aux" também são uma combinação estilo BSD escrita sem hífen de propósito, misturá-las com flags com hífen tipo "-aux" tecnicamente significa outra coisa (e pode imprimir um aviso) em algumas implementações do ps.',
+    },
   },
 
   df: {
@@ -56,6 +64,10 @@ export const processSystem: CommandKB = {
         en: 'Shows sizes in human-readable form (KB, MB, GB) instead of blocks.',
         pt: 'Mostra os tamanhos em formato legível (KB, MB, GB) em vez de blocos.',
       },
+    },
+    commonMistake: {
+      en: "df reports space per FILESYSTEM, not per folder, so 'df /home/user/project' shows how full the whole disk /home lives on is, not how much that project folder itself takes up, a mix-up with du that trips up a lot of people looking for what's eating their space. A disk can also show 100% used while df -i reports 0% inode usage, or vice versa, running out of inodes (common with millions of tiny files) looks completely different from running out of raw space.",
+      pt: 'O df relata espaço por SISTEMA DE ARQUIVOS, não por pasta, então "df /home/usuario/projeto" mostra quão cheio está o disco inteiro onde /home vive, não quanto aquela pasta do projeto ocupa, uma confusão com o du que pega bastante gente procurando o que está consumindo o espaço. Um disco também pode mostrar 100% usado enquanto df -i relata 0% de uso de inodes, ou vice-versa, ficar sem inodes (comum com milhões de arquivos pequenos) parece completamente diferente de ficar sem espaço bruto.',
     },
   },
 
@@ -74,6 +86,10 @@ export const processSystem: CommandKB = {
         en: 'Shows only the total for each folder, without detailing subfolders.',
         pt: 'Mostra apenas o total de cada pasta, sem detalhar subpastas.',
       },
+    },
+    commonMistake: {
+      en: "Running bare 'du' on a large directory without -s floods the terminal with one line per subfolder, recursively, when what's usually wanted is just the totals, that's what -sh */ is for. du and a file manager's 'size' column can also disagree because du reports actual disk blocks used (which can be larger than the file's logical size due to block rounding, or smaller for a sparse file), not the raw byte count.",
+      pt: 'Rodar o "du" puro em um diretório grande sem -s inunda o terminal com uma linha por subpasta, recursivamente, quando geralmente o que se quer são só os totais, é para isso que serve -sh */. O du e a coluna de "tamanho" de um gerenciador de arquivos também podem discordar porque o du relata blocos de disco realmente usados (que podem ser maiores que o tamanho lógico do arquivo por arredondamento de bloco, ou menores para um arquivo esparso), não a contagem bruta de bytes.',
     },
   },
 
@@ -531,6 +547,10 @@ export const processSystem: CommandKB = {
         en: "Controls how much progress information is shown; 'status=progress' shows a live transfer rate.",
         pt: 'Controla quanta informação de progresso é mostrada; "status=progress" mostra uma taxa de transferência ao vivo.',
       },
+    },
+    commonMistake: {
+      en: "Swapping if= and of= is the single most infamous dd mistake, since it reverses the direction of the copy and can overwrite the source with the (usually empty or wrong) destination, destroying the original data with no warning or confirmation. dd also identifies devices by name (like /dev/sda), which can change between reboots or when a drive is plugged in differently, always double-check with 'lsblk' or 'fdisk -l' right before running it, not from memory.",
+      pt: 'Trocar if= com of= é o erro mais infame do dd, já que inverte a direção da cópia e pode sobrescrever a origem com o destino (geralmente vazio ou errado), destruindo os dados originais sem aviso ou confirmação nenhuma. O dd também identifica dispositivos pelo nome (como /dev/sda), que pode mudar entre reinicializações ou quando um drive é plugado de forma diferente, sempre confira com "lsblk" ou "fdisk -l" bem antes de rodar, não de memória.',
     },
   },
 

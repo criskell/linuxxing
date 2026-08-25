@@ -24,6 +24,8 @@ export const ui = {
     'commands.backToExplainer': 'Explain any command',
     'commands.builderHeading': 'Build your own command',
     'commands.builderHint': 'Tap flags to add them, watch the explanation below update as you go.',
+    'pipeline.heading': 'Data flow',
+    'commands.commonMistakeHeading': 'Common mistake',
     'study.title': 'Study for the LPIC-1',
     'study.tagline':
       'A reference card for every LPIC-1 exam objective, with spaced repetition to track what you still need to review.',
@@ -146,6 +148,8 @@ export const ui = {
     'commands.backToExplainer': 'Explicar qualquer comando',
     'commands.builderHeading': 'Monte seu próprio comando',
     'commands.builderHint': 'Toque nas flags para adicioná-las, veja a explicação abaixo se atualizar ao vivo.',
+    'pipeline.heading': 'Fluxo de dados',
+    'commands.commonMistakeHeading': 'Erro comum',
     'study.title': 'Estude para o LPIC-1',
     'study.tagline':
       'Um cartão de referência para cada objetivo do exame LPIC-1, com repetição espaçada para acompanhar o que ainda falta revisar.',

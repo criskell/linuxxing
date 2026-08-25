@@ -35,6 +35,17 @@ const relatedCommands = category ? category.commands.filter((name) => name !== c
   </div>
 
   {
+    commandDef.commonMistake && (
+      <div class="surface flex flex-col gap-2 p-5" style="border-left: 3px solid var(--color-negative)">
+        <p class="eyebrow" style="color: var(--color-negative)">
+          {t(locale, 'commands.commonMistakeHeading')}
+        </p>
+        <p class="text-sm leading-relaxed text-default">{commandDef.commonMistake[locale]}</p>
+      </div>
+    )
+  }
+
+  {
     flagEntries.length > 0 && (
       <CommandFlagBuilder locale={locale} commandName={commandName} flags={Object.keys(commandDef.flags)} />
     )

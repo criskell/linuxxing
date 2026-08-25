@@ -34,6 +34,10 @@ export const networking: CommandKB = {
       en: 'The remote host to connect to, optionally as user@host.',
       pt: 'O host remoto ao qual conectar, opcionalmente como usuario@host.',
     },
+    commonMistake: {
+      en: "A 'permission denied' or 'connection refused' error is often blamed on the wrong thing: permission denied usually means the key or password was rejected (check which key is being offered with -v), while connection refused means nothing is even listening on that port, a firewall or a stopped service, not an authentication problem at all. The -p flag also only sets the PORT, mixing it up with -i (the key file) is an easy typo that produces a confusing, unrelated error.",
+      pt: 'Um erro de "permission denied" ou "connection refused" costuma ser atribuído à causa errada: permission denied geralmente significa que a chave ou senha foi rejeitada (confira qual chave está sendo oferecida com -v), enquanto connection refused significa que nada sequer está escutando naquela porta, um firewall ou um serviço parado, não um problema de autenticação. A flag -p também só define a PORTA, confundi-la com -i (o arquivo de chave) é um erro de digitação fácil que produz um erro confuso e sem relação.',
+    },
   },
 
   curl: {
@@ -89,6 +93,10 @@ export const networking: CommandKB = {
     argHint: {
       en: 'The URL to request.',
       pt: 'A URL a requisitar.',
+    },
+    commonMistake: {
+      en: "By default curl silently follows nothing, a 301/302 redirect response is printed as-is (often an empty or HTML 'moved' body) instead of the final page, unless -L is added to actually follow it, a very common source of 'curl returns nothing useful' confusion. It's also easy to assume curl fails loudly on a 404 or 500, it doesn't by default, it prints the error page as if it were a normal response and exits successfully, add -f if the script needs a real failure on HTTP errors.",
+      pt: 'Por padrão o curl não segue nada, uma resposta de redirecionamento 301/302 é impressa como está (geralmente um corpo vazio ou HTML de "moved") em vez da página final, a menos que -L seja adicionado para de fato seguir, uma fonte muito comum de confusão de "o curl não retorna nada útil". Também é fácil supor que o curl falha visivelmente em um 404 ou 500, ele não falha por padrão, imprime a página de erro como se fosse uma resposta normal e sai com sucesso, adicione -f se o script precisar de uma falha de verdade em erros HTTP.',
     },
   },
 

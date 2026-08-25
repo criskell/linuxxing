@@ -40,6 +40,10 @@ export const archivesHashing: CommandKB = {
       en: 'A specific file inside the archive to add or extract, when not adding/extracting everything.',
       pt: 'Um arquivo específico dentro do pacote para adicionar ou extrair, quando não se está adicionando/extraindo tudo.',
     },
+    commonMistake: {
+      en: "Extracting an archive without first checking what's inside it (tar -tvf first) can scatter dozens of files across the current directory if the archive wasn't created with everything nested inside one top-level folder, always list before extracting into a shared or important location. Forgetting -z on a .tar.gz (or -j on a .tar.bz2) also produces a confusing 'this does not look like a tar archive' error, since plain tar cannot read compressed data on its own.",
+      pt: 'Extrair um arquivo sem antes checar o que tem dentro (tar -tvf primeiro) pode espalhar dezenas de arquivos pelo diretório atual se o pacote não tiver sido criado com tudo dentro de uma única pasta de topo, sempre liste antes de extrair em um local compartilhado ou importante. Esquecer o -z em um .tar.gz (ou o -j em um .tar.bz2) também produz um erro confuso de "isso não parece um arquivo tar", já que o tar puro não consegue ler dados compactados sozinho.',
+    },
   },
 
   unzip: {

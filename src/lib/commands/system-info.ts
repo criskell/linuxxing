@@ -101,6 +101,10 @@ export const systemInfo: CommandKB = {
     valueFlags: {
       '--type': 'generic',
     },
+    commonMistake: {
+      en: "'enable' and 'start' are frequently confused, enable only makes the service start automatically on the NEXT boot, it doesn't touch the service right now, and start only affects right now without changing boot behavior. Running just one of them is a common cause of 'it worked when I tested it but didn't come back after a reboot' (or the opposite), '--now' combined with enable is the shortcut for doing both at once.",
+      pt: '"enable" e "start" são frequentemente confundidos, o enable só faz o serviço iniciar sozinho no PRÓXIMO boot, ele não mexe no serviço agora, e o start só afeta o agora sem mudar o comportamento no boot. Rodar só um dos dois é uma causa comum de "funcionou quando testei mas não voltou depois de reiniciar" (ou o oposto), "--now" combinado com enable é o atalho para fazer os dois de uma vez.',
+    },
   },
 
   man: {
@@ -188,6 +192,10 @@ export const systemInfo: CommandKB = {
         en: "Removes the current user's entire crontab.",
         pt: 'Remove todo o crontab do usuário atual.',
       },
+    },
+    commonMistake: {
+      en: "A cron job that runs perfectly by hand and silently fails on schedule is almost always a PATH problem, cron runs with a minimal environment, not the shell's full profile, so a command that relies on a tool found only via a customized PATH (or an alias) simply isn't found, use the full path to the binary inside crontab entries. Redirecting the job's own output ('>> /path/to/log 2>&1' at the end of the line) is the standard way to actually find out what went wrong, since cron emails output by default only if a local mail system is even configured.",
+      pt: 'Uma tarefa de cron que roda perfeitamente na mão e falha silenciosamente no horário quase sempre é um problema de PATH, o cron roda com um ambiente mínimo, não o profile completo do shell, então um comando que depende de uma ferramenta só encontrada via um PATH customizado (ou um alias) simplesmente não é encontrado, use o caminho completo do binário nas entradas do crontab. Redirecionar a própria saída da tarefa (">> /caminho/log 2>&1" no fim da linha) é a forma padrão de de fato descobrir o que deu errado, já que o cron só manda a saída por e-mail por padrão se um sistema de e-mail local sequer estiver configurado.',
     },
   },
 

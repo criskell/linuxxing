@@ -21,6 +21,10 @@ export const permissionsUsers: CommandKB = {
       en: 'The file or folder whose permissions are being changed.',
       pt: 'O arquivo ou pasta cujas permissões estão sendo alteradas.',
     },
+    commonMistake: {
+      en: "Giving 777 to 'make it work' is one of the most common bad habits: it grants read, write, and execute to literally everyone, including any other user or compromised process on the machine, when the actual problem is almost always a specific, narrower permission or ownership issue. It's also worth remembering that execute on a directory means something different from execute on a file, it controls whether you can enter/traverse that directory at all, not run it.",
+      pt: 'Dar 777 para "fazer funcionar" é um dos hábitos ruins mais comuns: isso concede leitura, escrita e execução para literalmente qualquer um, incluindo qualquer outro usuário ou processo comprometido na máquina, quando o problema real quase sempre é uma permissão ou um dono específico e mais restrito. Também vale lembrar que execução em um diretório significa algo diferente de execução em um arquivo, ela controla se você consegue entrar/atravessar aquele diretório, não rodá-lo.',
+    },
   },
 
   chown: {
@@ -38,6 +42,10 @@ export const permissionsUsers: CommandKB = {
     argHint: {
       en: 'The new owner (optionally owner:group), or the file/folder being changed. The owner spec comes first.',
       pt: 'O novo dono (opcionalmente dono:grupo), ou o arquivo/pasta sendo alterado. O dono vem primeiro.',
+    },
+    commonMistake: {
+      en: "Without -R, chown only changes the folder itself, not the files inside it, a frequent surprise right after deploying new files as root and switching a service back to run as an unprivileged user. It's also easy to forget the colon in 'owner:group', without it chown only changes the owner and leaves the group untouched, which may not be what was intended.",
+      pt: 'Sem -R, o chown só muda a pasta em si, não os arquivos dentro dela, uma surpresa comum logo depois de fazer deploy de arquivos novos como root e trocar um serviço de volta para rodar como um usuário sem privilégios. Também é fácil esquecer os dois-pontos em "dono:grupo", sem eles o chown só muda o dono e deixa o grupo intacto, o que pode não ser a intenção.',
     },
   },
 
@@ -59,6 +67,10 @@ export const permissionsUsers: CommandKB = {
     },
     valueFlags: {
       '-u': 'generic',
+    },
+    commonMistake: {
+      en: "sudo only elevates the single command it's given, so 'sudo cd /root' fails to do anything useful, cd changes the shell's own directory and a new sudo-spawned process exits immediately after. It's also a common mix-up that 'sudo echo text > /root/file' still fails with permission denied, only echo runs as root, the '>' redirect is performed by the ORIGINAL unprivileged shell, not by sudo, use 'sudo tee' or a subshell instead.",
+      pt: 'O sudo só eleva o único comando que recebe, então "sudo cd /root" não faz nada útil, o cd muda o diretório do próprio shell e um novo processo criado pelo sudo termina logo em seguida. Outra confusão comum é que "sudo echo texto > /root/arquivo" ainda falha com permissão negada, só o echo roda como root, o redirecionamento ">" é feito pelo shell ORIGINAL sem privilégios, não pelo sudo, use "sudo tee" ou um subshell em vez disso.',
     },
   },
 

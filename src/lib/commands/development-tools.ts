@@ -119,6 +119,10 @@ export const developmentTools: CommandKB = {
       '--message': 'generic',
       '-b': 'generic',
     },
+    commonMistake: {
+      en: "'git add .' stages everything in the current directory, including files nobody meant to commit (secrets, build output, editor swap files), unless .gitignore is already correct, always run 'git status' first to see exactly what is about to be staged. --force (or -f) on a push is also genuinely destructive on a shared branch, it can silently overwrite a teammate's commits with no way to recover them locally, '--force-with-lease' is the safer default for the common case of rewriting your own recent history.",
+      pt: '"git add ." adiciona tudo no diretório atual, incluindo arquivos que ninguém queria commitar (segredos, saída de build, arquivos temporários de editor), a menos que o .gitignore já esteja certo, sempre rode "git status" antes para ver exatamente o que está prestes a ser adicionado. O --force (ou -f) em um push também é genuinamente destrutivo em uma branch compartilhada, pode sobrescrever silenciosamente os commits de um colega sem forma de recuperá-los localmente, "--force-with-lease" é o padrão mais seguro para o caso comum de reescrever seu próprio histórico recente.',
+    },
   },
 
   jq: {
@@ -314,6 +318,10 @@ export const developmentTools: CommandKB = {
       '-n': 'generic',
       '-f': 'generic',
       '-o': 'generic',
+    },
+    commonMistake: {
+      en: "Running kubectl commands with no -n and expecting them to hit the right environment is a common mistake, without it every command targets the 'default' namespace (or whatever context was last switched to), not necessarily the one intended, especially dangerous for 'kubectl delete' on a production cluster. It's worth always checking 'kubectl config current-context' before anything destructive, since a single kubeconfig often has access to multiple clusters at once.",
+      pt: 'Rodar comandos kubectl sem -n e esperar que atinjam o ambiente certo é um erro comum, sem ele todo comando é direcionado ao namespace "default" (ou o que quer que tenha sido usado por último), não necessariamente o pretendido, especialmente perigoso para "kubectl delete" em um cluster de produção. Vale sempre checar "kubectl config current-context" antes de qualquer coisa destrutiva, já que um único kubeconfig costuma ter acesso a vários clusters ao mesmo tempo.',
     },
   },
 

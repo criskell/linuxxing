@@ -9,6 +9,7 @@ export interface CommandDef {
   flags: Record<string, LocalizedText>;
   valueFlags?: Record<string, ValueKind>;
   argHint?: LocalizedText;
+  commonMistake?: LocalizedText;
 }
 
 export type CommandKB = Record<string, CommandDef>;

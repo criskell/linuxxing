@@ -75,6 +75,10 @@ export const fileOperations: CommandKB = {
       en: 'The file or folder to remove.',
       pt: 'O arquivo ou pasta a remover.',
     },
+    commonMistake: {
+      en: "It's easy to assume rm asks for confirmation the way a file manager's trash bin does, it doesn't: by default it deletes immediately and permanently. Always double-check the path (and consider adding -i for anything destructive) before running rm -rf, especially when a variable is part of the path, since an empty or wrong variable can turn 'rm -rf $DIR/' into 'rm -rf /'.",
+      pt: 'É fácil supor que o rm pede confirmação como a lixeira de um gerenciador de arquivos, não pede: por padrão ele apaga na hora e para sempre. Sempre confira o caminho antes de rodar rm -rf (e considere adicionar -i para qualquer coisa destrutiva), especialmente quando uma variável faz parte do caminho, já que uma variável vazia ou errada pode transformar "rm -rf $DIR/" em "rm -rf /".',
+    },
   },
 
   cp: {
@@ -105,6 +109,10 @@ export const fileOperations: CommandKB = {
       en: 'The source path to copy, or the destination (the last argument is normally the destination).',
       pt: 'O caminho de origem a copiar, ou o destino (o último argumento normalmente é o destino).',
     },
+    commonMistake: {
+      en: "Copying a folder without -r fails with an error ('omitting directory'), a graphical file manager never makes that distinction, so it trips up people used to just dragging folders around. The other frequent surprise is a trailing slash on the destination: 'cp -r src dest' copies src itself into dest (creating dest/src), while 'cp -r src/. dest' copies src's contents into dest directly, a subtle difference that changes the whole result.",
+      pt: 'Copiar uma pasta sem -r falha com erro ("omitting directory"), um gerenciador de arquivos gráfico nunca faz essa distinção, então isso pega quem está acostumado a simplesmente arrastar pastas. A outra surpresa comum é a barra no final do destino: "cp -r origem destino" copia a própria origem para dentro de destino (criando destino/origem), enquanto "cp -r origem/. destino" copia o conteúdo de origem direto para destino, uma diferença sutil que muda o resultado inteiro.',
+    },
   },
 
   mv: {
@@ -126,6 +134,10 @@ export const fileOperations: CommandKB = {
     argHint: {
       en: 'The source path to move or rename, or the destination (the last argument is normally the destination).',
       pt: 'O caminho de origem a mover ou renomear, ou o destino (o último argumento normalmente é o destino).',
+    },
+    commonMistake: {
+      en: "If the destination is an existing directory, mv moves the source INTO it rather than renaming to that name, a frequent surprise when the intent was a rename. There is also no confirmation by default: 'mv a b' silently overwrites b if it already exists and you have permission, unlike some file managers that warn first, add -i if that matters.",
+      pt: 'Se o destino for um diretório existente, o mv move a origem PARA DENTRO dele em vez de renomear para aquele nome, uma surpresa comum quando a intenção era renomear. Também não há confirmação por padrão: "mv a b" sobrescreve b silenciosamente se ele já existir e você tiver permissão, diferente de alguns gerenciadores de arquivos que avisam antes, adicione -i se isso importar.',
     },
   },
 
@@ -169,6 +181,10 @@ export const fileOperations: CommandKB = {
       en: 'The search pattern, or a file to search in. The pattern normally comes first.',
       pt: 'O padrão de busca, ou um arquivo onde procurar. O padrão normalmente vem primeiro.',
     },
+    commonMistake: {
+      en: "By default grep's patterns are basic regular expressions, so characters like +, ?, and | do NOT mean what they mean in most other regex flavors unless escaped with a backslash, or -E is added for extended regex. Without -r, grep also only searches the files given, not subfolders, a common trip-up when searching a whole project without that flag (or without piping through something like find first).",
+      pt: 'Por padrão os padrões do grep são expressões regulares básicas, então caracteres como +, ? e | NÃO significam o que significam na maioria dos outros tipos de regex a menos que sejam escapados com barra invertida, ou que -E seja adicionado para regex estendida. Sem -r, o grep também só procura nos arquivos dados, não em subpastas, um erro comum ao tentar buscar em um projeto inteiro sem essa flag (ou sem encadear com algo como o find antes).',
+    },
   },
 
   find: {
@@ -208,6 +224,10 @@ export const fileOperations: CommandKB = {
     argHint: {
       en: 'The starting directory to search from, usually the first argument.',
       pt: 'O diretório inicial de onde procurar, geralmente o primeiro argumento.',
+    },
+    commonMistake: {
+      en: "The starting path and filters must come before -exec, and -name patterns need quotes ('*.tmp', not *.tmp) or the shell expands the wildcard itself before find ever sees it, matching only files that already exist in the current directory instead of letting find search recursively. Forgetting the trailing '{} \\;' (or '+') on -exec is also a classic mistake, since that placeholder is what tells find where to substitute each matched file.",
+      pt: "O caminho inicial e os filtros precisam vir antes do -exec, e padrões em -name precisam de aspas ('*.tmp', não *.tmp) ou o próprio shell expande o curinga antes do find sequer vê-lo, combinando só com arquivos que já existem no diretório atual em vez de deixar o find buscar recursivamente. Esquecer o '{} \\;' (ou '+') no final do -exec também é um erro clássico, já que esse marcador é o que diz ao find onde substituir cada arquivo encontrado.",
     },
   },
 
@@ -554,6 +574,10 @@ export const fileOperations: CommandKB = {
     valueFlags: {
       '-e': 'generic',
     },
+    commonMistake: {
+      en: "On macOS, sed -i requires an explicit (even if empty) backup suffix argument, 'sed -i \"\" ...', while GNU sed on Linux does not, a script written on one often breaks silently or errors on the other. It's also easy to forget that without -i, sed only prints the transformed text to standard output, the original file is untouched unless that output is redirected or -i is used.",
+      pt: 'No macOS, o sed -i exige um argumento de sufixo de backup explícito (mesmo que vazio), "sed -i \'\' ...", enquanto o sed GNU no Linux não, um script escrito para um costuma quebrar silenciosamente ou dar erro no outro. Também é fácil esquecer que sem -i, o sed só imprime o texto transformado na saída padrão, o arquivo original fica intacto a menos que essa saída seja redirecionada ou o -i seja usado.',
+    },
   },
 
   awk: {
@@ -570,6 +594,10 @@ export const fileOperations: CommandKB = {
     },
     valueFlags: {
       '-F': 'generic',
+    },
+    commonMistake: {
+      en: "Inside single quotes (the normal way to pass an awk script), $1 means awk's first field, but if the script is accidentally in double quotes, the shell tries to expand $1 as its OWN variable first, usually substituting nothing and silently breaking the script. Field numbers also shift if the separator (-F) doesn't match the actual delimiter in the data, a mismatched -F is one of the most common reasons an awk one-liner prints blank or wrong columns.",
+      pt: 'Dentro de aspas simples (a forma normal de passar um script awk), $1 significa o primeiro campo do awk, mas se o script acidentalmente estiver entre aspas duplas, o próprio shell tenta expandir $1 como sua PRÓPRIA variável primeiro, geralmente substituindo por nada e quebrando o script silenciosamente. Os números de campo também mudam se o separador (-F) não bater com o delimitador real dos dados, um -F incompatível é um dos motivos mais comuns de um one-liner com awk imprimir colunas em branco ou erradas.',
     },
   },
 
@@ -717,6 +745,10 @@ export const fileOperations: CommandKB = {
     argHint: {
       en: "The set of characters to translate from, or (with -d) to delete, or (with -dc together) to keep, deleting everything else. Ranges like A-Z and classes like 0-9 can be combined freely, as in 'A-Za-z0-9'.",
       pt: 'O conjunto de caracteres a traduzir, ou (com -d) a apagar, ou (com -dc juntos) a manter, apagando todo o resto. Faixas como A-Z e classes como 0-9 podem ser combinadas livremente, como em "A-Za-z0-9".',
+    },
+    commonMistake: {
+      en: 'tr only operates on single characters, never whole strings or words, so \'tr "hello" "hi"\' does not replace the word hello with hi, it maps h→h, e→i, and drops the rest of the second set\'s shortfall in a way that rarely does what\'s expected. For whole-word or whole-string replacement, sed is the right tool instead.',
+      pt: 'O tr só opera em caracteres únicos, nunca em strings ou palavras inteiras, então "tr \\"hello\\" \\"hi\\"" não troca a palavra hello por hi, ele mapeia h→h, e→i, e o resto acaba de um jeito que raramente é o esperado. Para trocar palavras ou strings inteiras, o sed é a ferramenta certa.',
     },
   },
 

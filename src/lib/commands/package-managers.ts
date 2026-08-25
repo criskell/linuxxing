@@ -104,6 +104,10 @@ export const packageManagers: CommandKB = {
       '-v': 'generic',
       '-e': 'generic',
     },
+    commonMistake: {
+      en: "'docker run' without --rm leaves a stopped container behind every single time, which quietly accumulates over weeks of testing and eventually fills up disk space, --rm is worth defaulting to for anything short-lived. The -p flag's host:container order is also easy to reverse, 'docker run -p 8080:80' maps host port 8080 to the container's 80, getting it backwards means the app is unreachable at the port actually expected.",
+      pt: '"docker run" sem --rm deixa um container parado para trás toda vez, o que se acumula silenciosamente ao longo de semanas de teste e acaba enchendo o espaço em disco, --rm vale a pena usar por padrão para qualquer coisa de curta duração. A ordem host:container da flag -p também é fácil de inverter, "docker run -p 8080:80" mapeia a porta 8080 do host para a 80 do container, inverter isso faz a aplicação ficar inacessível na porta realmente esperada.',
+    },
   },
 
   apt: {
@@ -189,6 +193,10 @@ export const packageManagers: CommandKB = {
         en: '(shorthand for --save-dev) Adds the package as a development dependency.',
         pt: 'Adiciona o pacote como dependência de desenvolvimento (atalho para --save-dev).',
       },
+    },
+    commonMistake: {
+      en: "Installing a package without -D (or --save-dev) puts it in regular 'dependencies' even when it's only a build or test tool, bloating what actually ships to production and gets installed on every deploy. It's also easy to forget that 'npm install' with no arguments reads package.json and reinstalls everything listed there, running it inside the wrong folder installs (or reinstalls) an entirely different project's dependencies.",
+      pt: 'Instalar um pacote sem -D (ou --save-dev) coloca ele nas "dependencies" normais mesmo quando é só uma ferramenta de build ou teste, inchando o que de fato vai para produção e é instalado em todo deploy. Também é fácil esquecer que "npm install" sem argumentos lê o package.json e reinstala tudo que está listado ali, rodar isso na pasta errada instala (ou reinstala) as dependências de um projeto completamente diferente.',
     },
   },
 

@@ -500,3 +500,42 @@ export function highlightScript(input: string): HighlightSpan[] {
 
   return spans;
 }
+
+function leadingCommandName(text: string): string | null {
+  const tokens = tokenize(text);
+  if (!tokens.length) return null;
+  return tokens[0] === 'sudo' ? (tokens[1] ?? tokens[0]) : tokens[0];
+}
+
+export function extractPipelineChains(input: string): string[][] {
+  const chains: string[][] = [];
+
+  input.split('\n').forEach((rawLine) => {
+    if (!rawLine.trim()) return;
+
+    const commentStart = findCommentStart(rawLine);
+    const code = commentStart === -1 ? rawLine : rawLine.slice(0, commentStart).trimEnd();
+    const trimmedCode = code.trim();
+    if (!trimmedCode) return;
+
+    const segments = splitTopLevel(trimmedCode);
+    let currentChain: string[] = [];
+
+    segments.forEach((segment, index) => {
+      const name = leadingCommandName(segment.text);
+      if (!name) return;
+
+      if (index === 0 || segment.operator === '|') {
+        currentChain.push(name);
+        return;
+      }
+
+      if (currentChain.length >= 2) chains.push(currentChain);
+      currentChain = [name];
+    });
+
+    if (currentChain.length >= 2) chains.push(currentChain);
+  });
+
+  return chains;
+}
