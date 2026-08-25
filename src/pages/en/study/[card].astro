@@ -1,0 +1,42 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import StudyCardPage from '../../../components/StudyCardPage.astro';
+import { STUDY_CARDS, STUDY_TOPICS } from '../../../lib/study/registry';
+import { truncateForMeta } from '../../../lib/meta-description';
+
+export function getStaticPaths() {
+  return STUDY_CARDS.map((studyCard) => ({
+    params: { card: studyCard.id },
+    props: { studyCard, topic: STUDY_TOPICS.find((t) => t.id === studyCard.topic)! },
+  }));
+}
+
+const locale = 'en' as const;
+const { studyCard, topic } = Astro.props;
+
+const pageTitle = `${studyCard.front[locale]} | linuxxing`;
+const pageDescription = truncateForMeta(studyCard.back[locale]);
+---
+
+<Layout locale={locale} title={pageTitle} description={pageDescription}>
+  <StudyCardPage locale={locale} card={studyCard} topic={topic} />
+
+  <script
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: studyCard.front[locale],
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: studyCard.back[locale],
+          },
+        },
+      ],
+    })}
+  />
+</Layout>

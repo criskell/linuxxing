@@ -47,7 +47,12 @@ const cardsForTopic = (topicId: string) => STUDY_CARDS.filter((card) => card.top
         <div class="flex flex-col gap-4">
           {cardsForTopic(topic.id).map((card) => (
             <article class="surface flex flex-col gap-3 p-5" data-card-block={card.id}>
-              <p class="font-semibold text-strong">{card.front[locale]}</p>
+              <a
+                href={`${import.meta.env.BASE_URL}/${locale}/study/${card.id}/`}
+                class="interactive w-fit font-semibold text-strong hover:text-muted"
+              >
+                {card.front[locale]}
+              </a>
               <p class="text-sm leading-relaxed text-default">{card.back[locale]}</p>
 
               <div class="mt-1 flex flex-wrap items-center justify-between gap-3 border-t border-hairline pt-3">

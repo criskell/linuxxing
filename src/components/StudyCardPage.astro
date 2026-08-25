@@ -1,0 +1,101 @@
+---
+import type { Locale } from '../i18n/languages';
+import { t } from '../i18n/ui';
+import type { StudyCard, StudyTopic } from '../lib/study/types';
+import { STUDY_CARDS } from '../lib/study/registry';
+
+interface Props {
+  locale: Locale;
+  card: StudyCard;
+  topic: StudyTopic;
+}
+
+const { locale, card, topic } = Astro.props;
+
+const relatedCards = STUDY_CARDS.filter((other) => other.topic === card.topic && other.id !== card.id).slice(0, 6);
+---
+
+<div class="flex flex-col gap-8" data-card-id={card.id}>
+  <div class="flex flex-col gap-3">
+    <a href={`${import.meta.env.BASE_URL}/${locale}/study/#${topic.id}`} class="eyebrow interactive w-fit rounded-md">
+      LPIC-1 {topic.objectiveCode} · {topic.title[locale]}
+    </a>
+    <h1 class="display text-2xl md:text-3xl">{card.front[locale]}</h1>
+    <p class="text-base leading-relaxed text-default">{card.back[locale]}</p>
+  </div>
+
+  <div class="surface flex flex-wrap items-center justify-between gap-3 p-5">
+    <span class="chip chip-caution hidden" data-due-badge>{t(locale, 'study.dueBadge')}</span>
+    <div class="flex flex-wrap gap-2">
+      <button type="button" data-grade="again" class="chip chip-negative interactive px-3 py-1.5">
+        {t(locale, 'study.grade.again')}
+      </button>
+      <button type="button" data-grade="hard" class="chip chip-caution interactive px-3 py-1.5">
+        {t(locale, 'study.grade.hard')}
+      </button>
+      <button type="button" data-grade="good" class="chip chip-info interactive px-3 py-1.5">
+        {t(locale, 'study.grade.good')}
+      </button>
+      <button type="button" data-grade="easy" class="chip chip-positive interactive px-3 py-1.5">
+        {t(locale, 'study.grade.easy')}
+      </button>
+    </div>
+    <p class="hidden w-full text-xs text-faint" data-saved-confirmation>
+      {t(locale, 'study.savedConfirmation')}
+    </p>
+  </div>
+
+  {
+    relatedCards.length > 0 && (
+      <div class="flex flex-col gap-3 border-t border-hairline pt-8">
+        <h2 class="eyebrow">{t(locale, 'study.relatedHeading')}</h2>
+        <div class="flex flex-wrap gap-2">
+          {relatedCards.map((other) => (
+            <a
+              href={`${import.meta.env.BASE_URL}/${locale}/study/${other.id}/`}
+              class="example-chip interactive rounded-md border border-hairline bg-surface-raised px-3 py-1.5 text-xs text-muted hover:text-default"
+            >
+              {other.front[locale]}
+            </a>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  <div>
+    <a href={`${import.meta.env.BASE_URL}/${locale}/study/`} class="eyebrow interactive w-fit rounded-md">
+      {t(locale, 'study.backToOverview')}
+    </a>
+  </div>
+</div>
+
+<script>
+  import { loadProgress, saveProgress, type StudyProgress } from '../lib/study-progress';
+  import { scheduleReview, createInitialReviewState, isDue, type ReviewGrade } from '../lib/spaced-repetition';
+
+  const root = document.querySelector<HTMLElement>('[data-card-id]')!;
+  const cardId = root.dataset.cardId!;
+
+  let progress: StudyProgress = loadProgress();
+
+  const dueBadge = root.querySelector<HTMLElement>('[data-due-badge]')!;
+  const savedConfirmation = root.querySelector<HTMLElement>('[data-saved-confirmation]')!;
+
+  const updateBadge = () => {
+    dueBadge.classList.toggle('hidden', !isDue(progress[cardId]));
+  };
+
+  root.querySelectorAll<HTMLButtonElement>('[data-grade]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const grade = button.dataset.grade as ReviewGrade;
+      const currentState = progress[cardId] ?? createInitialReviewState();
+      progress = { ...progress, [cardId]: scheduleReview(currentState, grade) };
+      saveProgress(progress);
+      updateBadge();
+      savedConfirmation.classList.remove('hidden');
+    });
+  });
+
+  updateBadge();
+</script>
