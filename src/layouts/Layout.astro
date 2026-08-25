@@ -97,10 +97,28 @@ const alternateUrls = locales.map((loc) => ({
 
     <script>
       const surface = document.getElementById('header-surface')!;
-      const onScroll = () => {
-        surface.dataset.scrolled = String(window.scrollY > 8);
+      const enterThreshold = 12;
+      const leaveThreshold = 4;
+
+      let scrolled = false;
+      let ticking = false;
+
+      const syncSurface = () => {
+        ticking = false;
+        const offset = window.scrollY;
+        const next = scrolled ? offset > leaveThreshold : offset > enterThreshold;
+        if (next === scrolled) return;
+        scrolled = next;
+        surface.dataset.scrolled = String(scrolled);
       };
-      onScroll();
+
+      const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(syncSurface);
+      };
+
+      syncSurface();
       window.addEventListener('scroll', onScroll, { passive: true });
     </script>
   </body>
