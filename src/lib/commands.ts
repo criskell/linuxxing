@@ -2643,6 +2643,847 @@ export const COMMANDS: CommandKB = {
       pt: 'O domínio a consultar.',
     },
   },
+
+  make: {
+    desc: {
+      en: "Reads a Makefile describing a set of named targets and the commands needed to build each one, then runs only the commands needed to bring an out-of-date target up to date, skipping anything already current. That last part is the whole point: make compares file modification times, and if a target's output is newer than all its dependencies, it does nothing at all, which is why incremental rebuilds of a large C project can take seconds instead of minutes. It predates almost every other build tool in wide use today, and 'make install' specifically is the traditional last step of building software from source, copying the freshly built binaries into their final system location.",
+      pt: 'Lê um Makefile descrevendo um conjunto de alvos nomeados e os comandos necessários para construir cada um, e então roda só os comandos necessários para deixar um alvo desatualizado em dia, pulando qualquer coisa já atual. Esse último detalhe é o ponto principal: o make compara datas de modificação de arquivo, e se a saída de um alvo é mais nova que todas as suas dependências, ele não faz nada, motivo pelo qual reconstruções incrementais de um projeto C grande podem levar segundos em vez de minutos. É anterior a quase toda outra ferramenta de build em uso hoje, e "make install" especificamente é o passo tradicional final de compilar software a partir do código-fonte, copiando os binários recém-construídos para o lugar final no sistema.',
+    },
+    subcommands: {},
+    flags: {
+      '-f': {
+        en: 'Uses a specific file as the Makefile, instead of looking for Makefile or makefile in the current folder.',
+        pt: 'Usa um arquivo específico como Makefile, em vez de procurar por Makefile ou makefile na pasta atual.',
+      },
+      '-j': {
+        en: 'Runs multiple independent build steps in parallel, dramatically speeding up large builds on multi-core machines.',
+        pt: 'Roda múltiplos passos de build independentes em paralelo, acelerando muito builds grandes em máquinas com vários núcleos.',
+      },
+      '-n': {
+        en: "Shows what commands would run without actually running them, useful for checking what a target does before triggering it.",
+        pt: 'Mostra quais comandos rodariam sem realmente executá-los, útil para checar o que um alvo faz antes de disparar.',
+      },
+    },
+    valueFlags: {
+      '-f': 'generic',
+      '-j': 'generic',
+    },
+    argHint: {
+      en: 'The name of the target to build, such as install, test, or clean.',
+      pt: 'O nome do alvo a construir, como install, test ou clean.',
+    },
+  },
+
+  gcc: {
+    desc: {
+      en: "The GNU Compiler Collection's C compiler, taking C source files and turning them into an executable (or, with the right flags, stopping earlier at an object file or assembly). It handles the whole pipeline by default, preprocessing, compiling, assembling, and linking, in one command, calling out to separate tools for each stage internally, which is why a single 'gcc file.c -o program' is enough for a simple program even though several distinct programs actually ran underneath it.",
+      pt: 'O compilador C do GNU Compiler Collection, transformando arquivos-fonte C em um executável (ou, com as flags certas, parando antes em um arquivo objeto ou assembly). Ele cuida do pipeline inteiro por padrão, pré-processamento, compilação, montagem e ligação, em um único comando, chamando ferramentas separadas para cada etapa por baixo, motivo pelo qual um simples "gcc arquivo.c -o programa" basta para um programa simples mesmo que vários programas distintos tenham rodado por baixo.',
+    },
+    subcommands: {},
+    flags: {
+      '-o': {
+        en: 'Sets the name of the output file, instead of the default a.out.',
+        pt: 'Define o nome do arquivo de saída, em vez do padrão a.out.',
+      },
+      '-c': {
+        en: 'Compiles to an object file only, without linking into a final executable.',
+        pt: 'Compila apenas para um arquivo objeto, sem ligar em um executável final.',
+      },
+      '-Wall': {
+        en: 'Enables a broad set of useful compiler warnings that are off by default.',
+        pt: 'Ativa um conjunto amplo de avisos úteis do compilador que ficam desligados por padrão.',
+      },
+      '-g': {
+        en: 'Includes debug information in the output, needed for tools like gdb to show source-level detail.',
+        pt: 'Inclui informação de depuração na saída, necessária para ferramentas como o gdb mostrarem detalhe no nível do código-fonte.',
+      },
+      '-O2': {
+        en: 'Enables a strong level of compiler optimization, the common choice for release builds.',
+        pt: 'Ativa um nível forte de otimização do compilador, a escolha comum para builds de release.',
+      },
+    },
+    valueFlags: {
+      '-o': 'generic',
+    },
+    argHint: {
+      en: 'The source file to compile.',
+      pt: 'O arquivo-fonte a compilar.',
+    },
+  },
+
+  python3: {
+    desc: {
+      en: "Runs the Python 3 interpreter, either executing a script file given as an argument, running a short inline command with -c, or, with no arguments at all, dropping into an interactive prompt for experimenting line by line. The '3' in the name exists because Python 2 and Python 3 coexisted for over a decade with real language differences between them; Python 2 has since reached end of life, but the explicit 'python3' name persists as the safe, unambiguous way to invoke it on systems where a bare 'python' might not exist or might point somewhere unexpected.",
+      pt: 'Roda o interpretador Python 3, seja executando um arquivo de script dado como argumento, rodando um comando curto inline com -c, ou, sem argumento nenhum, caindo em um prompt interativo para experimentar linha por linha. O "3" no nome existe porque Python 2 e Python 3 coexistiram por mais de uma década com diferenças reais de linguagem entre eles; o Python 2 já chegou ao fim de vida, mas o nome explícito "python3" persiste como a forma segura e inequívoca de chamá-lo em sistemas onde um "python" puro pode não existir ou apontar para outro lugar inesperado.',
+    },
+    subcommands: {},
+    flags: {
+      '-c': {
+        en: 'Runs the command given as a string, instead of reading a script file.',
+        pt: 'Roda o comando dado como string, em vez de ler um arquivo de script.',
+      },
+      '-m': {
+        en: "Runs a library module as a script, such as 'python3 -m http.server' to start a quick local web server.",
+        pt: 'Roda um módulo de biblioteca como script, como "python3 -m http.server" para iniciar um servidor web local rápido.',
+      },
+      '-V': {
+        en: 'Prints the interpreter version and exits.',
+        pt: 'Imprime a versão do interpretador e termina.',
+      },
+    },
+    valueFlags: {
+      '-c': 'generic',
+      '-m': 'generic',
+    },
+    argHint: {
+      en: 'The Python script file to run.',
+      pt: 'O arquivo de script Python a rodar.',
+    },
+  },
+
+  pip: {
+    desc: {
+      en: "Python's package installer, downloading libraries from the Python Package Index (PyPI) and installing them so they can be imported. Its most important companion is a requirements.txt file listing exact package versions, so 'pip install -r requirements.txt' can reproduce the same set of dependencies on another machine; running pip without any virtual environment active installs packages system-wide, which most modern Python workflows deliberately avoid in favor of an isolated per-project environment.",
+      pt: 'O instalador de pacotes do Python, baixando bibliotecas do Python Package Index (PyPI) e as instalando para que possam ser importadas. Seu companheiro mais importante é um arquivo requirements.txt listando versões exatas de pacotes, então "pip install -r requirements.txt" consegue reproduzir o mesmo conjunto de dependências em outra máquina; rodar o pip sem nenhum ambiente virtual ativo instala pacotes no sistema inteiro, algo que a maioria dos fluxos de trabalho modernos em Python evita deliberadamente em favor de um ambiente isolado por projeto.',
+    },
+    subcommands: {
+      install: {
+        en: 'Installs one or more packages, or every package listed in a requirements file with -r.',
+        pt: 'Instala um ou mais pacotes, ou todo pacote listado em um arquivo de requisitos com -r.',
+      },
+      uninstall: {
+        en: 'Removes an installed package.',
+        pt: 'Remove um pacote instalado.',
+      },
+      list: {
+        en: 'Lists installed packages and their versions.',
+        pt: 'Lista os pacotes instalados e suas versões.',
+      },
+      freeze: {
+        en: 'Prints installed packages in requirements.txt format, commonly redirected into that file.',
+        pt: 'Imprime os pacotes instalados no formato requirements.txt, normalmente redirecionado para esse arquivo.',
+      },
+    },
+    flags: {
+      '-r': {
+        en: 'Installs every package listed in a requirements file.',
+        pt: 'Instala todo pacote listado em um arquivo de requisitos.',
+      },
+      '-U': {
+        en: 'Upgrades the package to the latest available version, instead of leaving an existing install alone.',
+        pt: 'Atualiza o pacote para a versão mais recente disponível, em vez de deixar uma instalação existente como está.',
+      },
+    },
+    valueFlags: {
+      '-r': 'generic',
+    },
+  },
+
+  node: {
+    desc: {
+      en: "Runs JavaScript outside a browser, using the same V8 engine Chrome uses, which is what made JavaScript viable as a general-purpose server and scripting language in the first place. Given a file it executes that script top to bottom; given no arguments it drops into an interactive REPL, and 'node -e' runs a short snippet inline, the same three modes python3 offers for its own language.",
+      pt: 'Roda JavaScript fora de um navegador, usando o mesmo motor V8 que o Chrome usa, o que foi o que tornou o JavaScript viável como linguagem de propósito geral para servidor e scripts. Dado um arquivo, ele executa esse script do início ao fim; sem argumento nenhum, cai em um REPL interativo, e "node -e" roda um trecho curto inline, os mesmos três modos que o python3 oferece para sua própria linguagem.',
+    },
+    subcommands: {},
+    flags: {
+      '-e': {
+        en: 'Runs the script given as a string, instead of reading a file.',
+        pt: 'Roda o script dado como string, em vez de ler um arquivo.',
+      },
+      '-v': {
+        en: 'Prints the Node.js version and exits.',
+        pt: 'Imprime a versão do Node.js e termina.',
+      },
+      '--version': {
+        en: 'Prints the Node.js version and exits.',
+        pt: 'Imprime a versão do Node.js e termina.',
+      },
+    },
+    valueFlags: {
+      '-e': 'generic',
+    },
+    argHint: {
+      en: 'The JavaScript file to run.',
+      pt: 'O arquivo JavaScript a rodar.',
+    },
+  },
+
+  yarn: {
+    desc: {
+      en: "An alternative package manager for JavaScript projects, created originally to fix speed and consistency problems in npm that have since mostly been fixed in npm itself, but yarn remains widely used and reads the exact same package.json a project already has. Its own lockfile format, yarn.lock, is not interchangeable with npm's package-lock.json, which is why a project should commit to using one or the other consistently rather than switching back and forth.",
+      pt: 'Um gerenciador de pacotes alternativo para projetos JavaScript, criado originalmente para corrigir problemas de velocidade e consistência do npm que desde então foram em grande parte corrigidos no próprio npm, mas o yarn continua amplamente usado e lê o mesmo package.json que um projeto já tem. Seu próprio formato de lockfile, o yarn.lock, não é intercambiável com o package-lock.json do npm, motivo pelo qual um projeto deveria se comprometer a usar um ou outro de forma consistente, em vez de alternar entre eles.',
+    },
+    subcommands: {
+      add: {
+        en: "Installs a package and adds it to the project's dependencies.",
+        pt: 'Instala um pacote e o adiciona às dependências do projeto.',
+      },
+      install: {
+        en: "Installs every dependency listed in the project's package.json.",
+        pt: 'Instala toda dependência listada no package.json do projeto.',
+      },
+      remove: {
+        en: 'Uninstalls a package and removes it from the dependencies.',
+        pt: 'Desinstala um pacote e o remove das dependências.',
+      },
+      run: {
+        en: 'Runs a script defined in package.json.',
+        pt: 'Executa um script definido no package.json.',
+      },
+    },
+    flags: {
+      '-D': {
+        en: 'Adds the package as a development dependency, not needed in production.',
+        pt: 'Adiciona o pacote como dependência de desenvolvimento, não necessária em produção.',
+      },
+    },
+  },
+
+  pnpm: {
+    desc: {
+      en: "A JavaScript package manager built around a single shared storage of packages on disk, with projects linking to that store instead of each project keeping its own full copy of every dependency. That design is what makes it dramatically faster and lighter on disk space than npm or yarn on a machine with many JavaScript projects, since a library used by ten projects is only ever actually stored once.",
+      pt: 'Um gerenciador de pacotes JavaScript construído em torno de um armazenamento único e compartilhado de pacotes no disco, com os projetos se ligando a esse armazém em vez de cada projeto guardar sua própria cópia completa de cada dependência. Esse design é o que o torna dramaticamente mais rápido e mais leve em espaço de disco do que npm ou yarn em uma máquina com muitos projetos JavaScript, já que uma biblioteca usada por dez projetos só é de fato armazenada uma vez.',
+    },
+    subcommands: {
+      add: {
+        en: "Installs a package and adds it to the project's dependencies.",
+        pt: 'Instala um pacote e o adiciona às dependências do projeto.',
+      },
+      install: {
+        en: "Installs every dependency listed in the project's package.json.",
+        pt: 'Instala toda dependência listada no package.json do projeto.',
+      },
+      remove: {
+        en: 'Uninstalls a package and removes it from the dependencies.',
+        pt: 'Desinstala um pacote e o remove das dependências.',
+      },
+      run: {
+        en: 'Runs a script defined in package.json.',
+        pt: 'Executa um script definido no package.json.',
+      },
+    },
+    flags: {
+      '-D': {
+        en: 'Adds the package as a development dependency, not needed in production.',
+        pt: 'Adiciona o pacote como dependência de desenvolvimento, não necessária em produção.',
+      },
+    },
+  },
+
+  zip: {
+    desc: {
+      en: "Packs one or more files into a .zip archive, optionally compressing them at the same time, the counterpart to unzip. Unlike tar, zip both bundles and compresses in the same step and format, and it can add files to an existing archive incrementally without rebuilding the whole thing, which is convenient for gradually collecting files but means a .zip can end up with stale duplicate entries if not managed carefully.",
+      pt: 'Empacota um ou mais arquivos em um arquivo .zip, opcionalmente compactando-os ao mesmo tempo, o par do unzip. Diferente do tar, o zip empacota e compacta na mesma etapa e formato, e consegue adicionar arquivos a um arquivo existente de forma incremental sem reconstruir tudo, o que é conveniente para coletar arquivos aos poucos mas significa que um .zip pode acabar com entradas duplicadas obsoletas se não for gerenciado com cuidado.',
+    },
+    subcommands: {},
+    flags: {
+      '-r': {
+        en: 'Recursively includes the contents of folders, not just their top-level entry.',
+        pt: 'Inclui recursivamente o conteúdo de pastas, não só a entrada de nível superior delas.',
+      },
+      '-9': {
+        en: 'Uses the highest (slowest) compression level.',
+        pt: 'Usa o nível de compactação mais alto (e mais lento).',
+      },
+      '-e': {
+        en: 'Encrypts the archive with a password, prompted interactively.',
+        pt: 'Criptografa o arquivo com uma senha, pedida interativamente.',
+      },
+    },
+    argHint: {
+      en: 'The name of the .zip archive to create, followed by the files to add.',
+      pt: 'O nome do arquivo .zip a criar, seguido dos arquivos a adicionar.',
+    },
+  },
+
+  xz: {
+    desc: {
+      en: "Compresses a single file using the LZMA2 algorithm, the same family used by 7-Zip, trading significantly more CPU time and memory during compression for a noticeably smaller output than gzip on the same data. That trade-off is exactly why it shows up for distributing large, compress-once-decompress-many artifacts like Linux kernel source tarballs and software release archives, where the extra compression time is paid once but the smaller download is downloaded by everyone.",
+      pt: 'Compacta um único arquivo usando o algoritmo LZMA2, a mesma família usada pelo 7-Zip, trocando bem mais tempo de CPU e memória durante a compactação por uma saída visivelmente menor que o gzip nos mesmos dados. Essa troca é exatamente o motivo dele aparecer para distribuir artefatos grandes, compactados uma vez e descompactados muitas, como tarballs de código-fonte do kernel Linux e pacotes de release de software, onde o tempo extra de compactação é pago uma vez só, mas o download menor é baixado por todo mundo.',
+    },
+    subcommands: {},
+    flags: {
+      '-d': {
+        en: 'Decompresses instead of compressing.',
+        pt: 'Descompacta em vez de compactar.',
+      },
+      '-k': {
+        en: 'Keeps the original file instead of replacing it.',
+        pt: 'Mantém o arquivo original em vez de substituí-lo.',
+      },
+      '-9': {
+        en: 'Uses the highest (slowest, most memory-hungry) compression level.',
+        pt: 'Usa o nível de compactação mais alto (mais lento e mais consumidor de memória).',
+      },
+    },
+    argHint: {
+      en: 'The file to compress or decompress.',
+      pt: 'O arquivo a compactar ou descompactar.',
+    },
+  },
+
+  bzip2: {
+    desc: {
+      en: "Compresses a single file using the Burrows-Wheeler algorithm, generally landing between gzip and xz on the speed-versus-compression-ratio spectrum: noticeably smaller output than gzip, noticeably faster than xz. It shares gzip's limitation of handling exactly one file at a time with no archive concept, which is why tarballs compressed with it are named .tar.bz2, following the same tar-then-compress pattern as .tar.gz.",
+      pt: 'Compacta um único arquivo usando o algoritmo Burrows-Wheeler, geralmente ficando entre o gzip e o xz no espectro de velocidade versus taxa de compactação: saída visivelmente menor que o gzip, visivelmente mais rápido que o xz. Compartilha a limitação do gzip de lidar com exatamente um arquivo por vez, sem conceito de arquivo compactado múltiplo, motivo pelo qual tarballs compactados com ele se chamam .tar.bz2, seguindo o mesmo padrão de tar-depois-compactar do .tar.gz.',
+    },
+    subcommands: {},
+    flags: {
+      '-d': {
+        en: 'Decompresses instead of compressing (same as running bunzip2).',
+        pt: 'Descompacta em vez de compactar (o mesmo que rodar bunzip2).',
+      },
+      '-k': {
+        en: 'Keeps the original file instead of replacing it.',
+        pt: 'Mantém o arquivo original em vez de substituí-lo.',
+      },
+      '-9': {
+        en: 'Uses the highest (slowest) compression level.',
+        pt: 'Usa o nível de compactação mais alto (e mais lento).',
+      },
+    },
+    argHint: {
+      en: 'The file to compress or decompress.',
+      pt: 'O arquivo a compactar ou descompactar.',
+    },
+  },
+
+  file: {
+    desc: {
+      en: "Identifies what kind of data a file actually contains by inspecting its content, not its name or extension, which is exactly what makes it useful: a file renamed from photo.exe to photo.jpg is still detected as an executable, because file reads the first bytes and checks them against a database of known signatures (magic numbers) rather than trusting the label on the tin. It is a fast, low-stakes first step whenever a file of unknown or suspicious origin needs to be understood before opening it with something else.",
+      pt: 'Identifica que tipo de dado um arquivo realmente contém inspecionando seu conteúdo, não o nome ou a extensão, o que é exatamente o que o torna útil: um arquivo renomeado de foto.exe para foto.jpg ainda é detectado como um executável, porque o file lê os primeiros bytes e os checa contra um banco de assinaturas conhecidas (magic numbers) em vez de confiar no rótulo. É um primeiro passo rápido e de baixo risco sempre que um arquivo de origem desconhecida ou suspeita precisa ser entendido antes de abri-lo com outra coisa.',
+    },
+    subcommands: {},
+    flags: {
+      '-i': {
+        en: "Reports the MIME type (like text/plain or image/jpeg) instead of a human-readable description.",
+        pt: 'Relata o tipo MIME (como text/plain ou image/jpeg) em vez de uma descrição legível por humanos.',
+      },
+    },
+    argHint: {
+      en: 'The file to identify.',
+      pt: 'O arquivo a identificar.',
+    },
+  },
+
+  tr: {
+    desc: {
+      en: "Translates or deletes individual characters from its input, one character at a time, streamed straight through without ever understanding lines or fields the way sed or awk do. 'tr a-z A-Z' upper-cases text by mapping each lowercase letter to its uppercase counterpart, and 'tr -d' deletes every character in a given set outright, both classic building blocks in shell one-liners for quick text cleanup.",
+      pt: 'Traduz ou apaga caracteres individuais da entrada, um caractere de cada vez, direto no fluxo sem nunca entender linhas ou campos como o sed ou o awk fazem. "tr a-z A-Z" transforma texto em maiúsculas mapeando cada letra minúscula para sua correspondente maiúscula, e "tr -d" apaga de vez todo caractere em um conjunto dado, ambos blocos clássicos de construção em one-liners de shell para limpeza rápida de texto.',
+    },
+    subcommands: {},
+    flags: {
+      '-d': {
+        en: 'Deletes every character in the given set, instead of translating.',
+        pt: 'Apaga todo caractere no conjunto dado, em vez de traduzir.',
+      },
+      '-s': {
+        en: 'Squeezes repeated consecutive occurrences of a character down to a single one.',
+        pt: 'Reduz ocorrências consecutivas repetidas de um caractere para uma só.',
+      },
+    },
+    argHint: {
+      en: 'The set of characters to translate from, or (with -d) to delete.',
+      pt: 'O conjunto de caracteres a traduzir, ou (com -d) a apagar.',
+    },
+  },
+
+  printf: {
+    desc: {
+      en: "Prints formatted text, following the same format-string convention as the C standard library function of the same name, with placeholders like %s for a string and %d for a number. It is the more precise, more portable sibling of echo: unlike echo, its behavior does not vary between shells, it never accidentally interprets a leading dash in the text as a flag, and it never appends a trailing newline unless the format string explicitly includes \\n, which makes it the safer choice inside scripts that build output carefully.",
+      pt: 'Imprime texto formatado, seguindo a mesma convenção de string de formato da função de mesmo nome da biblioteca padrão C, com marcadores como %s para uma string e %d para um número. É o irmão mais preciso e portável do echo: diferente do echo, seu comportamento não varia entre shells, ele nunca interpreta por acidente um hífen no início do texto como uma flag, e nunca acrescenta uma quebra de linha no final a menos que a string de formato inclua \\n explicitamente, o que o torna a escolha mais segura dentro de scripts que constroem saída com cuidado.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The format string, followed by the values to substitute into it.',
+      pt: 'A string de formato, seguida dos valores a substituir nela.',
+    },
+  },
+
+  nl: {
+    desc: {
+      en: 'Numbers the lines of a file and prints them, similar to cat -n but with far more control over the numbering format, width, and which lines get numbered at all (blank lines can be skipped by default, unlike cat -n).',
+      pt: 'Numera as linhas de um arquivo e as imprime, parecido com cat -n mas com bem mais controle sobre o formato de numeração, a largura, e quais linhas de fato recebem número (linhas em branco podem ser puladas por padrão, diferente do cat -n).',
+    },
+    subcommands: {},
+    flags: {
+      '-b': {
+        en: "Sets which lines get numbered: 'a' for all lines, 't' for non-blank lines only (the default).",
+        pt: 'Define quais linhas recebem número: "a" para todas as linhas, "t" só para as não vazias (o padrão).',
+      },
+    },
+    valueFlags: {
+      '-b': 'generic',
+    },
+    argHint: {
+      en: 'The file to number.',
+      pt: 'O arquivo a numerar.',
+    },
+  },
+
+  comm: {
+    desc: {
+      en: "Compares two already-sorted files line by line and prints three columns: lines only in the first file, lines only in the second, and lines common to both. Because it depends on sorted input to work correctly, it is almost always used right after piping both sides through sort, and it is the tool of choice for a genuine set comparison (what changed, what is unique to each side) rather than diff's line-by-line edit view.",
+      pt: 'Compara dois arquivos já ordenados linha por linha e imprime três colunas: linhas só no primeiro arquivo, linhas só no segundo, e linhas comuns aos dois. Como depende de entrada ordenada para funcionar corretamente, quase sempre é usado logo depois de passar os dois lados pelo sort, e é a ferramenta certa para uma comparação de conjunto de verdade (o que mudou, o que é único de cada lado), diferente da visão de edição linha a linha do diff.',
+    },
+    subcommands: {},
+    flags: {
+      '-1': {
+        en: 'Suppresses the column of lines unique to the first file.',
+        pt: 'Suprime a coluna de linhas exclusivas do primeiro arquivo.',
+      },
+      '-2': {
+        en: 'Suppresses the column of lines unique to the second file.',
+        pt: 'Suprime a coluna de linhas exclusivas do segundo arquivo.',
+      },
+      '-3': {
+        en: 'Suppresses the column of lines common to both files.',
+        pt: 'Suprime a coluna de linhas comuns aos dois arquivos.',
+      },
+    },
+    argHint: {
+      en: 'One of the two sorted files being compared.',
+      pt: 'Um dos dois arquivos ordenados sendo comparados.',
+    },
+  },
+
+  join: {
+    desc: {
+      en: "Joins the lines of two sorted files that share a common field, similar in spirit to a SQL JOIN but operating on plain text files by field position or delimiter rather than database tables. Like comm and sort -m, it depends on both inputs being sorted on the join field beforehand, which is a common source of confusing empty output when someone forgets that requirement.",
+      pt: 'Junta as linhas de dois arquivos ordenados que compartilham um campo comum, parecido em espírito com um JOIN de SQL mas operando em arquivos de texto puro por posição de campo ou delimitador, não em tabelas de banco de dados. Como o comm e o sort -m, depende de ambas as entradas estarem ordenadas pelo campo de junção antes, o que é uma fonte comum de saída vazia confusa quando alguém esquece esse requisito.',
+    },
+    subcommands: {},
+    flags: {
+      '-t': {
+        en: 'Sets the field delimiter (default is whitespace).',
+        pt: 'Define o delimitador de campo (o padrão é espaço em branco).',
+      },
+      '-1': {
+        en: 'Sets which field in the first file to join on (field 1 by default).',
+        pt: 'Define qual campo do primeiro arquivo usar para a junção (campo 1 por padrão).',
+      },
+      '-2': {
+        en: 'Sets which field in the second file to join on (field 1 by default).',
+        pt: 'Define qual campo do segundo arquivo usar para a junção (campo 1 por padrão).',
+      },
+    },
+    valueFlags: {
+      '-t': 'generic',
+      '-1': 'generic',
+      '-2': 'generic',
+    },
+    argHint: {
+      en: 'One of the two sorted files being joined.',
+      pt: 'Um dos dois arquivos ordenados sendo unidos.',
+    },
+  },
+
+  paste: {
+    desc: {
+      en: "Merges the lines of multiple files side by side, joining the Nth line of each file into one line separated by a delimiter (a tab by default), the opposite operation of cut in a sense: where cut pulls a column out of one file, paste combines several files into columns. 'paste -d, a.txt b.txt' is a quick way to zip two single-column lists into a two-column CSV.",
+      pt: 'Junta as linhas de vários arquivos lado a lado, combinando a linha N de cada arquivo em uma única linha separada por um delimitador (tab por padrão), em certo sentido a operação oposta do cut: onde o cut tira uma coluna de um arquivo, o paste combina vários arquivos em colunas. "paste -d, a.txt b.txt" é uma forma rápida de juntar duas listas de uma coluna em um CSV de duas colunas.',
+    },
+    subcommands: {},
+    flags: {
+      '-d': {
+        en: 'Sets the delimiter used between merged fields (a tab by default).',
+        pt: 'Define o delimitador usado entre os campos juntados (tab por padrão).',
+      },
+      '-s': {
+        en: 'Merges each file into a single line instead of pairing lines across files.',
+        pt: 'Junta cada arquivo em uma única linha, em vez de parear linhas entre arquivos.',
+      },
+    },
+    valueFlags: {
+      '-d': 'generic',
+    },
+    argHint: {
+      en: 'A file whose lines will be merged in as a column.',
+      pt: 'Um arquivo cujas linhas serão juntadas como uma coluna.',
+    },
+  },
+
+  column: {
+    desc: {
+      en: 'Formats input into neatly aligned columns, turning delimiter-separated text (like a CSV or the output of another command) into a readable table with padded, lined-up columns, which raw text with inconsistent field widths never quite achieves on its own.',
+      pt: 'Formata a entrada em colunas alinhadas de forma organizada, transformando texto separado por delimitador (como um CSV ou a saída de outro comando) em uma tabela legível com colunas alinhadas e espaçadas, algo que texto bruto com larguras de campo inconsistentes nunca alcança sozinho.',
+    },
+    subcommands: {},
+    flags: {
+      '-t': {
+        en: 'Determines the number of columns automatically and aligns them in a table.',
+        pt: 'Determina o número de colunas automaticamente e as alinha em uma tabela.',
+      },
+      '-s': {
+        en: 'Sets the input field separator (whitespace by default).',
+        pt: 'Define o separador de campo da entrada (espaço em branco por padrão).',
+      },
+    },
+    valueFlags: {
+      '-s': 'generic',
+    },
+  },
+
+  readlink: {
+    desc: {
+      en: "Prints the target a symbolic link points to, or, with -f, resolves a path all the way through every symlink to its final canonical absolute form, similar to realpath. It is a common building block in scripts that need to find out where a script itself actually lives on disk, since $0 can be a symlink and readlink -f \"$0\" resolves it to the real file.",
+      pt: 'Imprime o alvo para o qual um link simbólico aponta, ou, com -f, resolve um caminho por completo através de todo link simbólico até sua forma absoluta canônica final, parecido com o realpath. É um bloco de construção comum em scripts que precisam descobrir onde o próprio script realmente está no disco, já que $0 pode ser um link simbólico e readlink -f "$0" o resolve para o arquivo real.',
+    },
+    subcommands: {},
+    flags: {
+      '-f': {
+        en: 'Resolves every symlink along the path, following recursively to the final canonical target.',
+        pt: 'Resolve todo link simbólico ao longo do caminho, seguindo recursivamente até o alvo canônico final.',
+      },
+    },
+    argHint: {
+      en: 'The symbolic link or path to resolve.',
+      pt: 'O link simbólico ou caminho a resolver.',
+    },
+  },
+
+  shred: {
+    desc: {
+      en: "Overwrites a file's contents multiple times with patterns of data before optionally deleting it, an attempt to make the original data harder to recover than a plain rm would, which only removes the directory entry and leaves the actual data on disk until it happens to be overwritten later. On modern SSDs and journaling or copy-on-write filesystems, this guarantee is considerably weaker than it was on old spinning disks, since the drive's own wear-leveling can silently keep old copies of the data shred never touches.",
+      pt: 'Sobrescreve o conteúdo de um arquivo várias vezes com padrões de dados antes de opcionalmente apagá-lo, uma tentativa de tornar os dados originais mais difíceis de recuperar do que um rm simples faria, que só remove a entrada de diretório e deixa os dados de fato no disco até que sejam sobrescritos mais tarde por acaso. Em SSDs modernos e sistemas de arquivos com journaling ou copy-on-write, essa garantia é consideravelmente mais fraca do que era em discos giratórios antigos, já que o próprio nivelamento de desgaste do drive pode manter silenciosamente cópias antigas dos dados que o shred nunca toca.',
+    },
+    subcommands: {},
+    flags: {
+      '-u': {
+        en: 'Deletes the file after overwriting it, instead of leaving the (now scrambled) file in place.',
+        pt: 'Apaga o arquivo depois de sobrescrevê-lo, em vez de deixar o arquivo (agora embaralhado) no lugar.',
+      },
+      '-n': {
+        en: 'Sets how many overwrite passes to perform (3 by default).',
+        pt: 'Define quantas passagens de sobrescrita realizar (3 por padrão).',
+      },
+    },
+    valueFlags: {
+      '-n': 'generic',
+    },
+    argHint: {
+      en: 'The file to overwrite and optionally delete.',
+      pt: 'O arquivo a sobrescrever e opcionalmente apagar.',
+    },
+  },
+
+  nice: {
+    desc: {
+      en: "Starts a command with an adjusted scheduling priority, letting a CPU-heavy background task step out of the way of more time-sensitive work instead of competing with it equally for the processor. A higher niceness value means lower priority (the process is being 'nicer' to everyone else), and only root can lower a process's niceness to give it more priority than default.",
+      pt: 'Inicia um comando com uma prioridade de escalonamento ajustada, permitindo que uma tarefa pesada de CPU em segundo plano se afaste do caminho de trabalho mais sensível ao tempo, em vez de competir igualmente por ele. Um valor de niceness mais alto significa prioridade mais baixa (o processo está sendo "mais gentil" com todo mundo), e só o root pode baixar a niceness de um processo para lhe dar mais prioridade que o padrão.',
+    },
+    subcommands: {},
+    flags: {
+      '-n': {
+        en: 'Sets the niceness adjustment (higher means lower priority, 10 is a common default choice).',
+        pt: 'Define o ajuste de niceness (mais alto significa prioridade mais baixa, 10 é uma escolha padrão comum).',
+      },
+    },
+    valueFlags: {
+      '-n': 'generic',
+    },
+    argHint: {
+      en: 'The command to run with adjusted priority.',
+      pt: 'O comando a rodar com prioridade ajustada.',
+    },
+  },
+
+  renice: {
+    desc: {
+      en: "Changes the scheduling priority of a process that is already running, identified by its PID, the same adjustment nice makes at startup but applied after the fact without restarting the process.",
+      pt: 'Altera a prioridade de escalonamento de um processo que já está em execução, identificado pelo seu PID, o mesmo ajuste que o nice faz na inicialização, mas aplicado depois, sem reiniciar o processo.',
+    },
+    subcommands: {},
+    flags: {
+      '-n': {
+        en: 'Sets the new niceness value.',
+        pt: 'Define o novo valor de niceness.',
+      },
+    },
+    valueFlags: {
+      '-n': 'generic',
+    },
+    argHint: {
+      en: 'The process ID (PID) whose priority is being changed.',
+      pt: 'O ID de processo (PID) cuja prioridade está sendo alterada.',
+    },
+  },
+
+  usermod: {
+    desc: {
+      en: "Modifies an existing user account, the counterpart to useradd for accounts that already exist rather than being created fresh. Its most common invocation is adding a user to a group with -aG, and forgetting the -a there is a classic mistake, without it, -G replaces the user's supplementary groups entirely instead of adding to them, silently removing them from every other group they belonged to.",
+      pt: 'Modifica uma conta de usuário existente, a contraparte do useradd para contas que já existem, em vez de serem criadas do zero. Sua invocação mais comum é adicionar um usuário a um grupo com -aG, e esquecer o -a ali é um erro clássico, sem ele, o -G substitui os grupos suplementares do usuário por completo em vez de adicionar a eles, removendo-o silenciosamente de todo outro grupo ao qual pertencia.',
+    },
+    subcommands: {},
+    flags: {
+      '-aG': {
+        en: 'Adds the user to one or more supplementary groups, appending to their existing groups instead of replacing them.',
+        pt: 'Adiciona o usuário a um ou mais grupos suplementares, acrescentando aos grupos existentes em vez de substituí-los.',
+      },
+      '-s': {
+        en: "Changes the user's login shell.",
+        pt: 'Altera o shell de login do usuário.',
+      },
+      '-l': {
+        en: "Changes the user's login name.",
+        pt: 'Altera o nome de login do usuário.',
+      },
+    },
+    valueFlags: {
+      '-aG': 'generic',
+      '-s': 'generic',
+      '-l': 'generic',
+    },
+    argHint: {
+      en: 'The username of the account being modified.',
+      pt: 'O nome de usuário da conta sendo modificada.',
+    },
+  },
+
+  userdel: {
+    desc: {
+      en: "Removes a user account from the system. By default it leaves the user's home directory and mail spool untouched, deleting only the account entry itself; -r removes those too, which is normally what is actually wanted when decommissioning an account for good.",
+      pt: 'Remove uma conta de usuário do sistema. Por padrão deixa o diretório home e a caixa de correio do usuário intocados, apagando só a entrada da conta em si; o -r remove esses também, que é normalmente o que de fato se quer ao desativar uma conta de vez.',
+    },
+    subcommands: {},
+    flags: {
+      '-r': {
+        en: "Also removes the user's home directory and mail spool.",
+        pt: 'Também remove o diretório home e a caixa de correio do usuário.',
+      },
+    },
+    argHint: {
+      en: 'The username of the account to remove.',
+      pt: 'O nome de usuário da conta a remover.',
+    },
+  },
+
+  groupdel: {
+    desc: {
+      en: "Removes a group from the system. It fails if the group is still any user's primary group, that user has to be moved to a different primary group first, which is a safety check preventing a user from being left in an inconsistent state with no valid primary group at all.",
+      pt: 'Remove um grupo do sistema. Falha se o grupo ainda for o grupo primário de algum usuário, esse usuário precisa ser movido para outro grupo primário antes, uma checagem de segurança que evita deixar um usuário em um estado inconsistente, sem grupo primário válido nenhum.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The name of the group to remove.',
+      pt: 'O nome do grupo a remover.',
+    },
+  },
+
+  groups: {
+    desc: {
+      en: "Prints the groups a user belongs to, a quicker, more narrowly focused alternative to id when the only thing that matters is group membership, such as confirming a user was really added to the docker or sudo group.",
+      pt: 'Imprime os grupos aos quais um usuário pertence, uma alternativa mais rápida e focada ao id quando só a associação de grupo importa, como confirmar se um usuário foi mesmo adicionado ao grupo docker ou sudo.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The username to check. Defaults to the current user when omitted.',
+      pt: 'O nome de usuário a checar. Por padrão é o usuário atual, quando omitido.',
+    },
+  },
+
+  visudo: {
+    desc: {
+      en: "Opens /etc/sudoers (or a file under /etc/sudoers.d) for editing, but never directly with a plain text editor: visudo locks the file against simultaneous edits and, critically, validates the syntax before saving, refusing to write a broken file. That validation matters enormously here specifically, because a syntax error in sudoers can lock every user, including root via sudo, out of administrative access, and visudo is the only sanctioned way to avoid that outcome.",
+      pt: 'Abre o /etc/sudoers (ou um arquivo em /etc/sudoers.d) para edição, mas nunca diretamente com um editor de texto simples: o visudo trava o arquivo contra edições simultâneas e, criticamente, valida a sintaxe antes de salvar, recusando-se a escrever um arquivo quebrado. Essa validação importa enormemente aqui especificamente, porque um erro de sintaxe no sudoers pode trancar todo usuário, incluindo o root via sudo, fora do acesso administrativo, e o visudo é a única forma sancionada de evitar esse resultado.',
+    },
+    subcommands: {},
+    flags: {
+      '-c': {
+        en: 'Checks the existing sudoers file for syntax errors without opening an editor.',
+        pt: 'Checa o arquivo sudoers existente por erros de sintaxe sem abrir um editor.',
+      },
+    },
+  },
+
+  locate: {
+    desc: {
+      en: "Finds files by name almost instantly by searching a prebuilt index of the entire filesystem, instead of walking the directory tree live the way find does. That speed comes at the cost of freshness: the index (built by updatedb, usually run automatically once a day via cron) can be hours out of date, so a file created moments ago may simply not show up yet.",
+      pt: 'Encontra arquivos pelo nome quase instantaneamente pesquisando um índice pré-construído do sistema de arquivos inteiro, em vez de percorrer a árvore de diretórios ao vivo como o find faz. Essa velocidade custa em atualidade: o índice (construído pelo updatedb, geralmente rodado automaticamente uma vez por dia via cron) pode estar horas desatualizado, então um arquivo criado momentos atrás pode simplesmente ainda não aparecer.',
+    },
+    subcommands: {},
+    flags: {
+      '-i': {
+        en: 'Ignores case differences when matching.',
+        pt: 'Ignora diferença entre maiúsculas e minúsculas na busca.',
+      },
+    },
+    argHint: {
+      en: 'The name pattern to search for in the index.',
+      pt: 'O padrão de nome a procurar no índice.',
+    },
+  },
+
+  fdisk: {
+    desc: {
+      en: "An interactive partition table editor for a disk device, used to create, delete, and inspect partitions before a filesystem is ever put on them. It is a genuinely destructive tool run directly against a raw block device, changes are only actually written to disk when explicitly told to (usually with the 'w' command inside its interactive prompt), which is the one safety net standing between a typo and a wiped disk.",
+      pt: 'Um editor interativo de tabela de partições para um dispositivo de disco, usado para criar, apagar e inspecionar partições antes de qualquer sistema de arquivos ser colocado nelas. É uma ferramenta genuinamente destrutiva que roda direto contra um dispositivo de bloco bruto, mudanças só são de fato escritas no disco quando explicitamente mandado (geralmente com o comando "w" dentro do prompt interativo), que é a única rede de segurança entre um erro de digitação e um disco apagado.',
+    },
+    subcommands: {},
+    flags: {
+      '-l': {
+        en: 'Lists the partition tables of all detected disks and exits, without entering interactive mode.',
+        pt: 'Lista as tabelas de partição de todos os discos detectados e termina, sem entrar em modo interativo.',
+      },
+    },
+    argHint: {
+      en: 'The disk device to edit, such as /dev/sda.',
+      pt: 'O dispositivo de disco a editar, como /dev/sda.',
+    },
+  },
+
+  dd: {
+    desc: {
+      en: "Copies raw bytes from one place to another at a low level, bypassing the usual filesystem-aware tools, which is exactly what makes it able to write a bootable ISO straight onto a USB drive, clone an entire disk bit for bit, or wipe a device by copying zeros onto it. Its old-fashioned option=value syntax (if= for input file, of= for output file, bs= for block size) instead of normal flags is a frequent source of confusion, and its power to overwrite any device it is pointed at, including the wrong one, has earned it the half-joking nickname 'disk destroyer' among people who have mixed up if and of even once.",
+      pt: 'Copia bytes brutos de um lugar para outro em baixo nível, contornando as ferramentas normais que entendem sistema de arquivos, o que é exatamente o que o torna capaz de escrever uma ISO inicializável direto em um pendrive, clonar um disco inteiro bit a bit, ou apagar um dispositivo copiando zeros nele. Sua sintaxe antiquada de opção=valor (if= para arquivo de entrada, of= para arquivo de saída, bs= para tamanho de bloco) em vez de flags normais é uma fonte frequente de confusão, e seu poder de sobrescrever qualquer dispositivo apontado, inclusive o errado, lhe rendeu o apelido meio de brincadeira "destruidor de disco" entre quem já trocou if com of ao menos uma vez.',
+    },
+    subcommands: {},
+    flags: {
+      'if': {
+        en: 'Sets the input file or device to read from.',
+        pt: 'Define o arquivo ou dispositivo de entrada de onde ler.',
+      },
+      'of': {
+        en: 'Sets the output file or device to write to.',
+        pt: 'Define o arquivo ou dispositivo de saída para onde escrever.',
+      },
+      'bs': {
+        en: 'Sets the block size used for each read/write operation, affecting throughput.',
+        pt: 'Define o tamanho de bloco usado em cada operação de leitura/escrita, afetando a taxa de transferência.',
+      },
+      'status': {
+        en: "Controls how much progress information is shown; 'status=progress' shows a live transfer rate.",
+        pt: 'Controla quanta informação de progresso é mostrada; "status=progress" mostra uma taxa de transferência ao vivo.',
+      },
+    },
+  },
+
+  kubectl: {
+    desc: {
+      en: "The command-line tool for controlling a Kubernetes cluster, talking to the cluster's API server to create, inspect, and manage the objects (pods, deployments, services) that make up a running application. Nearly every subcommand accepts a resource type and optionally a name, 'kubectl get pods' lists every pod, 'kubectl get pod my-pod' shows one, following a consistent noun-based pattern across the entire tool.",
+      pt: 'A ferramenta de linha de comando para controlar um cluster Kubernetes, conversando com o servidor de API do cluster para criar, inspecionar e gerenciar os objetos (pods, deployments, services) que compõem uma aplicação em execução. Quase todo subcomando aceita um tipo de recurso e opcionalmente um nome, "kubectl get pods" lista todo pod, "kubectl get pod meu-pod" mostra um só, seguindo um padrão consistente baseado em substantivo por toda a ferramenta.',
+    },
+    subcommands: {
+      get: {
+        en: 'Lists one or more resources of a given type.',
+        pt: 'Lista um ou mais recursos de um tipo dado.',
+      },
+      describe: {
+        en: 'Shows detailed information about a specific resource, including recent events.',
+        pt: 'Mostra informações detalhadas sobre um recurso específico, incluindo eventos recentes.',
+      },
+      apply: {
+        en: 'Creates or updates resources to match the state described in a YAML or JSON file.',
+        pt: 'Cria ou atualiza recursos para corresponder ao estado descrito em um arquivo YAML ou JSON.',
+      },
+      delete: {
+        en: 'Removes a resource from the cluster.',
+        pt: 'Remove um recurso do cluster.',
+      },
+      logs: {
+        en: 'Shows the logs produced by a container inside a pod.',
+        pt: 'Mostra os logs produzidos por um container dentro de um pod.',
+      },
+      exec: {
+        en: 'Runs a command inside a running container, similar to docker exec.',
+        pt: 'Executa um comando dentro de um container em execução, parecido com o docker exec.',
+      },
+    },
+    flags: {
+      '-n': {
+        en: 'Targets a specific namespace, instead of the default one.',
+        pt: 'Direciona para um namespace específico, em vez do padrão.',
+      },
+      '-f': {
+        en: 'Specifies the YAML or JSON file describing the resources to apply.',
+        pt: 'Especifica o arquivo YAML ou JSON descrevendo os recursos a aplicar.',
+      },
+      '-o': {
+        en: "Sets the output format, such as 'json', 'yaml', or 'wide'.",
+        pt: 'Define o formato de saída, como "json", "yaml" ou "wide".',
+      },
+    },
+    valueFlags: {
+      '-n': 'generic',
+      '-f': 'generic',
+      '-o': 'generic',
+    },
+  },
+
+  host: {
+    desc: {
+      en: 'A simple DNS lookup tool, translating a domain name into its IP address (or the reverse) with brief, easy-to-read output, the quick everyday alternative to dig for when only the answer is needed, not the full detail of the DNS protocol exchange.',
+      pt: 'Uma ferramenta simples de consulta DNS, traduzindo um nome de domínio para seu endereço IP (ou o inverso) com uma saída breve e fácil de ler, a alternativa rápida do dia a dia ao dig para quando só a resposta importa, não o detalhe completo da troca do protocolo DNS.',
+    },
+    subcommands: {},
+    flags: {
+      '-t': {
+        en: 'Queries a specific DNS record type, such as MX or TXT, instead of the default A record.',
+        pt: 'Consulta um tipo de registro DNS específico, como MX ou TXT, em vez do registro A padrão.',
+      },
+    },
+    valueFlags: {
+      '-t': 'generic',
+    },
+    argHint: {
+      en: 'The domain name (or IP address, for a reverse lookup) to query.',
+      pt: 'O domínio (ou endereço IP, para busca reversa) a consultar.',
+    },
+  },
+
+  traceroute: {
+    desc: {
+      en: "Maps the network path a packet takes to reach a destination, hop by hop, showing every router along the way and how long each one took to respond. It works by sending packets with a deliberately short time-to-live that expires one hop further each round, tricking each router in turn into sending back an error that reveals its address, which is why the output builds up one line per hop instead of arriving all at once like ping's does.",
+      pt: 'Mapeia o caminho de rede que um pacote percorre até um destino, salto a salto, mostrando cada roteador pelo caminho e quanto tempo cada um levou para responder. Funciona enviando pacotes com um tempo de vida deliberadamente curto que expira um salto mais adiante a cada rodada, fazendo cada roteador por sua vez enviar de volta um erro que revela seu endereço, motivo pelo qual a saída se constrói uma linha por salto em vez de chegar tudo de uma vez como a do ping.',
+    },
+    subcommands: {},
+    flags: {
+      '-n': {
+        en: 'Shows numeric IP addresses instead of resolving hostnames, making the output print faster.',
+        pt: 'Mostra endereços IP numéricos em vez de resolver nomes de host, deixando a saída mais rápida.',
+      },
+      '-m': {
+        en: 'Sets the maximum number of hops to probe before giving up.',
+        pt: 'Define o número máximo de saltos a sondar antes de desistir.',
+      },
+    },
+    valueFlags: {
+      '-m': 'generic',
+    },
+    argHint: {
+      en: 'The host or IP address to trace the route to.',
+      pt: 'O host ou endereço IP para o qual traçar a rota.',
+    },
+  },
+
+  yes: {
+    desc: {
+      en: "Prints the same line, 'y' by default, forever, as fast as it can, until killed or piped into something that stops reading. It exists specifically to auto-answer commands that otherwise pause for interactive yes/no confirmation, 'yes | some-installer' feeds an endless stream of confirmations so a script never gets stuck waiting for a human to press a key.",
+      pt: 'Imprime a mesma linha, "y" por padrão, para sempre, o mais rápido que conseguir, até ser morto ou encanado para algo que pare de ler. Existe especificamente para responder automaticamente a comandos que de outra forma pausariam pedindo confirmação interativa de sim/não, "yes | algum-instalador" alimenta um fluxo infinito de confirmações para que um script nunca fique preso esperando um humano apertar uma tecla.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The line to repeat instead of the default "y".',
+      pt: 'A linha a repetir em vez do "y" padrão.',
+    },
+  },
+
+  expr: {
+    desc: {
+      en: "Evaluates a simple expression, arithmetic, string comparison, or pattern matching, and prints the result, one of the few ways to do math directly in a POSIX shell that has no native arithmetic of its own the way bash's $(( )) does. It has mostly been superseded by that bash built-in syntax and by tools like awk or bc for anything beyond the simplest calculation, but still turns up in older or more portable scripts written to work under plain sh.",
+      pt: 'Avalia uma expressão simples, aritmética, comparação de strings, ou correspondência de padrão, e imprime o resultado, uma das poucas formas de fazer matemática diretamente em um shell POSIX que não tem aritmética nativa própria como o $(( )) do bash tem. Foi em grande parte superado por essa sintaxe embutida do bash e por ferramentas como awk ou bc para qualquer coisa além do cálculo mais simples, mas ainda aparece em scripts mais antigos ou mais portáveis escritos para funcionar sob o sh puro.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The expression to evaluate, such as "3 + 4".',
+      pt: 'A expressão a avaliar, como "3 + 4".',
+    },
+  },
 };
 
 COMMANDS['apt-get'] = COMMANDS.apt;

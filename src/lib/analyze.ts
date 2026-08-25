@@ -206,6 +206,13 @@ export function analyze(tokens: string[], locale: Locale): Step[] {
       continue;
     }
 
+    const keyValue = kb?.flags ? tok.match(/^([a-zA-Z]+)=(.*)$/) : null;
+    const keyValueDesc = keyValue ? kb?.flags[keyValue[1]]?.[locale] : null;
+    if (keyValue && keyValueDesc) {
+      steps.push({ token: tok, type: 'arg', desc: `${keyValueDesc} ${t(locale, 'special.flagValue')(keyValue[2])}` });
+      continue;
+    }
+
     steps.push({ token: tok, type: 'arg', desc: kb?.argHint?.[locale] ?? t(locale, 'fallback.arg') });
   }
 
