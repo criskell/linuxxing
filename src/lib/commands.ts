@@ -673,8 +673,8 @@ export const COMMANDS: CommandKB = {
     },
     subcommands: {
       install: {
-        en: 'Installs one or more packages.',
-        pt: 'Instala um ou mais pacotes.',
+        en: "Installs one or more packages, first resolving their full dependency tree and asking for confirmation before downloading anything. Once confirmed, it fetches the matching .deb files from the repositories configured in /etc/apt/sources.list (and sources.list.d), verifies them against the signed checksums in the package index, exactly what 'apt update' refreshed earlier, and then hands them off to dpkg to unpack onto disk and run their configuration scripts. Multiple packages can be listed in a single call, and a specific version can be pinned with 'package=version' when more than one is available in the repositories. It writes to the system's shared package database, so it needs root privileges and is almost always run with sudo.",
+        pt: 'Instala um ou mais pacotes, resolvendo primeiro a árvore de dependências completa e pedindo confirmação antes de baixar qualquer coisa. Depois de confirmado, ele busca os arquivos .deb correspondentes nos repositórios configurados em /etc/apt/sources.list (e em sources.list.d), verifica-os contra os checksums assinados no índice de pacotes, exatamente o que o "apt update" atualizou antes, e então repassa tudo para o dpkg desempacotar no disco e rodar os scripts de configuração. Vários pacotes podem ser listados numa única chamada, e uma versão específica pode ser fixada com "pacote=versao" quando mais de uma estiver disponível nos repositórios. Ele escreve no banco de dados de pacotes compartilhado do sistema, por isso precisa de privilégios de root e quase sempre roda com sudo.',
       },
       remove: {
         en: 'Removes a package, keeping its configuration files.',
