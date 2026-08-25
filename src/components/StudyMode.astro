@@ -1,0 +1,204 @@
+---
+import type { Locale } from '../i18n/languages';
+import { t } from '../i18n/ui';
+import { STUDY_TOPICS } from '../lib/study';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<div data-locale={locale} class="flex flex-col gap-6">
+  <div id="roadmap-view" class="flex flex-col gap-6">
+    <div class="flex justify-end">
+      <button
+        id="review-all-btn"
+        class="rounded-lg bg-accent px-6 py-3.5 text-sm font-semibold text-on-accent transition-colors duration-[var(--duration-fast)] hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        {t(locale, 'study.reviewAll')}
+      </button>
+    </div>
+
+    <div id="topics" class="grid gap-4 sm:grid-cols-2">
+      {STUDY_TOPICS.map((topic) => (
+        <div class="surface flex flex-col gap-3 p-5" data-topic-card={topic.id}>
+          <div class="flex items-baseline justify-between gap-2">
+            <p class="eyebrow">LPIC-1 {topic.objectiveCode}</p>
+          </div>
+          <p class="font-semibold text-strong">{topic.title[locale]}</p>
+          <p class="text-xs text-faint" data-topic-counts></p>
+          <div class="mt-1 flex justify-end">
+            <button
+              type="button"
+              class="example-chip interactive rounded-md border border-hairline bg-surface-raised px-3 py-1.5 text-xs text-muted hover:text-default"
+              data-start-topic={topic.id}
+            >
+              {t(locale, 'study.startTopic')}
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div id="session-view" class="hidden flex-col gap-5">
+    <p id="session-progress" class="eyebrow"></p>
+
+    <div class="surface flex min-h-48 flex-col justify-center gap-4 p-6">
+      <p id="card-front" class="text-lg font-semibold text-strong"></p>
+      <p id="card-back" class="hidden text-sm leading-relaxed text-default"></p>
+    </div>
+
+    <div class="flex justify-end">
+      <button
+        id="show-answer-btn"
+        class="rounded-lg bg-accent px-6 py-3.5 text-sm font-semibold text-on-accent transition-colors duration-[var(--duration-fast)] hover:bg-accent-hover"
+      >
+        {t(locale, 'study.showAnswer')}
+      </button>
+    </div>
+
+    <div id="grade-buttons" class="hidden flex-wrap justify-end gap-2">
+      <button type="button" data-grade="again" class="chip chip-negative interactive px-4 py-2">{t(locale, 'study.grade.again')}</button>
+      <button type="button" data-grade="hard" class="chip chip-caution interactive px-4 py-2">{t(locale, 'study.grade.hard')}</button>
+      <button type="button" data-grade="good" class="chip chip-info interactive px-4 py-2">{t(locale, 'study.grade.good')}</button>
+      <button type="button" data-grade="easy" class="chip chip-positive interactive px-4 py-2">{t(locale, 'study.grade.easy')}</button>
+    </div>
+  </div>
+
+  <div id="complete-view" class="hidden flex-col gap-4">
+    <div class="surface flex flex-col gap-2 p-6">
+      <p class="font-semibold text-strong">{t(locale, 'study.sessionCompleteTitle')}</p>
+      <p class="text-sm text-muted">{t(locale, 'study.sessionCompleteBody')}</p>
+    </div>
+    <div class="flex justify-end">
+      <button
+        id="back-to-roadmap-btn"
+        class="rounded-lg border border-hairline bg-surface-raised px-6 py-3.5 text-sm font-semibold text-default transition-colors duration-[var(--duration-fast)] hover:bg-surface-nested"
+      >
+        {t(locale, 'study.backToRoadmap')}
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { STUDY_CARDS, type StudyCard } from '../lib/study';
+  import { loadProgress, saveProgress, getDueCards, type StudyProgress } from '../lib/study-progress';
+  import { scheduleReview, createInitialReviewState, type ReviewGrade } from '../lib/spaced-repetition';
+  import { t } from '../i18n/ui';
+  import type { Locale } from '../i18n/languages';
+
+  const root = document.querySelector<HTMLElement>('[data-locale]')!;
+  const locale = root.dataset.locale as Locale;
+
+  const roadmapView = document.getElementById('roadmap-view')!;
+  const sessionView = document.getElementById('session-view')!;
+  const completeView = document.getElementById('complete-view')!;
+
+  const reviewAllBtn = document.getElementById('review-all-btn') as HTMLButtonElement;
+  const topicsEl = document.getElementById('topics')!;
+
+  const sessionProgressEl = document.getElementById('session-progress')!;
+  const cardFrontEl = document.getElementById('card-front')!;
+  const cardBackEl = document.getElementById('card-back')!;
+  const showAnswerBtn = document.getElementById('show-answer-btn') as HTMLButtonElement;
+  const gradeButtonsEl = document.getElementById('grade-buttons')!;
+
+  const backToRoadmapBtn = document.getElementById('back-to-roadmap-btn') as HTMLButtonElement;
+
+  let progress: StudyProgress = loadProgress();
+  let queue: StudyCard[] = [];
+  let queueIndex = 0;
+
+  const showView = (view: 'roadmap' | 'session' | 'complete') => {
+    roadmapView.classList.toggle('hidden', view !== 'roadmap');
+    sessionView.classList.toggle('hidden', view !== 'session');
+    sessionView.classList.toggle('flex', view === 'session');
+    completeView.classList.toggle('hidden', view !== 'complete');
+    completeView.classList.toggle('flex', view === 'complete');
+  };
+
+  const refreshRoadmapCounts = () => {
+    const dueTotal = getDueCards(STUDY_CARDS, progress).length;
+    reviewAllBtn.textContent = dueTotal
+      ? `${t(locale, 'study.reviewAll')} (${dueTotal})`
+      : t(locale, 'study.reviewAll');
+    reviewAllBtn.disabled = dueTotal === 0;
+
+    topicsEl.querySelectorAll<HTMLElement>('[data-topic-card]').forEach((card) => {
+      const topicId = card.dataset.topicCard!;
+      const totalCards = STUDY_CARDS.filter((studyCard) => studyCard.topic === topicId).length;
+      const dueCount = getDueCards(STUDY_CARDS, progress, topicId).length;
+      const countsEl = card.querySelector<HTMLElement>('[data-topic-counts]')!;
+      countsEl.textContent = dueCount
+        ? `${t(locale, 'study.topicCards')(totalCards)} · ${t(locale, 'study.topicDue')(dueCount)}`
+        : t(locale, 'study.topicCards')(totalCards);
+    });
+  };
+
+  const showCard = () => {
+    const card = queue[queueIndex];
+    sessionProgressEl.textContent = t(locale, 'study.sessionProgress')(queueIndex + 1, queue.length);
+    cardFrontEl.textContent = card.front[locale];
+    cardBackEl.textContent = card.back[locale];
+    cardBackEl.classList.add('hidden');
+    gradeButtonsEl.classList.add('hidden');
+    gradeButtonsEl.classList.remove('flex');
+    showAnswerBtn.classList.remove('hidden');
+  };
+
+  const startSession = (cards: StudyCard[]) => {
+    if (!cards.length) return;
+    queue = cards;
+    queueIndex = 0;
+    showView('session');
+    showCard();
+  };
+
+  const advanceSession = () => {
+    queueIndex += 1;
+    if (queueIndex >= queue.length) {
+      showView('complete');
+      return;
+    }
+    showCard();
+  };
+
+  reviewAllBtn.addEventListener('click', () => startSession(getDueCards(STUDY_CARDS, progress)));
+
+  topicsEl.addEventListener('click', (event) => {
+    const target = (event.target as HTMLElement).closest<HTMLElement>('[data-start-topic]');
+    if (!target) return;
+    startSession(getDueCards(STUDY_CARDS, progress, target.dataset.startTopic));
+  });
+
+  showAnswerBtn.addEventListener('click', () => {
+    cardBackEl.classList.remove('hidden');
+    gradeButtonsEl.classList.remove('hidden');
+    gradeButtonsEl.classList.add('flex');
+    showAnswerBtn.classList.add('hidden');
+  });
+
+  gradeButtonsEl.addEventListener('click', (event) => {
+    const target = (event.target as HTMLElement).closest<HTMLElement>('[data-grade]');
+    if (!target) return;
+
+    const card = queue[queueIndex];
+    const grade = target.dataset.grade as ReviewGrade;
+    const currentState = progress[card.id] ?? createInitialReviewState();
+    progress = { ...progress, [card.id]: scheduleReview(currentState, grade) };
+    saveProgress(progress);
+
+    advanceSession();
+  });
+
+  backToRoadmapBtn.addEventListener('click', () => {
+    refreshRoadmapCounts();
+    showView('roadmap');
+  });
+
+  refreshRoadmapCounts();
+</script>

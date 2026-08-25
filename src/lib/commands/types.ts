@@ -1,6 +1,5 @@
-import type { Locale } from '../../i18n/languages';
-
-export type LocalizedText = Record<Locale, string>;
+export type { LocalizedText } from '../localized-text';
+import type { LocalizedText } from '../localized-text';
 
 export type ValueKind = 'generic' | 'octal-mode';
 

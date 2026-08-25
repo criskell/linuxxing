@@ -1,4 +1,4 @@
-import type { LocalizedText } from './commands';
+import type { LocalizedText } from './localized-text';
 
 export const CONTROL_KEYWORDS: Record<string, LocalizedText> = {
   if: {

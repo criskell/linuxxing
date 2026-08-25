@@ -7,12 +7,13 @@ const withoutBase = pathname.startsWith(base) ? pathname.slice(base.length) : pa
 const segments = withoutBase.split('/').filter(Boolean);
 const currentLocale = (segments[0] as Locale) ?? 'en';
 const rest = segments.slice(1).join('/');
+const restWithTrailingSlash = rest ? `${rest}/` : '';
 ---
 
 <div class="inline-flex gap-0.5 rounded-md border border-hairline bg-surface-raised p-0.5">
   {locales.map((loc) => (
     <a
-      href={`${base}/${loc}/${rest}`}
+      href={`${base}/${loc}/${restWithTrailingSlash}`}
       aria-current={loc === currentLocale ? 'page' : undefined}
       class:list={[
         'rounded-sm px-2.5 py-1 font-mono text-2xs font-medium transition-colors duration-[var(--duration-fast)]',

@@ -38,7 +38,15 @@ const pageTitle = title ?? t(locale, 'site.title');
           >
             linuxxing
           </a>
-          <LanguageSwitch />
+          <div class="flex items-center gap-4">
+            <a
+              href={`${import.meta.env.BASE_URL}/${locale}/study/`}
+              class="text-sm font-medium text-muted transition-colors duration-[var(--duration-fast)] hover:text-strong"
+            >
+              {t(locale, 'nav.study')}
+            </a>
+            <LanguageSwitch />
+          </div>
         </div>
       </div>
     </header>
