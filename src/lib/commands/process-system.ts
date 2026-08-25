@@ -228,6 +228,10 @@ export const processSystem: CommandKB = {
         pt: 'Filtra por conexões de rede, opcionalmente seguido de uma porta como :80.',
       },
     },
+    commonMistake: {
+      en: "Running lsof with no arguments at all scans every open file on the entire system, including anything on a slow or unresponsive network mount, and can hang for a long time waiting on a single stuck NFS share before printing anything. Scoping it first, lsof -c processname or lsof /some/path, avoids dragging the whole system's open files along for a question that only needed one process or one path.",
+      pt: 'Rodar o lsof sem argumento nenhum varre todo arquivo aberto no sistema inteiro, incluindo qualquer coisa num compartilhamento de rede lento ou sem resposta, e pode travar por um bom tempo esperando um único NFS travado antes de imprimir qualquer coisa. Restringir antes, lsof -c nomedoprocesso ou lsof /algum/caminho, evita arrastar todos os arquivos abertos do sistema inteiro para uma pergunta que só precisava de um processo ou um caminho.',
+    },
   },
 
   reboot: {
@@ -237,6 +241,10 @@ export const processSystem: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    commonMistake: {
+      en: "reboot ends every other logged-in user's session immediately too, with no warning broadcast first, unlike shutdown -r +5, which gives everyone connected time to save their work and see why the machine is about to restart. On a shared server, that difference is the reason ops teams reach for shutdown with a delay and a message instead of a bare reboot.",
+      pt: 'O reboot também encerra a sessão de todo outro usuário logado imediatamente, sem nenhum aviso transmitido antes, diferente do shutdown -r +5, que dá a todo mundo conectado um tempo para salvar o trabalho e ver por que a máquina está prestes a reiniciar. Num servidor compartilhado, essa diferença é o motivo de times de operação preferirem o shutdown com um atraso e uma mensagem em vez de um reboot simples.',
+    },
   },
 
   shutdown: {
@@ -473,6 +481,10 @@ export const processSystem: CommandKB = {
     argHint: {
       en: 'A format string starting with + (like +%Y-%m-%d) controlling the output shape.',
       pt: 'Uma string de formato começando com + (como +%Y-%m-%d) controlando o formato da saída.',
+    },
+    commonMistake: {
+      en: 'date -d accepts relative expressions like yesterday or +1 day only in the GNU version that ships on Linux; the BSD date on macOS has no -d at all and uses a completely different -v flag for the same kind of relative math. A script tested only on Linux that uses date -d breaks outright the moment it runs on a Mac.',
+      pt: 'O date -d aceita expressões relativas como yesterday ou +1 day só na versão GNU que vem no Linux; o date do BSD no macOS não tem -d nenhum e usa uma flag completamente diferente, -v, para o mesmo tipo de cálculo relativo. Um script testado só no Linux que usa date -d quebra de vez assim que roda num Mac.',
     },
   },
 
@@ -772,6 +784,10 @@ export const processSystem: CommandKB = {
       en: 'The command to run and trace.',
       pt: 'O comando a rodar e rastrear.',
     },
+    commonMistake: {
+      en: "strace needs the ptrace system call to attach to a process, which Docker's default seccomp profile blocks inside a container even when running as root. strace fails with an 'Operation not permitted' error in that case, and the container needs to be started with --cap-add=SYS_PTRACE (or run with --privileged) before tracing works at all.",
+      pt: 'O strace precisa da chamada de sistema ptrace para se conectar a um processo, que o perfil seccomp padrão do Docker bloqueia dentro de um container mesmo rodando como root. O strace falha com um erro de "Operation not permitted" nesse caso, e o container precisa ser iniciado com --cap-add=SYS_PTRACE (ou rodar com --privileged) antes que o rastreio funcione.',
+    },
   },
 
   pgrep: {
@@ -857,6 +873,10 @@ export const processSystem: CommandKB = {
     argHint: {
       en: 'The partition or device to format.',
       pt: 'A partição ou dispositivo a formatar.',
+    },
+    commonMistake: {
+      en: 'mkfs refuses to format a device that is currently mounted, printing a clear warning and stopping, unless -F forces it through anyway. That check exists specifically to stop an accidental format of a filesystem still in active use, and reaching for -F to get past an unexpected refusal is usually solving the wrong problem, the actual fix is unmounting first, not forcing past the warning.',
+      pt: 'O mkfs se recusa a formatar um dispositivo que está montado no momento, mostrando um aviso claro e parando, a menos que o -F force mesmo assim. Essa checagem existe especificamente para impedir a formatação acidental de um sistema de arquivos ainda em uso ativo, e recorrer ao -F para passar de um aviso inesperado geralmente está resolvendo o problema errado, o certo é desmontar antes, não forçar por cima do aviso.',
     },
   },
 };

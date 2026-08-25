@@ -70,6 +70,10 @@ export const shellBuiltins: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    commonMistake: {
+      en: 'History expansion like !! or !42 does not work inside double quotes the way variables do, bash still expands it there, often in the middle of typing something else entirely, which is why an accidental ! followed by a word that happens to match a past command can silently substitute text nobody meant to include. Single quotes suppress it completely, which is why a commit message or any string containing a literal ! is safer wrapped in single quotes.',
+      pt: 'A expansão de histórico como !! ou !42 não funciona dentro de aspas duplas do jeito que variáveis funcionam, o bash ainda expande ali, muitas vezes no meio de outra coisa sendo digitada. Um ! seguido de uma palavra que por acaso combina com um comando passado pode substituir texto silenciosamente, sem que ninguém quisesse isso. Aspas simples suprimem isso por completo, motivo pelo qual uma mensagem de commit ou qualquer string com um ! literal é mais segura entre aspas simples.',
+    },
   },
 
   alias: {
@@ -161,6 +165,10 @@ export const shellBuiltins: CommandKB = {
       en: 'The name of the variable to store the input in.',
       pt: 'O nome da variável onde guardar a entrada.',
     },
+    commonMistake: {
+      en: 'read a b c splits the input line on whitespace and assigns each field to a variable in order, but any extra words beyond the number of variables given all get stuffed into the last one instead of being dropped or causing an error. read first rest is actually a common, deliberate use of that behavior, first gets the first word and rest gets everything else on the line.',
+      pt: 'read a b c divide a linha de entrada por espaço e atribui cada campo a uma variável em ordem, mas qualquer palavra extra além do número de variáveis dadas vai toda parar na última em vez de ser descartada ou causar erro. read primeiro resto é na verdade um uso comum e deliberado desse comportamento, primeiro pega a primeira palavra e resto pega tudo o que sobra na linha.',
+    },
   },
 
   exec: {
@@ -229,6 +237,10 @@ export const shellBuiltins: CommandKB = {
     valueFlags: {
       '-n': 'generic',
       '-u': 'generic',
+    },
+    commonMistake: {
+      en: 'A ulimit change made at the shell prompt applies only to that shell and whatever it launches from that point on, it never persists across a new login, a reboot, or a service started by systemd, which reads its own separate limits from /etc/security/limits.conf or its own unit configuration. Raising the open-file limit by hand to fix a crashing service and then finding it crashed again after a restart usually means the limit was never actually set anywhere permanent.',
+      pt: 'Uma mudança de ulimit feita no prompt do shell se aplica só a esse shell e ao que ele lançar dali em diante, nunca persiste entre um novo login, um reboot, ou um serviço iniciado pelo systemd, que lê seus próprios limites separados do /etc/security/limits.conf ou da configuração própria da unit. Aumentar o limite de arquivos abertos manualmente para corrigir um serviço que travava e depois descobrir que ele travou de novo após um restart geralmente significa que o limite nunca foi de fato definido em nenhum lugar permanente.',
     },
   },
 };

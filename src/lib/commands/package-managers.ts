@@ -147,6 +147,10 @@ export const packageManagers: CommandKB = {
         pt: "Responde automaticamente 'sim' para todas as confirmações, sem perguntar.",
       },
     },
+    commonMistake: {
+      en: 'apt upgrade skips any package whose upgrade would require installing a new package or removing an old one, silently listing it as kept back rather than erroring. Those packages stay on old, sometimes vulnerable versions indefinitely unless apt full-upgrade (or the equivalent apt-get dist-upgrade) runs instead, which allows exactly those dependency changes.',
+      pt: 'O apt upgrade pula qualquer pacote cuja atualização exigiria instalar um pacote novo ou remover um antigo, listando ele silenciosamente como retido em vez de dar erro. Esses pacotes ficam em versões antigas, às vezes vulneráveis, indefinidamente, a menos que o apt full-upgrade (ou o equivalente apt-get dist-upgrade) seja rodado, que permite exatamente essas mudanças de dependência.',
+    },
   },
 
   npm: {
@@ -337,6 +341,10 @@ export const packageManagers: CommandKB = {
         pt: 'Adiciona o pacote como dependência de desenvolvimento, não necessária em produção.',
       },
     },
+    commonMistake: {
+      en: "pnpm's strict, symlinked node_modules only exposes packages a project actually lists as dependencies, not everything hoisted flat the way npm and yarn do by default. A package that quietly relied on a transitive dependency it never declared, working by accident under npm, throws a module-not-found error the moment that same project installs with pnpm instead.",
+      pt: 'O node_modules estrito e com symlinks do pnpm só expõe os pacotes que um projeto de fato lista como dependência, não tudo espalhado de forma achatada como o npm e o yarn fazem por padrão. Um pacote que dependia silenciosamente de uma dependência transitiva nunca declarada, funcionando por acidente no npm, lança um erro de módulo não encontrado assim que esse mesmo projeto é instalado com pnpm.',
+    },
   },
 
   podman: {
@@ -375,6 +383,10 @@ export const packageManagers: CommandKB = {
     valueFlags: {
       '-p': 'generic',
     },
+    commonMistake: {
+      en: 'Even with the docker command aliased straight to podman, images pulled or built under one are invisible to the other: each keeps its own separate local storage, so a docker pull done once and a podman run right after fails to find that image at all. Whichever one is actually being used needs the image pulled again under its own name.',
+      pt: 'Mesmo com o comando docker apelidado direto para o podman, imagens baixadas ou construídas em um ficam invisíveis para o outro: cada um mantém seu próprio armazenamento local separado, então um docker pull feito uma vez e um podman run logo depois simplesmente não encontra essa imagem. Qualquer um que esteja de fato sendo usado precisa da imagem baixada de novo sob o próprio nome.',
+    },
   },
 
   snap: {
@@ -405,6 +417,10 @@ export const packageManagers: CommandKB = {
         en: 'Installs the snap without its usual sandbox confinement, needed by tools that require broader system access.',
         pt: 'Instala o snap sem seu confinamento de sandbox usual, necessário para ferramentas que exigem acesso mais amplo ao sistema.',
       },
+    },
+    commonMistake: {
+      en: 'Snap packages auto-update in the background on a schedule Canonical controls, with no simple permanent way to disable it the way apt or a manual install would allow. A snap that works today can behave differently tomorrow with no action taken, and the closest control available is deferring updates for a limited number of days, not turning them off entirely.',
+      pt: 'Pacotes snap se atualizam sozinhos em segundo plano, num cronograma controlado pela Canonical, sem uma forma simples e permanente de desativar isso do jeito que o apt ou uma instalação manual permitiriam. Um snap que funciona hoje pode se comportar diferente amanhã sem nenhuma ação tomada, e o controle mais próximo disponível é adiar atualizações por um número limitado de dias, não desligá-las por completo.',
     },
   },
 

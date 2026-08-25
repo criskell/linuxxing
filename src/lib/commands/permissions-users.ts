@@ -120,6 +120,10 @@ export const permissionsUsers: CommandKB = {
       en: 'The name of the user to create.',
       pt: 'O nome do usuário a criar.',
     },
+    commonMistake: {
+      en: "adduser and useradd are not the same program: Debian and Ubuntu's adduser is a friendlier interactive wrapper that creates a home directory and prompts for a password automatically, while the lower-level useradd it calls underneath does none of that unless told to. A tutorial written for one silently fails to do half of what it describes when followed on a system using the other.",
+      pt: 'adduser e useradd não são o mesmo programa: o adduser do Debian e do Ubuntu é um wrapper interativo mais amigável que cria diretório home e pede senha automaticamente, enquanto o useradd de nível mais baixo que ele chama por baixo não faz nada disso a menos que seja instruído. Um tutorial escrito para um deles silenciosamente deixa de fazer metade do que descreve quando seguido num sistema que usa o outro.',
+    },
   },
 
   passwd: {
@@ -219,6 +223,10 @@ export const permissionsUsers: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    commonMistake: {
+      en: "umask only affects processes that inherit it, typically the shell it was set in and whatever that shell launches afterward. Setting a new umask in ~/.bashrc changes nothing for a cron job or a systemd service, both of which start with their own separate umask, 0022 by default for cron, whatever the unit file specifies for systemd, unrelated to whatever a user's interactive shell has set.",
+      pt: 'O umask só afeta processos que o herdam, tipicamente o shell onde foi definido e o que quer que esse shell lance depois. Definir um novo umask no ~/.bashrc não muda nada para uma tarefa de cron ou um serviço systemd, que começam com o próprio umask separado, 0022 por padrão no cron, o que o arquivo de unit do systemd especificar, sem relação com o que o shell interativo de um usuário tem definido.',
+    },
   },
 
   usermod: {
@@ -268,6 +276,10 @@ export const permissionsUsers: CommandKB = {
       en: 'The username of the account to remove.',
       pt: 'O nome de usuário da conta a remover.',
     },
+    commonMistake: {
+      en: "userdel refuses to remove an account that still has running processes, failing with a 'user is currently used by process' error. -f forces it through anyway, but any process it couldn't stop keeps running owned by a UID that no longer maps to any account, and any file still owned by that UID shows up as a bare number instead of a name from then on.",
+      pt: 'O userdel se recusa a remover uma conta que ainda tem processos em execução, falhando com um erro de "user is currently used by process". O -f força mesmo assim, mas qualquer processo que não conseguiu parar continua rodando pertencendo a um UID que não mapeia mais para nenhuma conta, e qualquer arquivo ainda pertencente a esse UID passa a aparecer como um número solto em vez de um nome.',
+    },
   },
 
   groupdel: {
@@ -307,6 +319,10 @@ export const permissionsUsers: CommandKB = {
         en: 'Checks the existing sudoers file for syntax errors without opening an editor.',
         pt: 'Checa o arquivo sudoers existente por erros de sintaxe sem abrir um editor.',
       },
+    },
+    commonMistake: {
+      en: "visudo only catches syntax errors, not logical ones: a perfectly valid sudoers file that happens to remove or comment out the line granting the admin group sudo access saves without complaint and locks everyone out just as effectively as a typo would. Keeping a root shell open in a second session while editing sudoers is the actual safety net visudo's validation does not provide.",
+      pt: 'O visudo só pega erros de sintaxe, não lógicos: um arquivo sudoers perfeitamente válido que por acaso remove ou comenta a linha que dá acesso sudo ao grupo administrativo salva sem reclamar e tranca todo mundo de fora tão bem quanto um erro de digitação trancaria. Manter um shell root aberto numa segunda sessão enquanto edita o sudoers é a rede de segurança real que a validação do visudo não oferece.',
     },
   },
 
