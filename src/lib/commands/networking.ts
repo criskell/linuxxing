@@ -119,6 +119,10 @@ export const networking: CommandKB = {
       en: 'The host or IP address to test.',
       pt: 'O host ou endereço IP a testar.',
     },
+    commonMistake: {
+      en: 'A ping that times out does not necessarily mean the host is down: plenty of servers and firewalls block ICMP entirely as a security measure while every TCP service on that same machine works perfectly fine. Treating a failed ping as proof of an unreachable host, instead of testing the actual port with something like curl or nc, is a common way to chase a problem that does not exist.',
+      pt: 'Um ping que dá timeout não significa necessariamente que o host está fora do ar: muitos servidores e firewalls bloqueiam ICMP por completo como medida de segurança, enquanto todo serviço TCP naquela mesma máquina funciona perfeitamente. Tratar um ping falho como prova de um host inalcançável, em vez de testar a porta de verdade com algo como curl ou nc, é uma forma comum de perseguir um problema que não existe.',
+    },
   },
 
   wget: {
@@ -151,6 +155,10 @@ export const networking: CommandKB = {
     argHint: {
       en: 'The URL to download.',
       pt: 'A URL a baixar.',
+    },
+    commonMistake: {
+      en: 'wget -O, uppercase, sets the name of the downloaded file, while -o, lowercase, sets the name of a log file instead. Mixing the two up in a script that expects the download to land somewhere specific produces a log file under that name and the actual download saved elsewhere under its default name, the two flags look one letter apart and do completely unrelated things.',
+      pt: 'O wget -O, maiúsculo, define o nome do arquivo baixado, enquanto o -o, minúsculo, define o nome de um arquivo de log. Trocar um pelo outro num script que espera o download num lugar específico produz um arquivo de log com esse nome e o download real salvo em outro lugar, com o nome padrão, as duas flags parecem só uma letra de diferença e fazem coisas completamente diferentes.',
     },
   },
 
@@ -281,6 +289,10 @@ export const networking: CommandKB = {
       },
     },
     flags: {},
+    commonMistake: {
+      en: 'ip addr flush dev eth0 removes every address assigned to that interface in one shot, not just one, and running it over an SSH session on that same interface cuts the connection immediately with no way to reconnect until physical or console access is available. The single-address version, ip addr del, is the safer command to reach for when only one address actually needs to go.',
+      pt: 'ip addr flush dev eth0 remove todos os endereços atribuídos àquela interface de uma vez, não só um, e rodar isso numa sessão SSH que usa essa mesma interface corta a conexão imediatamente, sem forma de reconectar até haver acesso físico ou por console. A versão de um endereço só, ip addr del, é o comando mais seguro para quando só um endereço específico precisa sair.',
+    },
   },
 
   netstat: {
@@ -363,6 +375,10 @@ export const networking: CommandKB = {
         pt: 'Varre por serviços ouvindo sem enviar dados (modo zero-I/O).',
       },
     },
+    commonMistake: {
+      en: "The -e flag some netcat tutorials rely on, to execute a program and pipe its input and output through the connection, is compiled out entirely in many distributions' default netcat package, specifically because it makes trivial remote shell access possible. A script written against one nc build can fail with an invalid-option error on another system that has a differently built version installed under the exact same command name.",
+      pt: 'A flag -e que alguns tutoriais de netcat usam, para executar um programa e encanar a entrada e saída dele pela conexão, vem compilada fora por completo em muitas distribuições, especificamente porque ela torna acesso remoto trivial via shell possível. Um script escrito para uma versão do nc pode falhar com um erro de opção inválida em outro sistema que tem uma versão compilada de forma diferente instalada sob o exato mesmo nome de comando.',
+    },
   },
 
   ufw: {
@@ -411,6 +427,10 @@ export const networking: CommandKB = {
       en: 'The domain name to query.',
       pt: 'O domínio a consultar.',
     },
+    commonMistake: {
+      en: 'dig queries a DNS server directly and skips every other step a normal application lookup goes through, /etc/hosts entries, nsswitch.conf configuration, any local DNS cache. A domain that dig resolves correctly can still fail to load in a browser if something earlier in that chain, an /etc/hosts override, a stale cache entry, points somewhere else, so dig confirming DNS is fine does not confirm the application will actually reach the right address.',
+      pt: 'O dig consulta um servidor DNS diretamente e pula todo outro passo pelo qual uma consulta normal de aplicação passa, entradas do /etc/hosts, a configuração do nsswitch.conf, qualquer cache DNS local. Um domínio que o dig resolve corretamente ainda pode falhar ao carregar num navegador se algo antes nessa cadeia, uma entrada do /etc/hosts sobrepondo, uma entrada de cache desatualizada, apontar para outro lugar, então o dig confirmar que o DNS está certo não confirma que a aplicação vai de fato alcançar o endereço certo.',
+    },
   },
 
   host: {
@@ -457,6 +477,10 @@ export const networking: CommandKB = {
       en: 'The host or IP address to trace the route to.',
       pt: 'O host ou endereço IP para o qual traçar a rota.',
     },
+    commonMistake: {
+      en: "A line of asterisks in traceroute's output, three stars in a row, means that particular router did not respond in time, not that the path is broken there. Plenty of routers are configured to silently drop or deprioritize the probe packets traceroute sends while still forwarding everything else normally, so a few starred hops in the middle of an otherwise complete trace usually are not the problem being looked for.",
+      pt: 'Uma linha de asteriscos na saída do traceroute, três asteriscos seguidos, significa que aquele roteador específico não respondeu a tempo, não que o caminho está quebrado ali. Muitos roteadores são configurados para descartar ou despriorizar silenciosamente os pacotes de sondagem que o traceroute envia, enquanto continuam encaminhando tudo o mais normalmente, então alguns saltos com asterisco no meio de um traço por outro lado completo geralmente não são o problema procurado.',
+    },
   },
 
   tcpdump: {
@@ -478,6 +502,10 @@ export const networking: CommandKB = {
         en: 'Writes the captured packets to a file instead of printing them, for later analysis with tools like Wireshark.',
         pt: 'Escreve os pacotes capturados em um arquivo em vez de imprimi-los, para análise posterior com ferramentas como o Wireshark.',
       },
+    },
+    commonMistake: {
+      en: 'Capturing packets needs raw socket access, so running tcpdump as a regular user fails with a permission error on most systems instead of simply showing no traffic. sudo tcpdump, or granting the binary the CAP_NET_RAW capability directly, is what most beginners are missing the first time they try it and see nothing happen.',
+      pt: 'Capturar pacotes exige acesso a socket bruto, então rodar o tcpdump como usuário comum falha com um erro de permissão na maioria dos sistemas, em vez de simplesmente não mostrar tráfego nenhum. sudo tcpdump, ou dar a capacidade CAP_NET_RAW diretamente ao binário, é o que a maioria dos iniciantes está deixando de fazer na primeira tentativa, quando parece que nada acontece.',
     },
     valueFlags: {
       '-i': 'generic',

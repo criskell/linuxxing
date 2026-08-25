@@ -73,6 +73,10 @@ export const archivesHashing: CommandKB = {
       en: 'The .zip file to extract, or a specific file inside it to extract only that one.',
       pt: 'O arquivo .zip a extrair, ou um arquivo específico dentro dele para extrair só esse.',
     },
+    commonMistake: {
+      en: 'Without -o, unzip prompts interactively for each file that already exists at the destination, asking to overwrite, skip, or rename. That prompt is invisible in a non-interactive script or CI job, so the process just hangs waiting for input nobody is there to give, and adding -o (or -n to always skip) is what keeps it running unattended.',
+      pt: 'Sem -o, o unzip pergunta interativamente para cada arquivo que já existe no destino, pedindo para sobrescrever, pular ou renomear. Essa pergunta é invisível num script não interativo ou numa tarefa de CI, então o processo simplesmente trava esperando uma entrada que ninguém está ali para dar, e adicionar -o (ou -n para sempre pular) é o que mantém tudo rodando sem supervisão.',
+    },
   },
 
   gzip: {
@@ -135,6 +139,10 @@ export const archivesHashing: CommandKB = {
         pt: 'Decodifica a entrada base64 de volta à sua forma binária original, em vez de codificar.',
       },
     },
+    commonMistake: {
+      en: 'GNU base64 wraps its output at 76 characters by default, splitting a single value across multiple lines with embedded newlines, which breaks anything expecting a single unbroken token, an environment variable, a URL parameter, a JSON string value. base64 -w 0 turns that wrapping off and is almost always the form actually needed outside of email-style encoding.',
+      pt: 'O base64 do GNU quebra a saída a cada 76 caracteres por padrão, dividindo um único valor em várias linhas com quebras embutidas, o que quebra qualquer coisa que espera um token único e contínuo, uma variável de ambiente, um parâmetro de URL, um valor de string JSON. O base64 -w 0 desliga essa quebra e é quase sempre a forma realmente necessária fora da codificação estilo email.',
+    },
   },
 
   md5sum: {
@@ -153,6 +161,10 @@ export const archivesHashing: CommandKB = {
       en: 'The file to hash.',
       pt: 'O arquivo a calcular o hash.',
     },
+    commonMistake: {
+      en: "md5sum only hashes individual files: pointing it at a directory fails with an 'Is a directory' error instead of producing one combined hash for everything inside. Hashing a whole directory needs another step first, tar it into one file, or hash each file and then hash that combined list, md5sum itself has no notion of a folder's contents.",
+      pt: 'O md5sum só calcula hash de arquivos individuais: apontá-lo para um diretório falha com um erro de "Is a directory" em vez de produzir um hash combinado de tudo dentro. Calcular o hash de um diretório inteiro precisa de outro passo antes, empacotar com tar em um único arquivo, ou calcular o hash de cada arquivo e depois o hash dessa lista combinada, o md5sum em si não tem noção do conteúdo de uma pasta.',
+    },
   },
 
   sha256sum: {
@@ -170,6 +182,10 @@ export const archivesHashing: CommandKB = {
     argHint: {
       en: 'The file to hash.',
       pt: 'O arquivo a calcular o hash.',
+    },
+    commonMistake: {
+      en: 'Comparing two 64-character hashes by eye is exactly the kind of task human attention fails at silently, a single transposed digit deep in the middle looks identical at a glance and is easy to wave through as a match. Piping the expected hash into sha256sum -c instead lets the tool do the exact comparison and print a clear OK or FAILED, rather than trusting eyes against two long hex strings.',
+      pt: 'Comparar dois hashes de 64 caracteres a olho é exatamente o tipo de tarefa em que a atenção humana falha silenciosamente, um único dígito trocado bem no meio parece idêntico numa olhada rápida e é fácil deixar passar como se batesse. Encanar o hash esperado para o sha256sum -c em vez disso deixa a ferramenta fazer a comparação exata e imprimir um OK ou FAILED claro, em vez de confiar nos olhos contra duas strings hexadecimais longas.',
     },
   },
 
@@ -196,6 +212,10 @@ export const archivesHashing: CommandKB = {
     argHint: {
       en: 'The name of the .zip archive to create, followed by the files to add.',
       pt: 'O nome do arquivo .zip a criar, seguido dos arquivos a adicionar.',
+    },
+    commonMistake: {
+      en: 'Re-zipping into an existing archive only adds or updates files, it never removes an entry for a file that no longer exists on disk, so a zip meant to mirror a folder can quietly keep files that were deleted ages ago. zip -d archive.zip file removes one stale entry, but a completely fresh archive, deleting the old .zip first, is the only sure way to drop everything that no longer belongs.',
+      pt: 'Rezipar em um arquivo existente só adiciona ou atualiza arquivos, nunca remove uma entrada de um arquivo que não existe mais no disco, então um zip pensado para espelhar uma pasta pode silenciosamente manter arquivos apagados há muito tempo. O zip -d arquivo.zip arquivo remove uma entrada obsoleta específica, mas um arquivo totalmente novo, apagando o .zip antigo primeiro, é a única forma garantida de descartar tudo que não pertence mais.',
     },
   },
 
