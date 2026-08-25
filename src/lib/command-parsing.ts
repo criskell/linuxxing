@@ -31,47 +31,68 @@ function isQuoteCharacter(character: string): boolean {
   return character === '"' || character === "'";
 }
 
-export function tokenize(input: string): string[] {
-  const tokens: string[] = [];
-  let current = '';
-  let quote: string | null = null;
+function indicesOf(text: string): number[] {
+  return Array.from({ length: text.length }, (_, index) => index);
+}
 
-  for (const character of input) {
-    if (quote) {
-      if (character === quote) {
-        quote = null;
-      } else {
-        current += character;
-      }
-    } else if (isQuoteCharacter(character)) {
-      quote = character;
-    } else if (character === ' ') {
-      if (current.length) {
-        tokens.push(current);
-        current = '';
-      }
-    } else {
-      current += character;
-    }
+interface TokenizeAccumulator {
+  tokens: string[];
+  current: string;
+  quote: string | null;
+}
+
+function tokenizeStep(accumulator: TokenizeAccumulator, character: string): TokenizeAccumulator {
+  if (accumulator.quote) {
+    const closesQuote = character === accumulator.quote;
+    return closesQuote
+      ? { ...accumulator, quote: null }
+      : { ...accumulator, current: accumulator.current + character };
   }
-  if (current.length) tokens.push(current);
-  return tokens;
+
+  if (isQuoteCharacter(character)) {
+    return { ...accumulator, quote: character };
+  }
+
+  if (character === ' ') {
+    if (!accumulator.current.length) return accumulator;
+    return { tokens: [...accumulator.tokens, accumulator.current], current: '', quote: null };
+  }
+
+  return { ...accumulator, current: accumulator.current + character };
+}
+
+function flushCurrentToken(accumulator: TokenizeAccumulator): string[] {
+  if (!accumulator.current.length) return accumulator.tokens;
+  return [...accumulator.tokens, accumulator.current];
+}
+
+export function tokenize(input: string): string[] {
+  const final = Array.from(input).reduce(tokenizeStep, { tokens: [], current: '', quote: null });
+  return flushCurrentToken(final);
+}
+
+interface StripQuotesAccumulator {
+  result: string;
+  quote: string | null;
+}
+
+function stripQuotesStep(accumulator: StripQuotesAccumulator, character: string): StripQuotesAccumulator {
+  if (accumulator.quote) {
+    const closesQuote = character === accumulator.quote;
+    return closesQuote
+      ? { ...accumulator, quote: null }
+      : { ...accumulator, result: accumulator.result + character };
+  }
+
+  if (isQuoteCharacter(character)) {
+    return { ...accumulator, quote: character };
+  }
+
+  return { ...accumulator, result: accumulator.result + character };
 }
 
 export function stripQuotesForClassification(word: string): string {
-  let stripped = '';
-  let quote: string | null = null;
-  for (const character of word) {
-    if (quote) {
-      if (character === quote) quote = null;
-      else stripped += character;
-    } else if (isQuoteCharacter(character)) {
-      quote = character;
-    } else {
-      stripped += character;
-    }
-  }
-  return stripped;
+  return Array.from(word).reduce(stripQuotesStep, { result: '', quote: null }).result;
 }
 
 export function isBracketTest(text: string): boolean {
@@ -85,38 +106,52 @@ export type RedirectInfo =
   | { kind: 'input'; fileDescriptor: string; target: string };
 
 export function parseRedirect(token: string): RedirectInfo | null {
-  let match = token.match(DUPLICATE_REDIRECT_PATTERN);
-  if (match) return { kind: 'dup', fileDescriptor: match[1] ?? '1', target: match[2] };
+  const duplicateMatch = token.match(DUPLICATE_REDIRECT_PATTERN);
+  if (duplicateMatch) return { kind: 'dup', fileDescriptor: duplicateMatch[1] ?? '1', target: duplicateMatch[2] };
 
-  match = token.match(APPEND_REDIRECT_PATTERN);
-  if (match) return { kind: 'append', fileDescriptor: match[1] || '1', target: match[3] || '' };
+  const appendMatch = token.match(APPEND_REDIRECT_PATTERN);
+  if (appendMatch) return { kind: 'append', fileDescriptor: appendMatch[1] || '1', target: appendMatch[3] || '' };
 
-  match = token.match(OVERWRITE_REDIRECT_PATTERN);
-  if (match) return { kind: 'overwrite', fileDescriptor: match[1] || '1', target: match[3] || '' };
+  const overwriteMatch = token.match(OVERWRITE_REDIRECT_PATTERN);
+  if (overwriteMatch) {
+    return { kind: 'overwrite', fileDescriptor: overwriteMatch[1] || '1', target: overwriteMatch[3] || '' };
+  }
 
-  match = token.match(INPUT_REDIRECT_PATTERN);
-  if (match) return { kind: 'input', fileDescriptor: match[1] || '1', target: match[3] || '' };
+  const inputMatch = token.match(INPUT_REDIRECT_PATTERN);
+  if (inputMatch) return { kind: 'input', fileDescriptor: inputMatch[1] || '1', target: inputMatch[3] || '' };
 
   return null;
 }
 
-export function findCommentStart(line: string): number {
-  let quote: string | null = null;
-  for (let i = 0; i < line.length; i++) {
-    const character = line[i];
-    if (quote) {
-      if (character === quote) quote = null;
-      continue;
-    }
-    if (isQuoteCharacter(character)) {
-      quote = character;
-      continue;
-    }
-    if (character === '#' && (i === 0 || WHITESPACE_PATTERN.test(line[i - 1]))) {
-      return i;
-    }
+interface CommentScanAccumulator {
+  quote: string | null;
+  foundIndex: number;
+}
+
+function commentScanStep(accumulator: CommentScanAccumulator, index: number, line: string): CommentScanAccumulator {
+  if (accumulator.foundIndex !== -1) return accumulator;
+
+  const character = line[index];
+
+  if (accumulator.quote) {
+    return character === accumulator.quote ? { ...accumulator, quote: null } : accumulator;
   }
-  return -1;
+
+  if (isQuoteCharacter(character)) {
+    return { ...accumulator, quote: character };
+  }
+
+  const precededByWhitespaceOrStart = index === 0 || WHITESPACE_PATTERN.test(line[index - 1]);
+  if (character === '#' && precededByWhitespaceOrStart) {
+    return { ...accumulator, foundIndex: index };
+  }
+
+  return accumulator;
+}
+
+export function findCommentStart(line: string): number {
+  const initial: CommentScanAccumulator = { quote: null, foundIndex: -1 };
+  return indicesOf(line).reduce((accumulator, index) => commentScanStep(accumulator, index, line), initial).foundIndex;
 }
 
 export interface RawChunk {
@@ -125,63 +160,72 @@ export interface RawChunk {
 }
 
 function matchOperatorAt(code: string, index: number): string | null {
-  for (const operator of OPERATOR_TOKENS) {
-    if (code.startsWith(operator, index)) return operator;
+  return OPERATOR_TOKENS.find((operator) => code.startsWith(operator, index)) ?? null;
+}
+
+interface ScanAccumulator {
+  chunks: RawChunk[];
+  currentText: string;
+  currentKind: 'whitespace' | 'word' | null;
+  quote: string | null;
+  skipRemaining: number;
+}
+
+function flushRun(accumulator: ScanAccumulator): ScanAccumulator {
+  if (!accumulator.currentText) return accumulator;
+  return {
+    ...accumulator,
+    chunks: [...accumulator.chunks, { text: accumulator.currentText, kind: accumulator.currentKind! }],
+    currentText: '',
+    currentKind: null,
+  };
+}
+
+function openRun(accumulator: ScanAccumulator, kind: 'whitespace' | 'word'): ScanAccumulator {
+  if (accumulator.currentKind === kind) return accumulator;
+  return { ...flushRun(accumulator), currentKind: kind };
+}
+
+function scanStep(accumulator: ScanAccumulator, index: number, code: string): ScanAccumulator {
+  if (accumulator.skipRemaining > 0) {
+    return { ...accumulator, skipRemaining: accumulator.skipRemaining - 1 };
   }
-  return null;
+
+  const character = code[index];
+
+  if (accumulator.quote) {
+    const closesQuote = character === accumulator.quote;
+    return { ...accumulator, quote: closesQuote ? null : accumulator.quote, currentText: accumulator.currentText + character };
+  }
+
+  if (isQuoteCharacter(character)) {
+    const opened = openRun(accumulator, 'word');
+    return { ...opened, quote: character, currentText: opened.currentText + character };
+  }
+
+  const operator = matchOperatorAt(code, index);
+  if (operator) {
+    const flushed = flushRun(accumulator);
+    return {
+      ...flushed,
+      chunks: [...flushed.chunks, { text: operator, kind: 'operator' }],
+      skipRemaining: operator.length - 1,
+    };
+  }
+
+  if (WHITESPACE_PATTERN.test(character)) {
+    const opened = openRun(accumulator, 'whitespace');
+    return { ...opened, currentText: opened.currentText + character };
+  }
+
+  const opened = openRun(accumulator, 'word');
+  return { ...opened, currentText: opened.currentText + character };
 }
 
 export function scanChunks(code: string): RawChunk[] {
-  const chunks: RawChunk[] = [];
-  let current = '';
-  let currentKind: 'whitespace' | 'word' | null = null;
-  let quote: string | null = null;
-
-  const flush = () => {
-    if (current) chunks.push({ text: current, kind: currentKind! });
-    current = '';
-    currentKind = null;
-  };
-
-  for (let i = 0; i < code.length; i++) {
-    const character = code[i];
-    if (quote) {
-      current += character;
-      if (character === quote) quote = null;
-      continue;
-    }
-    if (isQuoteCharacter(character)) {
-      if (currentKind !== 'word') {
-        flush();
-        currentKind = 'word';
-      }
-      quote = character;
-      current += character;
-      continue;
-    }
-    const operator = matchOperatorAt(code, i);
-    if (operator) {
-      flush();
-      chunks.push({ text: operator, kind: 'operator' });
-      i += operator.length - 1;
-      continue;
-    }
-    if (WHITESPACE_PATTERN.test(character)) {
-      if (currentKind !== 'whitespace') {
-        flush();
-        currentKind = 'whitespace';
-      }
-      current += character;
-      continue;
-    }
-    if (currentKind !== 'word') {
-      flush();
-      currentKind = 'word';
-    }
-    current += character;
-  }
-  flush();
-  return chunks;
+  const initial: ScanAccumulator = { chunks: [], currentText: '', currentKind: null, quote: null, skipRemaining: 0 };
+  const final = indicesOf(code).reduce((accumulator, index) => scanStep(accumulator, index, code), initial);
+  return flushRun(final).chunks;
 }
 
 export interface CodeSegment {
@@ -189,29 +233,33 @@ export interface CodeSegment {
   text: string;
 }
 
-export function splitTopLevel(code: string): CodeSegment[] {
-  const chunks = scanChunks(code);
-  const segments: CodeSegment[] = [];
-  let currentOperator: string | null = null;
-  let currentText = '';
+interface SegmentAccumulator {
+  segments: CodeSegment[];
+  currentOperator: string | null;
+  currentText: string;
+}
 
-  const flush = () => {
-    const text = currentText.trim();
-    if (text.length) segments.push({ operator: currentOperator, text });
-    currentText = '';
+function flushSegment(accumulator: SegmentAccumulator): SegmentAccumulator {
+  const text = accumulator.currentText.trim();
+  if (!text.length) return { ...accumulator, currentText: '' };
+  return {
+    ...accumulator,
+    segments: [...accumulator.segments, { operator: accumulator.currentOperator, text }],
+    currentText: '',
   };
+}
 
-  chunks.forEach((chunk) => {
-    if (chunk.kind === 'operator') {
-      flush();
-      currentOperator = chunk.text;
-      return;
-    }
-    currentText += chunk.text;
-  });
-  flush();
+function splitStep(accumulator: SegmentAccumulator, chunk: RawChunk): SegmentAccumulator {
+  if (chunk.kind === 'operator') {
+    return { ...flushSegment(accumulator), currentOperator: chunk.text };
+  }
+  return { ...accumulator, currentText: accumulator.currentText + chunk.text };
+}
 
-  return segments;
+export function splitTopLevel(code: string): CodeSegment[] {
+  const initial: SegmentAccumulator = { segments: [], currentOperator: null, currentText: '' };
+  const final = scanChunks(code).reduce(splitStep, initial);
+  return flushSegment(final).segments;
 }
 
 export type SegmentDispatch =
@@ -251,107 +299,124 @@ export type CommandTokenClassification =
   | { type: 'unknown' }
   | { type: 'arg'; consumedValueFlag: { flag: string; kind: ValueKind } | null; keyValueMatch: [string, string] | null };
 
-function classifyRedirect(token: string): CommandTokenClassification | null {
-  return parseRedirect(token) ? { type: 'redirect' } : null;
+export interface CommandTokenOutcome {
+  classification: CommandTokenClassification;
+  state: CommandTokenState;
+}
+
+function classifyRedirect(token: string, state: CommandTokenState): CommandTokenOutcome | null {
+  if (!parseRedirect(token)) return null;
+  return { classification: { type: 'redirect' }, state };
 }
 
 function classifyLongFlag(
   token: string,
   knowledgeBase: CommandDef | undefined,
   state: CommandTokenState,
-): CommandTokenClassification | null {
+): CommandTokenOutcome | null {
   if (!token.startsWith('--')) return null;
 
   const equalsIndex = token.indexOf('=');
   const flagName = equalsIndex === -1 ? token : token.slice(0, equalsIndex);
   const flagValue = equalsIndex === -1 ? null : token.slice(equalsIndex + 1);
+  const pendingKind = flagValue === null ? knowledgeBase?.valueFlags?.[flagName] : undefined;
+  const nextState = pendingKind ? { ...state, pendingValueFlag: { flag: flagName, kind: pendingKind } } : state;
 
-  if (flagValue === null) {
-    const kind = knowledgeBase?.valueFlags?.[flagName];
-    if (kind) state.pendingValueFlag = { flag: flagName, kind };
-  }
+  return { classification: { type: 'flag-long', flagName, flagValue }, state: nextState };
+}
 
-  return { type: 'flag-long', flagName, flagValue };
+function classifyKnownShortFlag(
+  token: string,
+  knowledgeBase: CommandDef | undefined,
+  state: CommandTokenState,
+): CommandTokenOutcome | null {
+  const known = knowledgeBase?.flags[token];
+  if (!known) return null;
+
+  const pendingKind = knowledgeBase?.valueFlags?.[token];
+  const nextState = pendingKind ? { ...state, pendingValueFlag: { flag: token, kind: pendingKind } } : state;
+
+  return { classification: { type: 'flag-short', flagName: token, combinedLetters: null }, state: nextState };
 }
 
 function classifyShortFlag(
   token: string,
   knowledgeBase: CommandDef | undefined,
   state: CommandTokenState,
-): CommandTokenClassification | null {
-  if (!(token.startsWith('-') && token.length > 1 && token !== '-')) return null;
+): CommandTokenOutcome | null {
+  const isShortFlagToken = token.startsWith('-') && token.length > 1 && token !== '-';
+  if (!isShortFlagToken) return null;
 
-  const known = knowledgeBase?.flags[token];
-  if (known) {
-    const kind = knowledgeBase?.valueFlags?.[token];
-    if (kind) state.pendingValueFlag = { flag: token, kind };
-    return { type: 'flag-short', flagName: token, combinedLetters: null };
-  }
+  const known = classifyKnownShortFlag(token, knowledgeBase, state);
+  if (known) return known;
 
   const body = token.slice(1);
-  if (body.length > 1 && COMBINED_SHORT_FLAG_LETTERS_PATTERN.test(body)) {
-    return { type: 'flag-short', flagName: token, combinedLetters: body.split('') };
-  }
+  const isCombinable = body.length > 1 && COMBINED_SHORT_FLAG_LETTERS_PATTERN.test(body);
+  const combinedLetters = isCombinable ? body.split('') : null;
 
-  return { type: 'flag-short', flagName: token, combinedLetters: null };
+  return { classification: { type: 'flag-short', flagName: token, combinedLetters }, state };
 }
 
-function classifyLoneDash(token: string, knowledgeBase: CommandDef | undefined): CommandTokenClassification | null {
+function classifyLoneDash(
+  token: string,
+  knowledgeBase: CommandDef | undefined,
+  state: CommandTokenState,
+): CommandTokenOutcome | null {
   if (token !== '-') return null;
 
   const known = knowledgeBase?.flags['-'];
-  return known
+  const classification: CommandTokenClassification = known
     ? { type: 'flag-short', flagName: '-', combinedLetters: null }
     : { type: 'arg', consumedValueFlag: null, keyValueMatch: null };
+
+  return { classification, state };
 }
 
 function classifySubcommand(
   token: string,
   knowledgeBase: CommandDef | undefined,
   state: CommandTokenState,
-): CommandTokenClassification | null {
+): CommandTokenOutcome | null {
   if (state.subcommandClaimed || !knowledgeBase) return null;
 
   if (knowledgeBase.subcommands[token]) {
-    state.subcommandClaimed = true;
-    return { type: 'subcommand', name: token };
+    return { classification: { type: 'subcommand', name: token }, state: { ...state, subcommandClaimed: true } };
   }
 
-  if (Object.keys(knowledgeBase.subcommands).length) {
-    state.subcommandClaimed = true;
-    return { type: 'unknown' };
-  }
+  const hasSubcommands = Object.keys(knowledgeBase.subcommands).length > 0;
+  if (!hasSubcommands) return null;
 
-  return null;
+  return { classification: { type: 'unknown' }, state: { ...state, subcommandClaimed: true } };
 }
 
 function classifyArgument(
   token: string,
   knowledgeBase: CommandDef | undefined,
+  state: CommandTokenState,
   consumedValueFlag: { flag: string; kind: ValueKind } | null,
-): CommandTokenClassification {
+): CommandTokenOutcome {
   const keyValueRegexMatch = knowledgeBase?.flags ? token.match(KEY_VALUE_PATTERN) : null;
   const keyValueMatch: [string, string] | null = keyValueRegexMatch
     ? [keyValueRegexMatch[1], keyValueRegexMatch[2]]
     : null;
 
-  return { type: 'arg', consumedValueFlag, keyValueMatch };
+  return { classification: { type: 'arg', consumedValueFlag, keyValueMatch }, state };
 }
 
 export function classifyCommandToken(
   token: string,
   knowledgeBase: CommandDef | undefined,
   state: CommandTokenState,
-): CommandTokenClassification {
+): CommandTokenOutcome {
   const consumedValueFlag = state.pendingValueFlag;
-  state.pendingValueFlag = null;
+  const clearedState: CommandTokenState = { ...state, pendingValueFlag: null };
 
   return (
-    classifyRedirect(token) ??
-    classifyLongFlag(token, knowledgeBase, state) ??
-    classifyShortFlag(token, knowledgeBase, state) ??
-    classifyLoneDash(token, knowledgeBase) ??
-    classifySubcommand(token, knowledgeBase, state) ??
-    classifyArgument(token, knowledgeBase, consumedValueFlag)
+    classifyRedirect(token, clearedState) ??
+    classifyLongFlag(token, knowledgeBase, clearedState) ??
+    classifyShortFlag(token, knowledgeBase, clearedState) ??
+    classifyLoneDash(token, knowledgeBase, clearedState) ??
+    classifySubcommand(token, knowledgeBase, clearedState) ??
+    classifyArgument(token, knowledgeBase, clearedState, consumedValueFlag)
   );
 }

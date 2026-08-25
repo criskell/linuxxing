@@ -143,13 +143,10 @@ export function analyze(tokens: string[], locale: Locale): Step[] {
     desc: knowledgeBase ? knowledgeBase.desc[locale] : t(locale, 'fallback.command')(tokens[startIndex]),
   });
 
-  const state: CommandTokenState = createCommandTokenState();
+  tokens.slice(startIndex + 1).reduce((currentState, tok) => {
+    const { classification, state: nextState } = classifyCommandToken(tok, knowledgeBase, currentState);
 
-  for (let i = startIndex + 1; i < tokens.length; i++) {
-    const tok = tokens[i];
-    const result = classifyCommandToken(tok, knowledgeBase, state);
-
-    switch (result.type) {
+    switch (classification.type) {
       case 'redirect':
         steps.push({ token: tok, type: 'redirect', desc: redirectDescription(tok, locale)! });
         break;
@@ -157,18 +154,18 @@ export function analyze(tokens: string[], locale: Locale): Step[] {
         steps.push({
           token: tok,
           type: 'flag-long',
-          desc: describeFlagLong(result.flagName, result.flagValue, knowledgeBase, locale),
+          desc: describeFlagLong(classification.flagName, classification.flagValue, knowledgeBase, locale),
         });
         break;
       case 'flag-short':
         steps.push({
           token: tok,
           type: 'flag-short',
-          desc: describeFlagShort(result.flagName, result.combinedLetters, knowledgeBase, locale),
+          desc: describeFlagShort(classification.flagName, classification.combinedLetters, knowledgeBase, locale),
         });
         break;
       case 'subcommand':
-        steps.push({ token: tok, type: 'subcommand', desc: knowledgeBase!.subcommands[result.name][locale] });
+        steps.push({ token: tok, type: 'subcommand', desc: knowledgeBase!.subcommands[classification.name][locale] });
         break;
       case 'unknown': {
         const examples = Object.keys(knowledgeBase!.subcommands).slice(0, 3).join(', ');
@@ -179,11 +176,20 @@ export function analyze(tokens: string[], locale: Locale): Step[] {
         steps.push({
           token: tok,
           type: 'arg',
-          desc: describeArgToken(tok, baseCmd, knowledgeBase, result.consumedValueFlag, result.keyValueMatch, locale),
+          desc: describeArgToken(
+            tok,
+            baseCmd,
+            knowledgeBase,
+            classification.consumedValueFlag,
+            classification.keyValueMatch,
+            locale,
+          ),
         });
         break;
     }
-  }
+
+    return nextState;
+  }, createCommandTokenState());
 
   return steps;
 }
@@ -324,39 +330,47 @@ function highlightSegment(chunks: RawChunk[], spans: HighlightSpan[]): void {
     return;
   }
 
-  let sawCommand = false;
-  let afterSudo = false;
-  let knowledgeBase: CommandDef | undefined;
-  const state: CommandTokenState = createCommandTokenState();
+  interface HighlightWalkState {
+    sawCommand: boolean;
+    afterSudo: boolean;
+    knowledgeBase: CommandDef | undefined;
+    commandTokenState: CommandTokenState;
+  }
 
-  chunks.forEach((c) => {
+  const initialWalkState: HighlightWalkState = {
+    sawCommand: false,
+    afterSudo: false,
+    knowledgeBase: undefined,
+    commandTokenState: createCommandTokenState(),
+  };
+
+  chunks.reduce((walkState, c): HighlightWalkState => {
     if (c.kind !== 'word') {
       spans.push({ text: c.text, type: null });
-      return;
+      return walkState;
     }
     const value = stripQuotesForClassification(c.text);
 
-    if (!sawCommand) {
-      sawCommand = true;
+    if (!walkState.sawCommand) {
       spans.push({ text: c.text, type: 'command' });
-      if (value === 'sudo') {
-        afterSudo = true;
-      } else {
-        knowledgeBase = COMMANDS[value];
-      }
-      return;
+      return value === 'sudo'
+        ? { ...walkState, sawCommand: true, afterSudo: true }
+        : { ...walkState, sawCommand: true, knowledgeBase: COMMANDS[value] };
     }
 
-    if (afterSudo) {
-      afterSudo = false;
-      knowledgeBase = COMMANDS[value];
+    if (walkState.afterSudo) {
       spans.push({ text: c.text, type: 'command' });
-      return;
+      return { ...walkState, afterSudo: false, knowledgeBase: COMMANDS[value] };
     }
 
-    const result = classifyCommandToken(value, knowledgeBase, state);
-    spans.push({ text: c.text, type: result.type });
-  });
+    const { classification, state: nextCommandTokenState } = classifyCommandToken(
+      value,
+      walkState.knowledgeBase,
+      walkState.commandTokenState,
+    );
+    spans.push({ text: c.text, type: classification.type });
+    return { ...walkState, commandTokenState: nextCommandTokenState };
+  }, initialWalkState);
 }
 
 function highlightCode(code: string, spans: HighlightSpan[]): void {
