@@ -3484,6 +3484,940 @@ export const COMMANDS: CommandKB = {
       pt: 'A expressão a avaliar, como "3 + 4".',
     },
   },
+
+  vim: {
+    desc: {
+      en: "A modal text editor descended from vi, where the keyboard itself switches between distinct modes, normal mode for moving around and issuing commands, insert mode for typing text, visual mode for selecting, rather than a single mode where every key just types a character. That design feels alien at first specifically because it front-loads a learning curve most editors don't have, but it lets an experienced user edit text without ever reaching for a mouse or arrow keys, entirely through short keyboard commands composed together. It is close to guaranteed to be installed (or vi at least) on any Unix-like system, which is exactly why so many people learn just enough to save and quit (':wq') and stop there.",
+      pt: 'Um editor de texto modal descendente do vi, onde o próprio teclado alterna entre modos distintos, modo normal para se mover e emitir comandos, modo de inserção para digitar texto, modo visual para selecionar, em vez de um único modo onde toda tecla simplesmente digita um caractere. Esse design parece estranho a princípio justamente porque traz uma curva de aprendizado que a maioria dos editores não tem, mas permite que um usuário experiente edite texto sem nunca precisar do mouse ou das setas, inteiramente através de comandos curtos de teclado combinados entre si. É praticamente garantido estar instalado (ou pelo menos o vi) em qualquer sistema Unix, motivo exato pelo qual tanta gente aprende só o suficiente para salvar e sair (":wq") e para por aí.',
+    },
+    subcommands: {},
+    flags: {
+      '-R': {
+        en: 'Opens the file in read-only mode, a safety net when only viewing is intended.',
+        pt: 'Abre o arquivo em modo somente leitura, uma rede de segurança quando a intenção é só visualizar.',
+      },
+    },
+    argHint: {
+      en: 'The file to edit.',
+      pt: 'O arquivo a editar.',
+    },
+  },
+
+  nano: {
+    desc: {
+      en: "A simple, modeless text editor built specifically to be approachable: every key does what it looks like it should do, typing inserts text immediately, and the available commands are listed right at the bottom of the screen the whole time, so there is nothing to memorize up front. It trades vim's steep learning curve and keyboard-only efficiency for something a first-time terminal user can sit down and use in seconds, which is exactly why so many beginner-friendly tutorials default to it for quick config file edits.",
+      pt: 'Um editor de texto simples e sem modos, feito especificamente para ser acessível: toda tecla faz o que parece que deveria fazer, digitar insere texto imediatamente, e os comandos disponíveis ficam listados bem no rodapé da tela o tempo todo, então não há nada para memorizar de antemão. Ele troca a curva de aprendizado íngreme e a eficiência exclusiva de teclado do vim por algo que quem usa terminal pela primeira vez consegue sentar e usar em segundos, motivo exato pelo qual tantos tutoriais voltados a iniciantes usam ele por padrão para edições rápidas de arquivo de configuração.',
+    },
+    subcommands: {},
+    flags: {
+      '-w': {
+        en: 'Disables automatic line wrapping, useful when editing config files where long lines should stay on one line.',
+        pt: 'Desativa a quebra automática de linha, útil ao editar arquivos de configuração onde linhas longas devem ficar em uma só.',
+      },
+    },
+    argHint: {
+      en: 'The file to edit.',
+      pt: 'O arquivo a editar.',
+    },
+  },
+
+  read: {
+    desc: {
+      en: "A shell builtin that reads a line of input and stores it into one or more variables, the standard way a shell script asks the person running it for input, or, combined with a while loop, processes a file one line at a time. 'read -p \"Continue? \" answer' prompts and stores the reply in $answer, and 'while read -r line; do ... done < file' is the idiomatic way to loop over a file's lines safely, the -r there stopping backslashes in the input from being interpreted as escape sequences.",
+      pt: 'Um comando interno do shell que lê uma linha de entrada e a guarda em uma ou mais variáveis, a forma padrão de um script de shell pedir entrada para quem o está rodando, ou, combinado com um loop while, processar um arquivo linha por linha. "read -p \"Continuar? \" resposta" pergunta e guarda a resposta em $resposta, e "while read -r linha; do ... done < arquivo" é a forma idiomática de percorrer as linhas de um arquivo com segurança, o -r ali evitando que barras invertidas na entrada sejam interpretadas como sequências de escape.',
+    },
+    subcommands: {},
+    flags: {
+      '-p': {
+        en: 'Shows a prompt before reading, on the same line as the input.',
+        pt: 'Mostra um prompt antes de ler, na mesma linha da entrada.',
+      },
+      '-r': {
+        en: "Reads the raw input literally, without treating a trailing backslash as a line-continuation character.",
+        pt: 'Lê a entrada bruta literalmente, sem tratar uma barra invertida no final como caractere de continuação de linha.',
+      },
+      '-s': {
+        en: 'Reads without echoing the typed characters to the screen, used for reading a password.',
+        pt: 'Lê sem exibir os caracteres digitados na tela, usado para ler uma senha.',
+      },
+    },
+    valueFlags: {
+      '-p': 'generic',
+    },
+    argHint: {
+      en: 'The name of the variable to store the input in.',
+      pt: 'O nome da variável onde guardar a entrada.',
+    },
+  },
+
+  exec: {
+    desc: {
+      en: "A shell builtin that replaces the current shell process with the given command entirely, instead of starting it as a child process, which means there is no shell left to return to once it runs, the new program takes over the same process ID and inherits its file descriptors directly. It shows up in two very different contexts: as the last line of an entrypoint script (so the main process becomes PID 1 instead of a leftover shell, which matters for how containers handle signals), and as 'exec > file' to redirect all of a script's own output from that point onward without needing to redirect every individual command.",
+      pt: 'Um comando interno do shell que substitui o processo de shell atual pelo comando dado por completo, em vez de iniciá-lo como processo filho, o que significa que não sobra shell nenhum para voltar depois que ele roda, o programa novo assume o mesmo ID de processo e herda os descritores de arquivo diretamente. Aparece em dois contextos bem diferentes: como a última linha de um script de entrypoint (para que o processo principal vire o PID 1 em vez de um shell sobrando, o que importa para como containers lidam com sinais), e como "exec > arquivo" para redirecionar toda a saída do próprio script daquele ponto em diante sem precisar redirecionar cada comando individualmente.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The command that replaces the current shell process.',
+      pt: 'O comando que substitui o processo de shell atual.',
+    },
+  },
+
+  trap: {
+    desc: {
+      en: "A shell builtin that registers a command to run automatically when the shell receives a specific signal, most commonly used as 'trap cleanup EXIT' to guarantee a cleanup function runs no matter how a script ends, whether it finishes normally, hits an error, or is interrupted with Ctrl+C. Without a trap, a script killed partway through can leave a temporary file, a lock, or a background process behind; trap is the mechanism that makes 'always clean up, even on failure' actually reliable instead of hopeful.",
+      pt: 'Um comando interno do shell que registra um comando para rodar automaticamente quando o shell recebe um sinal específico, mais comumente usado como "trap limpeza EXIT" para garantir que uma função de limpeza rode não importa como um script termine, seja finalizando normalmente, batendo em um erro, ou sendo interrompido com Ctrl+C. Sem um trap, um script morto no meio do caminho pode deixar para trás um arquivo temporário, um lock, ou um processo em segundo plano; o trap é o mecanismo que torna "sempre limpar, mesmo em falha" algo confiável de verdade, não só uma esperança.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The command to run, followed by the signal name (like EXIT or INT) that triggers it.',
+      pt: 'O comando a rodar, seguido do nome do sinal (como EXIT ou INT) que o dispara.',
+    },
+  },
+
+  jobs: {
+    desc: {
+      en: "A shell builtin that lists the background and stopped jobs started from the current shell session, each with a job number that bg, fg, and kill can reference with a percent sign, like %1, as a shorter alternative to a full PID.",
+      pt: 'Um comando interno do shell que lista as tarefas em segundo plano e paradas iniciadas a partir da sessão de shell atual, cada uma com um número de tarefa que o bg, o fg e o kill conseguem referenciar com um sinal de porcentagem, como %1, como alternativa mais curta a um PID completo.',
+    },
+    subcommands: {},
+    flags: {
+      '-l': {
+        en: 'Also shows the PID of each job alongside its job number.',
+        pt: 'Também mostra o PID de cada tarefa junto com o número da tarefa.',
+      },
+    },
+  },
+
+  bg: {
+    desc: {
+      en: "A shell builtin that resumes a stopped job (one paused with Ctrl+Z) and continues running it in the background, freeing up the terminal for other commands while that job keeps working.",
+      pt: 'Um comando interno do shell que retoma uma tarefa parada (uma pausada com Ctrl+Z) e continua rodando ela em segundo plano, liberando o terminal para outros comandos enquanto essa tarefa continua trabalhando.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The job number to resume, like %1. Defaults to the most recently stopped job.',
+      pt: 'O número da tarefa a retomar, como %1. Por padrão é a tarefa parada mais recentemente.',
+    },
+  },
+
+  fg: {
+    desc: {
+      en: 'A shell builtin that brings a background or stopped job back into the foreground, reattaching it to the terminal so it can be interacted with (and interrupted with Ctrl+C) directly again.',
+      pt: 'Um comando interno do shell que traz uma tarefa em segundo plano ou parada de volta para o primeiro plano, reconectando-a ao terminal para que possa ser interagida (e interrompida com Ctrl+C) diretamente de novo.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The job number to bring to the foreground, like %1. Defaults to the most recent job.',
+      pt: 'O número da tarefa a trazer para o primeiro plano, como %1. Por padrão é a tarefa mais recente.',
+    },
+  },
+
+  wait: {
+    desc: {
+      en: "A shell builtin that pauses the script until a background process (or all of them) finishes, the tool that turns 'start several things in parallel' into 'start several things in parallel and then actually wait for them before moving on', which matters enormously in scripts that launch multiple background jobs with & and need to know they all completed before continuing.",
+      pt: 'Um comando interno do shell que pausa o script até um processo em segundo plano (ou todos eles) terminar, a ferramenta que transforma "iniciar várias coisas em paralelo" em "iniciar várias coisas em paralelo e de fato esperar por elas antes de seguir", o que importa enormemente em scripts que disparam vários jobs em segundo plano com & e precisam saber que todos terminaram antes de continuar.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The process ID (PID) to wait for. With no argument, waits for every background job.',
+      pt: 'O ID de processo (PID) a esperar. Sem argumento, espera por todo job em segundo plano.',
+    },
+  },
+
+  eval: {
+    desc: {
+      en: "A shell builtin that takes a string and runs it as if it had been typed directly as a command, a second pass of shell parsing applied to text that was itself built dynamically, such as a variable holding a whole command. It is powerful and genuinely useful for a handful of specific patterns, but running eval on anything derived from user input is a classic injection vulnerability, since the string is parsed with the full authority of the shell, whatever it contains, it runs.",
+      pt: 'Um comando interno do shell que pega uma string e a roda como se tivesse sido digitada diretamente como comando, uma segunda passada de análise do shell aplicada a um texto que foi ele mesmo construído dinamicamente, como uma variável guardando um comando inteiro. É poderoso e genuinamente útil para um punhado de padrões específicos, mas rodar eval em qualquer coisa derivada de entrada do usuário é uma vulnerabilidade clássica de injeção, já que a string é interpretada com a autoridade total do shell, seja lá o que ela contiver, ela roda.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The string to parse and run as a command.',
+      pt: 'A string a interpretar e rodar como comando.',
+    },
+  },
+
+  ulimit: {
+    desc: {
+      en: "A shell builtin that shows or sets resource limits for the current shell session and everything launched from it, things like the maximum number of open files, the maximum stack size, or the maximum number of processes a user can run at once. It is the tool behind fixing the notorious 'too many open files' error a busy server process can hit, raising the file-descriptor limit with 'ulimit -n' being the standard first thing tried.",
+      pt: 'Um comando interno do shell que mostra ou define limites de recurso para a sessão de shell atual e tudo que é iniciado a partir dela, coisas como o número máximo de arquivos abertos, o tamanho máximo de pilha, ou o número máximo de processos que um usuário pode rodar de uma vez. É a ferramenta por trás de corrigir o notório erro "too many open files" que um processo de servidor ocupado pode encontrar, aumentar o limite de descritores de arquivo com "ulimit -n" sendo a primeira coisa padrão a tentar.',
+    },
+    subcommands: {},
+    flags: {
+      '-n': {
+        en: 'Shows or sets the maximum number of open file descriptors.',
+        pt: 'Mostra ou define o número máximo de descritores de arquivo abertos.',
+      },
+      '-a': {
+        en: 'Shows every resource limit at once.',
+        pt: 'Mostra todo limite de recurso de uma vez.',
+      },
+      '-u': {
+        en: 'Shows or sets the maximum number of processes a user can run.',
+        pt: 'Mostra ou define o número máximo de processos que um usuário pode rodar.',
+      },
+    },
+    valueFlags: {
+      '-n': 'generic',
+      '-u': 'generic',
+    },
+  },
+
+  tcpdump: {
+    desc: {
+      en: "Captures and displays network packets passing through an interface in real time, showing the raw traffic itself rather than a higher-level summary the way ss or netstat do. It is the tool reached for when the question is genuinely 'what is actually going over the wire', debugging a protocol handshake, confirming a request even left the machine, or watching for unexpected traffic, and its filter expression syntax (like 'tcpdump port 443') lets it narrow a busy interface down to just the packets that matter.",
+      pt: 'Captura e exibe pacotes de rede passando por uma interface em tempo real, mostrando o tráfego bruto em si, não um resumo de alto nível como o ss ou o netstat fazem. É a ferramenta usada quando a pergunta é genuinamente "o que está realmente passando pelo cabo", depurando um handshake de protocolo, confirmando que uma requisição de fato saiu da máquina, ou observando tráfego inesperado, e sua sintaxe de expressão de filtro (como "tcpdump port 443") permite reduzir uma interface ocupada só aos pacotes que importam.',
+    },
+    subcommands: {},
+    flags: {
+      '-i': {
+        en: 'Specifies which network interface to capture on.',
+        pt: 'Especifica em qual interface de rede capturar.',
+      },
+      '-n': {
+        en: 'Shows numeric addresses and ports instead of resolving names, and prints faster as a result.',
+        pt: 'Mostra endereços e portas numéricos em vez de resolver nomes, e imprime mais rápido como resultado.',
+      },
+      '-w': {
+        en: 'Writes the captured packets to a file instead of printing them, for later analysis with tools like Wireshark.',
+        pt: 'Escreve os pacotes capturados em um arquivo em vez de imprimi-los, para análise posterior com ferramentas como o Wireshark.',
+      },
+    },
+    valueFlags: {
+      '-i': 'generic',
+      '-w': 'generic',
+    },
+  },
+
+  arp: {
+    desc: {
+      en: "Shows or edits the ARP table, the local cache mapping neighboring IP addresses on the same network segment to their physical (MAC) hardware addresses. Every device needs this mapping to actually deliver a packet at the link layer, and a wrong or poisoned ARP entry is a classic way local network traffic gets silently redirected, which is exactly why arp -a (listing the current table) is a genuinely useful step in diagnosing strange local-network connectivity problems.",
+      pt: 'Mostra ou edita a tabela ARP, o cache local que mapeia endereços IP vizinhos no mesmo segmento de rede para seus endereços físicos (MAC) de hardware. Todo dispositivo precisa desse mapeamento para de fato entregar um pacote na camada de enlace, e uma entrada ARP errada ou envenenada é uma forma clássica de tráfego de rede local ser redirecionado silenciosamente, motivo exato pelo qual arp -a (listando a tabela atual) é um passo genuinamente útil ao diagnosticar problemas estranhos de conectividade na rede local.',
+    },
+    subcommands: {},
+    flags: {
+      '-a': {
+        en: 'Lists the current ARP table entries.',
+        pt: 'Lista as entradas atuais da tabela ARP.',
+      },
+      '-d': {
+        en: 'Deletes an entry from the ARP table.',
+        pt: 'Apaga uma entrada da tabela ARP.',
+      },
+    },
+  },
+
+  route: {
+    desc: {
+      en: "Shows or edits the kernel's IP routing table, deciding which network interface and gateway a packet goes through to reach a given destination. It has been deprecated for years in favor of 'ip route', part of the same iproute2 suite that replaced ifconfig, but the name and its short output format are still recognized on sight by anyone who learned networking before that transition.",
+      pt: 'Mostra ou edita a tabela de roteamento IP do kernel, decidindo por qual interface de rede e gateway um pacote passa para chegar a um destino dado. Está obsoleto há anos em favor do "ip route", parte do mesmo conjunto iproute2 que substituiu o ifconfig, mas o nome e seu formato de saída curto ainda são reconhecidos de cara por quem aprendeu redes antes dessa transição.',
+    },
+    subcommands: {},
+    flags: {
+      '-n': {
+        en: 'Shows numeric addresses instead of resolving hostnames.',
+        pt: 'Mostra endereços numéricos em vez de resolver nomes de host.',
+      },
+    },
+  },
+
+  dmesg: {
+    desc: {
+      en: "Prints the kernel's own message buffer, the log of low-level events the kernel itself reports: hardware being detected, drivers loading, a USB device being plugged in, and, critically, why the kernel just killed a process for using too much memory (the out-of-memory killer logs its decisions here). It is usually the very first place to look when something at the hardware or driver level misbehaves, since application-level logs never see events that happen below them.",
+      pt: 'Imprime o próprio buffer de mensagens do kernel, o log de eventos de baixo nível que o kernel relata: hardware sendo detectado, drivers carregando, um dispositivo USB sendo plugado, e, criticamente, por que o kernel acabou de matar um processo por usar memória demais (o out-of-memory killer registra suas decisões aqui). Costuma ser o primeiríssimo lugar a olhar quando algo em nível de hardware ou driver se comporta mal, já que logs de nível de aplicação nunca veem eventos que acontecem abaixo deles.',
+    },
+    subcommands: {},
+    flags: {
+      '-T': {
+        en: 'Shows human-readable timestamps instead of raw seconds since boot.',
+        pt: 'Mostra datas legíveis em vez de segundos brutos desde o boot.',
+      },
+      '-w': {
+        en: 'Follows the log in real time, like tail -f.',
+        pt: 'Acompanha o log em tempo real, como o tail -f.',
+      },
+    },
+  },
+
+  lscpu: {
+    desc: {
+      en: "Prints a summary of the CPU architecture: how many cores and threads are available, the model name, clock speed, cache sizes, and virtualization support, all gathered from /proc/cpuinfo and sysfs but organized into one readable report instead of a long raw dump.",
+      pt: 'Imprime um resumo da arquitetura da CPU: quantos núcleos e threads estão disponíveis, o nome do modelo, velocidade de clock, tamanhos de cache, e suporte a virtualização, tudo reunido de /proc/cpuinfo e do sysfs mas organizado em um relatório legível em vez de um despejo bruto longo.',
+    },
+    subcommands: {},
+    flags: {},
+  },
+
+  lspci: {
+    desc: {
+      en: 'Lists every device connected to the PCI bus, graphics cards, network adapters, storage controllers, giving each a short identifying line. It is a common early step in hardware troubleshooting, confirming a device is even detected by the system at all before worrying about whether a driver for it is installed and working.',
+      pt: 'Lista todo dispositivo conectado ao barramento PCI, placas de vídeo, adaptadores de rede, controladores de armazenamento, dando a cada um uma linha curta de identificação. É um passo inicial comum na resolução de problemas de hardware, confirmando que um dispositivo é sequer detectado pelo sistema antes de se preocupar se um driver para ele está instalado e funcionando.',
+    },
+    subcommands: {},
+    flags: {
+      '-v': {
+        en: 'Shows more detailed information about each device (verbose mode).',
+        pt: 'Mostra informações mais detalhadas sobre cada dispositivo (modo verboso).',
+      },
+    },
+  },
+
+  lsusb: {
+    desc: {
+      en: "Lists every device currently connected to a USB bus, the USB counterpart to lspci, useful for confirming a plugged-in device (a drive, a keyboard, a webcam) is actually being seen by the system at the hardware level before troubleshooting anything further up the stack.",
+      pt: 'Lista todo dispositivo atualmente conectado a um barramento USB, o equivalente USB do lspci, útil para confirmar que um dispositivo plugado (um drive, um teclado, uma webcam) está de fato sendo visto pelo sistema em nível de hardware antes de investigar qualquer coisa mais acima na pilha.',
+    },
+    subcommands: {},
+    flags: {
+      '-v': {
+        en: 'Shows more detailed information about each device (verbose mode).',
+        pt: 'Mostra informações mais detalhadas sobre cada dispositivo (modo verboso).',
+      },
+    },
+  },
+
+  arch: {
+    desc: {
+      en: "Prints the machine's hardware architecture (x86_64, aarch64, and so on), a shorter, more focused equivalent to 'uname -m' when that one specific fact is all that is needed.",
+      pt: 'Imprime a arquitetura de hardware da máquina (x86_64, aarch64, e assim por diante), um equivalente mais curto e focado ao "uname -m" quando esse único fato específico é tudo que se precisa.',
+    },
+    subcommands: {},
+    flags: {},
+  },
+
+  nproc: {
+    desc: {
+      en: "Prints the number of processing units (CPU cores/threads) available to the current process, commonly used inside build scripts to automatically size parallelism, 'make -j$(nproc)' runs as many parallel build jobs as the machine has cores, without hardcoding a number that would be wrong on a different machine.",
+      pt: 'Imprime o número de unidades de processamento (núcleos/threads de CPU) disponíveis para o processo atual, comumente usado dentro de scripts de build para dimensionar paralelismo automaticamente, "make -j$(nproc)" roda tantos jobs de build paralelos quanto a máquina tiver núcleos, sem fixar um número que estaria errado em outra máquina.',
+    },
+    subcommands: {},
+    flags: {},
+  },
+
+  vmstat: {
+    desc: {
+      en: "Reports a snapshot (or, given an interval, a repeating series of snapshots) of system-wide virtual memory, process, CPU, and I/O activity in one compact table, useful for spotting whether a slow system is actually bottlenecked on CPU, memory (heavy swapping), or disk I/O at a glance, before diving into a more specialized tool for whichever one turns out to be the culprit.",
+      pt: 'Relata um retrato (ou, dado um intervalo, uma série repetida de retratos) da atividade de memória virtual, processos, CPU e I/O do sistema inteiro em uma tabela compacta, útil para identificar de relance se um sistema lento está de fato gargalado em CPU, memória (muito swap) ou I/O de disco, antes de mergulhar em uma ferramenta mais especializada para o que quer que se revele o culpado.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The refresh interval in seconds, for a repeating series of reports.',
+      pt: 'O intervalo de atualização em segundos, para uma série repetida de relatórios.',
+    },
+  },
+
+  w: {
+    desc: {
+      en: "Shows who is currently logged into the system and what each of them is doing, combining the output of who (logged-in users) with the output of uptime (system load) at the top, one glance answering both 'who is on this machine' and 'how loaded is it' at once.",
+      pt: 'Mostra quem está logado no sistema no momento e o que cada um está fazendo, combinando a saída do who (usuários logados) com a saída do uptime (carga do sistema) no topo, um único olhar respondendo tanto "quem está nesta máquina" quanto "quão carregada ela está" ao mesmo tempo.',
+    },
+    subcommands: {},
+    flags: {},
+  },
+
+  who: {
+    desc: {
+      en: 'Shows who is currently logged into the system, one line per session, with the terminal and login time, a narrower and simpler report than w, without the per-user activity or system load detail.',
+      pt: 'Mostra quem está logado no sistema no momento, uma linha por sessão, com o terminal e a hora de login, um relatório mais estreito e simples que o w, sem o detalhe de atividade por usuário ou carga do sistema.',
+    },
+    subcommands: {},
+    flags: {},
+  },
+
+  last: {
+    desc: {
+      en: 'Shows a history of recent logins and system reboots, read from a log file rather than reflecting the current moment the way who and w do, useful for answering "who logged in yesterday" or "when did this machine last reboot" after the fact.',
+      pt: 'Mostra um histórico de logins recentes e reinicializações do sistema, lido de um arquivo de log em vez de refletir o momento atual como o who e o w fazem, útil para responder "quem logou ontem" ou "quando essa máquina reiniciou pela última vez" depois do fato.',
+    },
+    subcommands: {},
+    flags: {
+      '-n': {
+        en: 'Limits the output to the last N entries.',
+        pt: 'Limita a saída às últimas N entradas.',
+      },
+    },
+    valueFlags: {
+      '-n': 'generic',
+    },
+  },
+
+  strace: {
+    desc: {
+      en: "Traces every system call a program makes as it runs, printing each one along with its arguments and return value, the definitive way to see exactly what a program is actually doing at the level of the kernel: which files it tries to open (and whether that fails), which network connections it attempts, which permissions checks it fails. When a program errors out with a vague message and no further explanation, strace is the tool that shows the precise syscall that actually failed and why, at the cost of a real slowdown while it is running.",
+      pt: 'Rastreia toda chamada de sistema que um programa faz enquanto roda, imprimindo cada uma junto com seus argumentos e valor de retorno, a forma definitiva de ver exatamente o que um programa está de fato fazendo no nível do kernel: quais arquivos ele tenta abrir (e se isso falha), quais conexões de rede ele tenta, quais checagens de permissão ele falha. Quando um programa erra com uma mensagem vaga e sem mais explicação, o strace é a ferramenta que mostra a chamada de sistema exata que de fato falhou e por quê, ao custo de uma lentidão real enquanto está rodando.',
+    },
+    subcommands: {},
+    flags: {
+      '-p': {
+        en: 'Attaches to an already-running process by PID, instead of starting a new one.',
+        pt: 'Se conecta a um processo já em execução pelo PID, em vez de iniciar um novo.',
+      },
+      '-f': {
+        en: 'Also traces any child processes the program creates.',
+        pt: 'Também rastreia qualquer processo filho que o programa criar.',
+      },
+      '-e': {
+        en: 'Filters the trace to only specific system calls, such as trace=open.',
+        pt: 'Filtra o rastreio só para chamadas de sistema específicas, como trace=open.',
+      },
+    },
+    valueFlags: {
+      '-p': 'generic',
+      '-e': 'generic',
+    },
+    argHint: {
+      en: 'The command to run and trace.',
+      pt: 'O comando a rodar e rastrear.',
+    },
+  },
+
+  pgrep: {
+    desc: {
+      en: "Searches for processes by name (or other attributes) and prints their PIDs, the read-only counterpart to pkill: where pkill matches a pattern and signals every process found, pgrep matches the same way but just reports the PIDs, useful for checking whether something is running or for capturing a PID into a variable before deciding what to do with it.",
+      pt: 'Procura processos pelo nome (ou outros atributos) e imprime seus PIDs, o par somente-leitura do pkill: onde o pkill combina um padrão e sinaliza todo processo encontrado, o pgrep combina da mesma forma mas só relata os PIDs, útil para checar se algo está rodando ou para capturar um PID em uma variável antes de decidir o que fazer com ele.',
+    },
+    subcommands: {},
+    flags: {
+      '-f': {
+        en: 'Matches against the full command line, not just the process name.',
+        pt: 'Compara com a linha de comando completa, não só o nome do processo.',
+      },
+      '-u': {
+        en: 'Only matches processes owned by a specific user.',
+        pt: 'Só combina com processos pertencentes a um usuário específico.',
+      },
+      '-l': {
+        en: 'Shows the process name alongside each matching PID.',
+        pt: 'Mostra o nome do processo junto com cada PID correspondente.',
+      },
+    },
+    valueFlags: {
+      '-u': 'generic',
+    },
+    argHint: {
+      en: 'The name pattern of the process(es) to match.',
+      pt: 'O padrão de nome do(s) processo(s) a combinar.',
+    },
+  },
+
+  pstree: {
+    desc: {
+      en: "Shows running processes as a visual tree instead of the flat list ps produces, making the parent-child relationship between processes immediately obvious, which process spawned which. It is a fast way to understand how a complex piece of software is actually structured at runtime, like seeing that a browser's dozens of processes all descend from one parent, or spotting an orphaned process that got reparented to init.",
+      pt: 'Mostra os processos em execução como uma árvore visual em vez da lista plana que o ps produz, tornando a relação pai-filho entre processos imediatamente óbvia, qual processo criou qual. É uma forma rápida de entender como um software complexo está de fato estruturado em tempo de execução, como ver que as dezenas de processos de um navegador descendem todos de um único pai, ou notar um processo órfão que foi reparentado para o init.',
+    },
+    subcommands: {},
+    flags: {
+      '-p': {
+        en: 'Shows the PID of each process alongside its name.',
+        pt: 'Mostra o PID de cada processo junto com o nome dele.',
+      },
+    },
+  },
+
+  fuser: {
+    desc: {
+      en: "Identifies which processes are using a specific file, folder, or network port, the direct way to answer 'what is currently holding this open' before deleting a file that refuses to free disk space or trying to bind a port that says it's already in use.",
+      pt: 'Identifica quais processos estão usando um arquivo, pasta ou porta de rede específicos, a forma direta de responder "o que está segurando isso aberto agora" antes de apagar um arquivo que se recusa a liberar espaço em disco ou tentar usar uma porta que diz já estar em uso.',
+    },
+    subcommands: {},
+    flags: {
+      '-k': {
+        en: 'Kills every process found using the file or port, instead of just listing them.',
+        pt: 'Mata todo processo encontrado usando o arquivo ou porta, em vez de só listá-los.',
+      },
+      '-v': {
+        en: 'Shows detailed information about each matching process (verbose mode).',
+        pt: 'Mostra informações detalhadas sobre cada processo correspondente (modo verboso).',
+      },
+    },
+    argHint: {
+      en: 'The file, folder, or port to check.',
+      pt: 'O arquivo, pasta ou porta a checar.',
+    },
+  },
+
+  mktemp: {
+    desc: {
+      en: "Creates a new, empty file (or, with -d, a directory) with a guaranteed-unique, randomly generated name inside a temporary location, and prints that name so a script can capture it. Using mktemp instead of hardcoding a temp file name like /tmp/myscript.tmp avoids a real security and correctness problem: a predictable temp file name can be created in advance by another process (or attacker) to intercept or corrupt what the script writes to it.",
+      pt: 'Cria um arquivo novo e vazio (ou, com -d, um diretório) com um nome garantidamente único e gerado aleatoriamente dentro de um local temporário, e imprime esse nome para que um script possa capturá-lo. Usar mktemp em vez de fixar um nome de arquivo temporário como /tmp/meuscript.tmp evita um problema real de segurança e corretude: um nome de arquivo temporário previsível pode ser criado com antecedência por outro processo (ou atacante) para interceptar ou corromper o que o script escreve nele.',
+    },
+    subcommands: {},
+    flags: {
+      '-d': {
+        en: 'Creates a temporary directory instead of a file.',
+        pt: 'Cria um diretório temporário em vez de um arquivo.',
+      },
+    },
+  },
+
+  truncate: {
+    desc: {
+      en: "Shrinks or extends a file to an exact specified size, without touching whatever content is left. Growing a file this way creates a sparse file padded with zero bytes that don't actually occupy disk space yet, which makes 'truncate -s 0 file' a fast way to empty a log file in place (unlike deleting and recreating it, this keeps the same inode, so a process already holding the file open keeps writing to the same, now-empty, file).",
+      pt: 'Encolhe ou estende um arquivo para um tamanho exato especificado, sem tocar no conteúdo que sobra. Aumentar um arquivo dessa forma cria um arquivo esparso preenchido com bytes zero que ainda não ocupam espaço em disco de fato, o que faz de "truncate -s 0 arquivo" uma forma rápida de esvaziar um arquivo de log no lugar (diferente de apagar e recriar, isso mantém o mesmo inode, então um processo que já tem o arquivo aberto continua escrevendo no mesmo arquivo, agora vazio).',
+    },
+    subcommands: {},
+    flags: {
+      '-s': {
+        en: 'Sets the target size for the file, such as 0 to empty it or 1G for one gigabyte.',
+        pt: 'Define o tamanho alvo do arquivo, como 0 para esvaziá-lo ou 1G para um gigabyte.',
+      },
+    },
+    valueFlags: {
+      '-s': 'generic',
+    },
+    argHint: {
+      en: 'The file to resize.',
+      pt: 'O arquivo a redimensionar.',
+    },
+  },
+
+  cmp: {
+    desc: {
+      en: "Compares two files byte by byte and reports the position of the first difference found, then stops, unlike diff, which shows every difference in a line-oriented view. It is the right tool specifically for binary files, where a line-based diff makes no sense, and for a fast yes-or-no answer to 'are these two files identical' without caring what the difference actually is.",
+      pt: 'Compara dois arquivos byte a byte e relata a posição da primeira diferença encontrada, e então para, diferente do diff, que mostra toda diferença em uma visão orientada a linha. É a ferramenta certa especificamente para arquivos binários, onde um diff baseado em linha não faz sentido, e para uma resposta rápida de sim-ou-não sobre "esses dois arquivos são idênticos" sem se importar com qual é de fato a diferença.',
+    },
+    subcommands: {},
+    flags: {
+      '-s': {
+        en: 'Suppresses all output, only setting the exit code to indicate whether the files matched.',
+        pt: 'Suprime toda saída, só definindo o código de saída para indicar se os arquivos combinaram.',
+      },
+    },
+    argHint: {
+      en: 'One of the two files being compared byte by byte.',
+      pt: 'Um dos dois arquivos sendo comparados byte a byte.',
+    },
+  },
+
+  tac: {
+    desc: {
+      en: "Prints a file with its lines in reverse order, last line first, exactly cat spelled backwards and doing exactly the opposite: where cat concatenates files in order, tac reverses their line order. It shows up when the most recent entries in an append-only log (where new lines get added at the end) need to be read newest-first.",
+      pt: 'Imprime um arquivo com suas linhas em ordem reversa, última linha primeiro, exatamente cat escrito ao contrário e fazendo exatamente o oposto: onde o cat concatena arquivos em ordem, o tac inverte a ordem das linhas deles. Aparece quando as entradas mais recentes de um log só-de-anexar (onde linhas novas são adicionadas no final) precisam ser lidas da mais nova para a mais antiga.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The file to print in reverse line order.',
+      pt: 'O arquivo a imprimir em ordem reversa de linhas.',
+    },
+  },
+
+  shuf: {
+    desc: {
+      en: "Randomly shuffles the lines of its input and prints them in that new random order, the command-line way to pick a random sample or randomize a list, 'shuf -n 1 file' picks one random line, which is a common idiom for randomly selecting an item from a list inside a script.",
+      pt: 'Embaralha aleatoriamente as linhas da entrada e as imprime nessa nova ordem aleatória, a forma de linha de comando de escolher uma amostra aleatória ou aleatorizar uma lista, "shuf -n 1 arquivo" escolhe uma linha aleatória, um idioma comum para selecionar aleatoriamente um item de uma lista dentro de um script.',
+    },
+    subcommands: {},
+    flags: {
+      '-n': {
+        en: 'Limits the output to N lines, instead of shuffling and printing everything.',
+        pt: 'Limita a saída a N linhas, em vez de embaralhar e imprimir tudo.',
+      },
+    },
+    valueFlags: {
+      '-n': 'generic',
+    },
+    argHint: {
+      en: 'The file whose lines will be shuffled.',
+      pt: 'O arquivo cujas linhas serão embaralhadas.',
+    },
+  },
+
+  fold: {
+    desc: {
+      en: 'Wraps each line of input so that no line is longer than a given width, breaking long lines at that column regardless of word boundaries, a blunt but simple tool for making wide text fit a narrower terminal or fixed-width output format.',
+      pt: 'Quebra cada linha da entrada para que nenhuma linha ultrapasse uma largura dada, cortando linhas longas naquela coluna independente de limite de palavra, uma ferramenta simples e direta para fazer texto largo caber em um terminal mais estreito ou formato de saída de largura fixa.',
+    },
+    subcommands: {},
+    flags: {
+      '-w': {
+        en: 'Sets the maximum line width (80 characters by default).',
+        pt: 'Define a largura máxima de linha (80 caracteres por padrão).',
+      },
+      '-s': {
+        en: 'Breaks at the last whitespace before the width limit instead of mid-word.',
+        pt: 'Quebra no último espaço antes do limite de largura, em vez de no meio da palavra.',
+      },
+    },
+    valueFlags: {
+      '-w': 'generic',
+    },
+  },
+
+  rev: {
+    desc: {
+      en: "Reverses the characters of each line, left to right becomes right to left, a small, oddly specific tool that mostly shows up combined with cut in clever one-liners to extract something counted from the end of a line rather than the start, since cut only understands 'from the beginning'.",
+      pt: 'Inverte os caracteres de cada linha, esquerda para direita vira direita para esquerda, uma ferramenta pequena e meio específica que geralmente aparece combinada com o cut em one-liners espertos para extrair algo contado a partir do final de uma linha, não do início, já que o cut só entende "a partir do começo".',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The file whose lines will be character-reversed.',
+      pt: 'O arquivo cujas linhas terão os caracteres invertidos.',
+    },
+  },
+
+  split: {
+    desc: {
+      en: "Breaks a single large file into multiple smaller pieces, by size or by number of lines, each with a generated sequential suffix, and cat is the tool that reverses the process (concatenating the pieces back together in order restores the original). It commonly shows up when a file is too big to email, upload, or fit on removable media as one piece.",
+      pt: 'Divide um único arquivo grande em vários pedaços menores, por tamanho ou por número de linhas, cada um com um sufixo sequencial gerado, e o cat é a ferramenta que reverte o processo (concatenar os pedaços de volta em ordem restaura o original). Costuma aparecer quando um arquivo é grande demais para mandar por email, enviar, ou caber em mídia removível de uma vez só.',
+    },
+    subcommands: {},
+    flags: {
+      '-b': {
+        en: 'Splits by byte size per piece, such as 100M for 100 megabytes each.',
+        pt: 'Divide por tamanho em bytes por pedaço, como 100M para 100 megabytes cada.',
+      },
+      '-l': {
+        en: 'Splits by number of lines per piece, instead of by size.',
+        pt: 'Divide por número de linhas por pedaço, em vez de por tamanho.',
+      },
+    },
+    valueFlags: {
+      '-b': 'generic',
+      '-l': 'generic',
+    },
+    argHint: {
+      en: 'The file to split into pieces.',
+      pt: 'O arquivo a dividir em pedaços.',
+    },
+  },
+
+  openssl: {
+    desc: {
+      en: "A toolkit for cryptographic operations and TLS/SSL, covering a huge range of tasks under one command: generating a private key, creating or inspecting a certificate, hashing data, encrypting a file, or opening a raw connection to a server to inspect its TLS handshake directly ('openssl s_client'). Its subcommands each behave almost like separate programs with their own flags, which is why the same 'openssl' name covers such a wide range of otherwise unrelated-looking invocations.",
+      pt: 'Um conjunto de ferramentas para operações criptográficas e TLS/SSL, cobrindo uma gama enorme de tarefas sob um único comando: gerar uma chave privada, criar ou inspecionar um certificado, calcular hash de dados, criptografar um arquivo, ou abrir uma conexão bruta com um servidor para inspecionar seu handshake TLS diretamente ("openssl s_client"). Cada subcomando se comporta quase como um programa separado com suas próprias flags, motivo pelo qual o mesmo nome "openssl" cobre uma gama tão ampla de invocações que parecem, à primeira vista, não relacionadas.',
+    },
+    subcommands: {
+      genrsa: {
+        en: 'Generates a new RSA private key.',
+        pt: 'Gera uma nova chave privada RSA.',
+      },
+      req: {
+        en: 'Creates or processes a certificate signing request (CSR).',
+        pt: 'Cria ou processa uma solicitação de assinatura de certificado (CSR).',
+      },
+      x509: {
+        en: 'Displays or manipulates an X.509 certificate.',
+        pt: 'Exibe ou manipula um certificado X.509.',
+      },
+      's_client': {
+        en: "Opens a raw connection to a remote server and shows its TLS/SSL handshake and certificate details.",
+        pt: 'Abre uma conexão bruta com um servidor remoto e mostra o handshake TLS/SSL e os detalhes do certificado dele.',
+      },
+      enc: {
+        en: 'Encrypts or decrypts data using a chosen cipher.',
+        pt: 'Criptografa ou descriptografa dados usando uma cifra escolhida.',
+      },
+    },
+    flags: {},
+  },
+
+  gpg: {
+    desc: {
+      en: "The GNU Privacy Guard, an implementation of the OpenPGP standard for public-key encryption and digital signatures. It is what verifies that a downloaded file's detached .asc signature was really produced by the key it claims, and what many package repositories and Git commit signing rely on under the hood, key management (generating, importing, trusting a key) is usually the part people find least intuitive about it.",
+      pt: 'O GNU Privacy Guard, uma implementação do padrão OpenPGP para criptografia de chave pública e assinaturas digitais. É o que verifica se a assinatura .asc destacada de um arquivo baixado foi realmente produzida pela chave que ela alega ser, e o que muitos repositórios de pacote e a assinatura de commit do Git usam por baixo, gerenciamento de chave (gerar, importar, confiar em uma chave) costuma ser a parte que as pessoas acham menos intuitiva.',
+    },
+    subcommands: {
+      '--gen-key': {
+        en: 'Generates a new key pair interactively.',
+        pt: 'Gera um novo par de chaves interativamente.',
+      },
+      '--import': {
+        en: "Imports someone else's public key from a file, so their signatures can be verified.",
+        pt: 'Importa a chave pública de outra pessoa a partir de um arquivo, para que as assinaturas dela possam ser verificadas.',
+      },
+      '--verify': {
+        en: 'Verifies a detached signature against the file it claims to sign.',
+        pt: 'Verifica uma assinatura destacada contra o arquivo que ela alega assinar.',
+      },
+      '--encrypt': {
+        en: "Encrypts a file for a specific recipient's public key.",
+        pt: 'Criptografa um arquivo para a chave pública de um destinatário específico.',
+      },
+    },
+    flags: {},
+  },
+
+  'ssh-copy-id': {
+    desc: {
+      en: "Copies a local public SSH key to a remote server's authorized_keys file, the one-command way to set up password-less login instead of manually catting the key and appending it over an existing SSH session. It handles creating the remote .ssh directory with the right permissions too, a detail that trips people up when doing it by hand, since SSH silently refuses to trust a key file if its permissions are too open.",
+      pt: 'Copia uma chave SSH pública local para o arquivo authorized_keys de um servidor remoto, a forma de um comando só de configurar login sem senha, em vez de fazer cat manualmente na chave e anexá-la via uma sessão SSH já existente. Também cuida de criar o diretório .ssh remoto com as permissões certas, um detalhe que costuma pegar quem faz isso à mão, já que o SSH se recusa silenciosamente a confiar em um arquivo de chave se as permissões dele estiverem abertas demais.',
+    },
+    subcommands: {},
+    flags: {
+      '-i': {
+        en: 'Specifies which public key file to copy, instead of the default.',
+        pt: 'Especifica qual arquivo de chave pública copiar, em vez do padrão.',
+      },
+    },
+    valueFlags: {
+      '-i': 'generic',
+    },
+    argHint: {
+      en: 'The remote host to copy the key to, as user@host.',
+      pt: 'O host remoto para o qual copiar a chave, como usuario@host.',
+    },
+  },
+
+  'ssh-agent': {
+    desc: {
+      en: "Runs a background process that holds decrypted SSH private keys in memory for the duration of a session, so a passphrase-protected key only needs to be unlocked once (with ssh-add) instead of on every single SSH connection. It is what makes a passphrase-protected key practical to use day to day instead of a genuine inconvenience typed dozens of times a day.",
+      pt: 'Roda um processo em segundo plano que guarda chaves SSH privadas descriptografadas em memória pela duração de uma sessão, para que uma chave protegida por frase-senha só precise ser desbloqueada uma vez (com ssh-add) em vez de em toda conexão SSH individual. É o que torna uma chave protegida por frase-senha prática de usar no dia a dia, em vez de um incômodo genuíno digitado dezenas de vezes por dia.',
+    },
+    subcommands: {},
+    flags: {},
+  },
+
+  mkfs: {
+    desc: {
+      en: "Creates a new filesystem on a disk partition or device, formatting it with a specific filesystem type (ext4, xfs, and so on) so the kernel can actually mount and use it, exactly the step mkswap performs specifically for swap space, but mkfs is the general-purpose version for real, mountable filesystems. It is a destructive operation, running it on a partition wipes whatever data was already there.",
+      pt: 'Cria um novo sistema de arquivos em uma partição de disco ou dispositivo, formatando-o com um tipo de sistema de arquivos específico (ext4, xfs, e assim por diante) para que o kernel consiga de fato montá-lo e usá-lo, exatamente o passo que o mkswap realiza especificamente para área de swap, mas o mkfs é a versão de propósito geral para sistemas de arquivos reais e montáveis. É uma operação destrutiva, rodá-la em uma partição apaga o que quer que já estivesse lá.',
+    },
+    subcommands: {},
+    flags: {
+      '-t': {
+        en: 'Sets the filesystem type to create, such as ext4 or xfs.',
+        pt: 'Define o tipo de sistema de arquivos a criar, como ext4 ou xfs.',
+      },
+    },
+    valueFlags: {
+      '-t': 'generic',
+    },
+    argHint: {
+      en: 'The partition or device to format.',
+      pt: 'A partição ou dispositivo a formatar.',
+    },
+  },
+
+  at: {
+    desc: {
+      en: "Schedules a command to run once at a specific future time, the one-shot counterpart to cron's recurring schedule. 'echo \"backup.sh\" | at 2am tomorrow' queues that command to run at the given time without needing an editor or a persistent schedule entry, disappearing from the queue automatically once it has run.",
+      pt: 'Agenda um comando para rodar uma única vez em um momento futuro específico, o par de execução única do agendamento recorrente do cron. "echo \"backup.sh\" | at 2am tomorrow" enfileira esse comando para rodar no horário dado sem precisar de editor nem de uma entrada de agendamento persistente, desaparecendo da fila automaticamente depois de rodar.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The time to run the job, such as "2am tomorrow" or "now + 1 hour".',
+      pt: 'O horário para rodar a tarefa, como "2am tomorrow" ou "now + 1 hour".',
+    },
+  },
+
+  newgrp: {
+    desc: {
+      en: "Switches the current session's active primary group to a different one the user belongs to, without logging out and back in, useful right after being added to a new group when that membership hasn't taken effect in the current session yet.",
+      pt: 'Troca o grupo primário ativo da sessão atual para outro ao qual o usuário pertence, sem precisar deslogar e logar de novo, útil logo depois de ser adicionado a um grupo novo quando essa associação ainda não entrou em vigor na sessão atual.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The group to switch to.',
+      pt: 'O grupo para o qual trocar.',
+    },
+  },
+
+  sha1sum: {
+    desc: {
+      en: "Computes the SHA-1 cryptographic hash of a file. Like MD5, SHA-1 is now considered cryptographically broken for security purposes (practical collision attacks have been demonstrated), so it persists mainly for compatibility with older systems and Git's original object-hashing scheme, not as a recommendation; sha256sum is the modern choice whenever the hash actually needs to resist deliberate tampering.",
+      pt: 'Calcula o hash criptográfico SHA-1 de um arquivo. Assim como o MD5, o SHA-1 hoje é considerado criptograficamente quebrado para fins de segurança (ataques práticos de colisão já foram demonstrados), então ele persiste principalmente por compatibilidade com sistemas mais antigos e o esquema original de hash de objeto do Git, não como recomendação; o sha256sum é a escolha moderna sempre que o hash realmente precisa resistir a adulteração deliberada.',
+    },
+    subcommands: {},
+    flags: {
+      '-c': {
+        en: 'Checks a file against a list of previously computed hashes, instead of computing a new one.',
+        pt: 'Verifica um arquivo contra uma lista de hashes previamente calculados, em vez de calcular um novo.',
+      },
+    },
+    argHint: {
+      en: 'The file to hash.',
+      pt: 'O arquivo a calcular o hash.',
+    },
+  },
+
+  cksum: {
+    desc: {
+      en: "Computes a CRC checksum and byte count for a file, a much older and weaker integrity check than md5sum or sha256sum, designed to catch accidental corruption (a bad transfer, a flipped bit) rather than deliberate tampering, which it offers essentially no protection against.",
+      pt: 'Calcula um checksum CRC e a contagem de bytes de um arquivo, uma checagem de integridade bem mais antiga e fraca que md5sum ou sha256sum, feita para pegar corrupção acidental (uma transferência ruim, um bit invertido), não adulteração deliberada, contra a qual oferece essencialmente nenhuma proteção.',
+    },
+    subcommands: {},
+    flags: {},
+    argHint: {
+      en: 'The file to checksum.',
+      pt: 'O arquivo a calcular o checksum.',
+    },
+  },
+
+  uuidgen: {
+    desc: {
+      en: "Generates a random UUID (universally unique identifier), a 128-bit value formatted as a string of hex digits that is, for all practical purposes, guaranteed unique across every machine that will ever generate one, without any central coordination needed. It shows up constantly as a quick way to mint a unique ID for a database row, a request trace, or a temporary resource name.",
+      pt: 'Gera um UUID aleatório (identificador único universal), um valor de 128 bits formatado como uma string de dígitos hexadecimais que é, para todos os efeitos práticos, garantido único em toda máquina que algum dia gerar um, sem coordenação central nenhuma necessária. Aparece constantemente como uma forma rápida de cunhar um ID único para uma linha de banco de dados, um rastro de requisição, ou um nome de recurso temporário.',
+    },
+    subcommands: {},
+    flags: {},
+  },
+
+  podman: {
+    desc: {
+      en: "A container engine that mirrors the Docker command-line interface closely enough that most 'docker' commands work unchanged as 'podman' commands, but with a fundamentally different architecture: it runs without a permanently running background daemon, and containers can run entirely as an unprivileged user rather than needing root or a root-owned daemon socket. That daemonless, rootless design is its main selling point over Docker on systems where either matters.",
+      pt: 'Um motor de containers que espelha a interface de linha de comando do Docker de perto o suficiente para que a maioria dos comandos "docker" funcione sem mudanças como comandos "podman", mas com uma arquitetura fundamentalmente diferente: roda sem um daemon de segundo plano permanentemente ativo, e containers podem rodar inteiramente como um usuário sem privilégios, em vez de precisar de root ou de um socket de daemon pertencente ao root. Esse design sem daemon e sem necessidade de root é seu principal atrativo sobre o Docker em sistemas onde isso importa.',
+    },
+    subcommands: {
+      run: {
+        en: 'Creates and starts a new container from an image.',
+        pt: 'Cria e inicia um novo container a partir de uma imagem.',
+      },
+      ps: {
+        en: 'Lists running containers.',
+        pt: 'Lista os containers em execução.',
+      },
+      build: {
+        en: 'Creates a new image from a Containerfile or Dockerfile.',
+        pt: 'Cria uma nova imagem a partir de um Containerfile ou Dockerfile.',
+      },
+      pull: {
+        en: 'Downloads an image from a remote registry.',
+        pt: 'Baixa uma imagem de um registro remoto.',
+      },
+    },
+    flags: {
+      '-d': {
+        en: 'Runs the container in the background (detached mode).',
+        pt: "Roda o container em segundo plano (modo 'detached').",
+      },
+      '-p': {
+        en: 'Maps a port on the host machine to a port inside the container.',
+        pt: 'Mapeia uma porta da máquina host para uma porta dentro do container.',
+      },
+    },
+    valueFlags: {
+      '-p': 'generic',
+    },
+  },
+
+  snap: {
+    desc: {
+      en: "Installs and manages snap packages, a cross-distribution packaging format (developed by Canonical for Ubuntu) that bundles an application together with all its dependencies into one self-contained, sandboxed unit, trading some disk space and startup speed for an app that behaves the same across every Linux distribution it supports, without depending on that distro's own package versions.",
+      pt: 'Instala e gerencia pacotes snap, um formato de empacotamento entre distribuições (desenvolvido pela Canonical para o Ubuntu) que empacota uma aplicação junto com todas as suas dependências em uma unidade autossuficiente e isolada, trocando um pouco de espaço em disco e velocidade de inicialização por uma aplicação que se comporta igual em toda distribuição Linux que suporta, sem depender das versões de pacote próprias daquela distro.',
+    },
+    subcommands: {
+      install: {
+        en: 'Installs a snap package.',
+        pt: 'Instala um pacote snap.',
+      },
+      remove: {
+        en: 'Removes an installed snap.',
+        pt: 'Remove um snap instalado.',
+      },
+      list: {
+        en: 'Lists installed snaps.',
+        pt: 'Lista os snaps instalados.',
+      },
+      refresh: {
+        en: 'Updates installed snaps to their latest available version.',
+        pt: 'Atualiza os snaps instalados para a versão mais recente disponível.',
+      },
+    },
+    flags: {
+      '--classic': {
+        en: 'Installs the snap without its usual sandbox confinement, needed by tools that require broader system access.',
+        pt: 'Instala o snap sem seu confinamento de sandbox usual, necessário para ferramentas que exigem acesso mais amplo ao sistema.',
+      },
+    },
+  },
+
+  yum: {
+    desc: {
+      en: "The package manager traditionally used on Red Hat, CentOS, and Fedora-family distributions, the RPM-based counterpart to apt on Debian systems, resolving dependencies and installing packages from configured repositories the same way. It has been superseded by dnf on current Fedora and RHEL releases, which keeps yum's command syntax working as a compatibility layer while being a faster, more modern implementation underneath.",
+      pt: 'O gerenciador de pacotes tradicionalmente usado em distribuições da família Red Hat, CentOS e Fedora, o equivalente baseado em RPM ao apt em sistemas Debian, resolvendo dependências e instalando pacotes de repositórios configurados da mesma forma. Foi substituído pelo dnf nas versões atuais do Fedora e RHEL, que mantém a sintaxe de comando do yum funcionando como camada de compatibilidade, sendo por baixo uma implementação mais rápida e moderna.',
+    },
+    subcommands: {
+      install: {
+        en: 'Installs one or more packages.',
+        pt: 'Instala um ou mais pacotes.',
+      },
+      remove: {
+        en: 'Removes a package.',
+        pt: 'Remove um pacote.',
+      },
+      update: {
+        en: 'Updates installed packages to their latest available version.',
+        pt: 'Atualiza os pacotes instalados para a versão mais recente disponível.',
+      },
+      search: {
+        en: 'Searches for packages by name or description.',
+        pt: 'Procura pacotes pelo nome ou descrição.',
+      },
+    },
+    flags: {
+      '-y': {
+        en: "Automatically answers 'yes' to every confirmation, without asking.",
+        pt: "Responde automaticamente 'sim' para todas as confirmações, sem perguntar.",
+      },
+    },
+  },
+
+  dnf: {
+    desc: {
+      en: "The modern package manager on Fedora and current RHEL/CentOS releases, the direct successor to yum, keeping the same general command shape (install, remove, update, search) while resolving dependencies faster and more reliably underneath.",
+      pt: 'O gerenciador de pacotes moderno no Fedora e nas versões atuais do RHEL/CentOS, o sucessor direto do yum, mantendo a mesma forma geral de comando (install, remove, update, search) enquanto resolve dependências de forma mais rápida e confiável por baixo.',
+    },
+    subcommands: {
+      install: {
+        en: 'Installs one or more packages.',
+        pt: 'Instala um ou mais pacotes.',
+      },
+      remove: {
+        en: 'Removes a package.',
+        pt: 'Remove um pacote.',
+      },
+      update: {
+        en: 'Updates installed packages to their latest available version.',
+        pt: 'Atualiza os pacotes instalados para a versão mais recente disponível.',
+      },
+      search: {
+        en: 'Searches for packages by name or description.',
+        pt: 'Procura pacotes pelo nome ou descrição.',
+      },
+    },
+    flags: {
+      '-y': {
+        en: "Automatically answers 'yes' to every confirmation, without asking.",
+        pt: "Responde automaticamente 'sim' para todas as confirmações, sem perguntar.",
+      },
+    },
+  },
+
+  pacman: {
+    desc: {
+      en: "Arch Linux's package manager, distinctive for how directly it exposes what it is doing: its flags are combinable single letters with a consistent grammar (-S to sync/install, -R to remove, -Q to query what's installed, -Sy to refresh the package database, -Syu to refresh and upgrade everything). That terseness is beloved by Arch users and bewildering to everyone else on first contact, since 'pacman -Syu' looks nothing like 'apt update && apt upgrade' despite doing roughly the same thing.",
+      pt: 'O gerenciador de pacotes do Arch Linux, marcante por quão diretamente expõe o que está fazendo: suas flags são letras únicas combináveis com uma gramática consistente (-S para sincronizar/instalar, -R para remover, -Q para consultar o que está instalado, -Sy para atualizar o banco de pacotes, -Syu para atualizar e fazer upgrade de tudo). Essa concisão é adorada por usuários do Arch e desconcertante para todo mundo no primeiro contato, já que "pacman -Syu" não se parece em nada com "apt update && apt upgrade" apesar de fazer basicamente a mesma coisa.',
+    },
+    subcommands: {},
+    flags: {
+      '-S': {
+        en: 'Synchronizes and installs a package from the configured repositories.',
+        pt: 'Sincroniza e instala um pacote a partir dos repositórios configurados.',
+      },
+      '-R': {
+        en: 'Removes a package.',
+        pt: 'Remove um pacote.',
+      },
+      '-Syu': {
+        en: 'Refreshes the package database and upgrades every installed package, the Arch equivalent of apt update && apt upgrade.',
+        pt: 'Atualiza o banco de pacotes e faz upgrade de todo pacote instalado, o equivalente do Arch a apt update && apt upgrade.',
+      },
+      '-Q': {
+        en: 'Queries the local package database, listing what is currently installed.',
+        pt: 'Consulta o banco de pacotes local, listando o que está instalado no momento.',
+      },
+    },
+  },
 };
 
 COMMANDS['apt-get'] = COMMANDS.apt;
