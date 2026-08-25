@@ -268,6 +268,10 @@ export const processSystem: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    commonMistake: {
+      en: 'On modern systemd-based systems, nohup alone is not always enough: logind can still kill every process belonging to a user the moment their last session ends, even ones started with nohup, unless lingering is enabled for that user with loginctl enable-linger. A long-running job started over SSH can then vanish anyway the moment the SSH connection closes, even though nohup did exactly what it promises.',
+      pt: 'Em sistemas modernos baseados em systemd, o nohup sozinho nem sempre basta: o logind ainda pode matar todo processo pertencente a um usuário assim que a última sessão dele termina, mesmo os iniciados com nohup, a menos que o lingering esteja habilitado para esse usuário com loginctl enable-linger. Uma tarefa longa iniciada via SSH pode então sumir mesmo assim assim que a conexão SSH é fechada, apesar do nohup fazer exatamente o que promete.',
+    },
   },
 
   watch: {
@@ -340,6 +344,10 @@ export const processSystem: CommandKB = {
       en: 'The name pattern of the process(es) to match.',
       pt: 'O padrão de nome do(s) processo(s) a combinar.',
     },
+    commonMistake: {
+      en: 'pkill exits with a nonzero status when no process matches, the same result as failing to find anything to kill. A cleanup step like pkill myapp inside a script running under set -e can abort the whole script simply because the process had already stopped, and appending || true is the usual fix for a command that is only ever meant to be best effort.',
+      pt: 'O pkill sai com um status diferente de zero quando nenhum processo combina, o mesmo resultado de não achar nada para matar. Um passo de limpeza como pkill meuapp dentro de um script rodando com set -e pode abortar o script inteiro só porque o processo já tinha parado, e adicionar || true é a solução de praxe para um comando que só deveria tentar, sem quebrar o script quando não há nada para matar.',
+    },
   },
 
   killall: {
@@ -391,6 +399,10 @@ export const processSystem: CommandKB = {
     argHint: {
       en: 'The device/source to mount, or the mount point (the last argument is normally the mount point).',
       pt: 'O dispositivo/origem a montar, ou o ponto de montagem (o último argumento normalmente é o ponto de montagem).',
+    },
+    commonMistake: {
+      en: 'A manual mount lasts only until the next reboot; the filesystem disappears again unless an entry for it also goes into /etc/fstab. That extra step is easy to skip when the mount works fine in the moment, and the gap only shows up much later, after a restart nobody expected to matter.',
+      pt: 'Um mount manual só dura até o próximo reboot; o sistema de arquivos desaparece de novo a menos que uma entrada dele também seja adicionada em /etc/fstab. Esse passo extra é fácil de pular quando o mount funciona bem na hora, e a lacuna só aparece bem depois, num reinício que ninguém esperava que fosse importar.',
     },
   },
 
@@ -521,6 +533,10 @@ export const processSystem: CommandKB = {
     argHint: {
       en: 'The disk device to edit, such as /dev/sda.',
       pt: 'O dispositivo de disco a editar, como /dev/sda.',
+    },
+    commonMistake: {
+      en: 'fdisk operates directly on the device path given, and a path one letter off from the intended drive, /dev/sda instead of /dev/sdb, partitions the wrong disk with no warning. Running lsblk first to confirm which device is which, by size and mount points, catches that mistake before fdisk ever touches anything.',
+      pt: 'O fdisk opera direto no caminho do dispositivo passado, e um caminho com uma letra trocada em relação ao disco pretendido, /dev/sda em vez de /dev/sdb, particiona o disco errado sem nenhum aviso. Rodar lsblk antes para confirmar qual dispositivo é qual, pelo tamanho e pontos de montagem, pega esse erro antes que o fdisk chegue a tocar em qualquer coisa.',
     },
   },
 

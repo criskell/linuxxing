@@ -189,6 +189,10 @@ export const networking: CommandKB = {
       en: 'The source path to sync, or the destination (the last argument is normally the destination).',
       pt: 'O caminho de origem a sincronizar, ou o destino (o último argumento normalmente é o destino).',
     },
+    commonMistake: {
+      en: 'A trailing slash on the source path changes what rsync copies: rsync -av folder/ dest/ copies the contents of folder into dest, while rsync -av folder dest/ copies folder itself, nested one level deeper. The two commands look nearly identical and produce different directory layouts, so that trailing slash deserves a second look before running.',
+      pt: 'Uma barra no final do caminho de origem muda o que o rsync copia: rsync -av pasta/ destino/ copia o conteúdo de pasta para dentro de destino, enquanto rsync -av pasta destino/ copia a própria pasta, aninhada um nível a mais. Os dois comandos parecem quase idênticos e produzem estruturas de diretório diferentes, então essa barra no final merece um segundo olhar antes de rodar.',
+    },
   },
 
   scp: {
@@ -218,6 +222,10 @@ export const networking: CommandKB = {
     argHint: {
       en: 'The source path to copy, or the destination, written as user@host:/path for a remote side. The last argument is normally the destination.',
       pt: 'O caminho de origem a copiar, ou o destino, escrito como usuario@host:/caminho para o lado remoto. O último argumento normalmente é o destino.',
+    },
+    commonMistake: {
+      en: 'Copying a directory with plain scp fails with an error about it not being a regular file, because scp only handles individual files by default. The -r flag makes it recurse into the directory, the same flag cp needs for the same reason, and it is the flag people forget most often when scp gets used far less frequently than cp.',
+      pt: 'Copiar um diretório com scp simples falha com um erro dizendo que não é um arquivo comum, porque o scp só lida com arquivos individuais por padrão. A flag -r faz ele entrar recursivamente no diretório, a mesma flag que o cp precisa pelo mesmo motivo, e é a flag mais esquecida quando o scp é usado bem menos que o cp.',
     },
   },
 

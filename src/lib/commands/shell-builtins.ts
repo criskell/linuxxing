@@ -79,6 +79,10 @@ export const shellBuiltins: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    commonMistake: {
+      en: "Aliases defined in an interactive shell don't carry over into scripts, since non-interactive shells don't read the startup file where they're usually set. A script that relies on an alias behaving the same way it does at the prompt fails outright, or worse, silently falls back to the real command with none of the alias's flags.",
+      pt: 'Aliases definidos num shell interativo não passam para scripts, já que shells não interativos não leem o arquivo de inicialização onde eles costumam ser definidos. Um script que depende de um alias se comportar do mesmo jeito que no prompt falha de vez, ou pior, cai silenciosamente para o comando real sem nenhuma das flags do alias.',
+    },
   },
 
   export: {
@@ -88,6 +92,10 @@ export const shellBuiltins: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    commonMistake: {
+      en: 'A variable exported inside a subshell, like the body of a while loop fed by a pipe, never makes it back to the parent shell, since each side of a pipe runs in its own separate subshell with its own copy of the environment. something | while read line; do export count=$((count+1)); done leaves count unset once the loop ends, no matter how many times it was exported inside, because that whole loop never shared memory with the shell that started it.',
+      pt: 'Uma variável exportada dentro de um subshell, como o corpo de um loop while alimentado por um pipe, nunca volta para o shell pai, já que cada lado de um pipe roda no próprio subshell separado, com a própria cópia do ambiente. algo | while read linha; do export contador=$((contador+1)); done deixa contador sem valor depois que o loop termina, não importa quantas vezes tenha sido exportada lá dentro, porque aquele loop inteiro nunca compartilhou memória com o shell que o iniciou.',
+    },
   },
 
   env: {
@@ -191,6 +199,10 @@ export const shellBuiltins: CommandKB = {
     argHint: {
       en: 'The string to parse and run as a command.',
       pt: 'A string a interpretar e rodar como comando.',
+    },
+    commonMistake: {
+      en: 'Because eval parses its input a second time, quoting that already looks correct in the original string can still get mangled: a filename with a space, safely quoted the first time around, gets split into two words the moment eval reparses it. That is a separate problem from the security risk, one that shows up even with fully trusted input, and it is why eval so often needs its own careful escaping on top of whatever the string already had.',
+      pt: 'Como o eval interpreta a entrada uma segunda vez, uma citação que já parecia correta na string original ainda pode se perder: um nome de arquivo com espaço, mantido entre aspas com segurança na primeira passada, é dividido em duas palavras assim que o eval reinterpreta. Esse é um problema separado do risco de segurança, um que aparece mesmo com entrada totalmente confiável, e é por isso que o eval tantas vezes precisa do próprio escape cuidadoso além do que a string já tinha.',
     },
   },
 

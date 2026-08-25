@@ -131,6 +131,10 @@ export const systemInfo: CommandKB = {
       en: 'The command name to look up.',
       pt: 'O nome do comando a procurar.',
     },
+    commonMistake: {
+      en: "which is not part of POSIX, and its exact behavior, especially its exit status when nothing matches, varies between systems in ways a portable script can't rely on. command -v name has a POSIX-guaranteed exit status, so if command -v name is a check that behaves the same everywhere which can't promise.",
+      pt: 'O which não faz parte do POSIX, e seu comportamento exato, especialmente o código de saída quando nada é encontrado, varia entre sistemas de um jeito que um script portável não pode depender. O command -v nome tem um código de saída garantido pelo POSIX, então if command -v nome é a checagem que se comporta igual em todo lugar, o que o which não consegue prometer.',
+    },
   },
 
   journalctl: {
@@ -170,6 +174,10 @@ export const systemInfo: CommandKB = {
       '-n': 'generic',
       '-p': 'generic',
       '--since': 'generic',
+    },
+    commonMistake: {
+      en: "Without root or membership in the systemd-journal group, journalctl silently shows only the logs belonging to the current user's own session, not the full system journal, with no error explaining the gap. It looks like a service simply isn't logging anything, when the real issue is a permission boundary that never surfaced as a permission error.",
+      pt: 'Sem root ou associação ao grupo systemd-journal, o journalctl mostra silenciosamente só os logs pertencentes à própria sessão do usuário atual, não o journal completo do sistema, sem nenhum erro explicando a lacuna. Parece que um serviço simplesmente não está registrando nada, quando o problema real é uma barreira de permissão que nunca apareceu como um erro de permissão.',
     },
   },
 
@@ -230,6 +238,10 @@ export const systemInfo: CommandKB = {
     },
     valueFlags: {
       '-s': 'generic',
+    },
+    commonMistake: {
+      en: 'Closing the terminal window a tmux session is running in kills that session along with every pane inside it, since the closing terminal sends a hangup the same as it would to any other process. Detaching first with Ctrl+B, then D leaves the session running in the background, ready to reattach later with tmux attach, something closing the window can never do.',
+      pt: 'Fechar a janela do terminal onde uma sessão do tmux está rodando mata essa sessão junto com todos os painéis dentro dela, já que o terminal fechando manda um hangup do mesmo jeito que mandaria para qualquer outro processo. Dar detach antes com Ctrl+B, depois D deixa a sessão rodando em segundo plano, pronta para reconectar depois com tmux attach, algo que fechar a janela nunca vai permitir.',
     },
   },
 

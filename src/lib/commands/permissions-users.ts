@@ -138,6 +138,10 @@ export const permissionsUsers: CommandKB = {
       en: 'The username whose password is being changed. Defaults to the current user.',
       pt: 'O nome de usuário cuja senha está sendo alterada. Por padrão é o usuário atual.',
     },
+    commonMistake: {
+      en: 'passwd -l disables password login for an account by scrambling the password hash, but it does not touch anything else: an account locked this way can often still log in through an SSH key or another authentication method that never checked the password in the first place. Treating -l as a full account lockout, without also checking those other paths, leaves the door open exactly where it was assumed closed.',
+      pt: 'O passwd -l desabilita o login por senha de uma conta embaralhando o hash da senha, mas não mexe em mais nada: uma conta bloqueada assim geralmente ainda consegue fazer login por chave SSH ou outro método de autenticação que nunca checou a senha. Tratar o -l como um bloqueio completo da conta, sem checar também esses outros caminhos, deixa a porta aberta exatamente onde se supunha que estava fechada.',
+    },
   },
 
   su: {
@@ -162,6 +166,10 @@ export const permissionsUsers: CommandKB = {
     argHint: {
       en: 'The user to switch to. Defaults to root when omitted.',
       pt: 'O usuário para o qual trocar. Por padrão é o root, quando omitido.',
+    },
+    commonMistake: {
+      en: "su prompts for the target account's own password, not the calling user's, the opposite of how sudo works. Someone without root's password can still reach a root shell through sudo su, borrowing sudo's own authentication, but typing plain su and entering their own password just fails, since that password was never the one being asked for.",
+      pt: 'O su pede a senha da própria conta de destino, não a de quem chamou o comando, o oposto de como o sudo funciona. Alguém sem a senha do root ainda consegue chegar a um shell root através de sudo su, aproveitando a autenticação do próprio sudo, mas digitar su puro e informar a própria senha simplesmente falha, já que essa senha nunca foi a que estava sendo pedida.',
     },
   },
 

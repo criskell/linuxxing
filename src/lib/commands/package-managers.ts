@@ -229,6 +229,10 @@ export const packageManagers: CommandKB = {
       '-r': 'generic',
       '-L': 'generic',
     },
+    commonMistake: {
+      en: 'dpkg -r removes a package but deliberately leaves its configuration files behind, in case the package gets reinstalled later. Reaching for --purge instead removes those configuration files too, and skipping that distinction is why a package that was supposedly removed can still show old settings, or refuse to reconfigure cleanly, the next time it gets installed.',
+      pt: 'O dpkg -r remove um pacote mas deixa os arquivos de configuração dele de propósito, para o caso de o pacote ser reinstalado depois. Usar --purge em vez disso remove também esses arquivos de configuração, e pular essa distinção é o motivo de um pacote supostamente removido ainda mostrar configurações antigas, ou se recusar a reconfigurar direito, na próxima vez que for instalado.',
+    },
   },
 
   pip: {
@@ -266,6 +270,10 @@ export const packageManagers: CommandKB = {
     },
     valueFlags: {
       '-r': 'generic',
+    },
+    commonMistake: {
+      en: 'Running pip install with sudo to get past a permission error installs straight into the system Python, the same interpreter many Linux tools rely on internally, and can quietly break one of those tools by upgrading a library out from under it. A virtual environment removes the need for sudo entirely, since the installed packages stop touching the system Python at that point, and is the fix worth reaching for instead.',
+      pt: 'Rodar pip install com sudo para contornar um erro de permissão instala direto no Python do sistema, o mesmo interpretador do qual várias ferramentas do Linux dependem internamente, e pode quebrar uma delas silenciosamente ao atualizar uma biblioteca por baixo dos panos. Um ambiente virtual elimina a necessidade do sudo por completo, já que os pacotes instalados deixam de tocar no Python do sistema nesse ponto, e é a solução que vale usar em vez disso.',
     },
   },
 

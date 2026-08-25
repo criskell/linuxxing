@@ -316,6 +316,10 @@ export const fileOperations: CommandKB = {
       en: 'The file to read.',
       pt: 'O arquivo a ler.',
     },
+    commonMistake: {
+      en: 'tail -n 20 shows the last 20 lines, but tail -n +20 means something different: everything from line 20 onward, a plus sign flipping the meaning from counting backward to counting forward. That one-character difference is easy to miss when copying a command from memory, and the output can look plausible either way, right up until the line count is wrong.',
+      pt: 'tail -n 20 mostra as últimas 20 linhas, mas tail -n +20 significa outra coisa: tudo a partir da linha 20 em diante, um sinal de mais invertendo o sentido de contar de trás para frente para contar para frente. Essa diferença de um caractere é fácil de passar despercebida ao copiar um comando de memória, e a saída pode parecer plausível dos dois jeitos, até a contagem de linhas dar errado.',
+    },
   },
 
   ln: {
@@ -337,6 +341,10 @@ export const fileOperations: CommandKB = {
     argHint: {
       en: 'The target being linked to, or the link name to create (the last argument is normally the new link).',
       pt: 'O alvo sendo referenciado, ou o nome do link a criar (o último argumento normalmente é o novo link).',
+    },
+    commonMistake: {
+      en: "The argument order in ln -s target linkname is easy to get backward, especially coming from cp, where the destination also goes last but means something different. Get it wrong and the link points at a name that doesn't exist yet instead of the file meant to be linked, so ls -l right after is worth running to confirm which way the arrow points.",
+      pt: 'A ordem dos argumentos em ln -s alvo nomedolink é fácil de inverter, principalmente vindo do cp, que também tem o destino por último mas com outro sentido. Errar a ordem faz o link apontar para um nome que ainda não existe em vez do arquivo pretendido, então vale rodar ls -l logo depois para confirmar para que lado a seta aponta.',
     },
   },
 
@@ -475,6 +483,10 @@ export const fileOperations: CommandKB = {
       en: 'The file to sort.',
       pt: 'O arquivo a ordenar.',
     },
+    commonMistake: {
+      en: "Plain sort orders lines as text, so 10 comes before 2 the same way 'apple' comes before 'banana'. Sorting a column of numbers needs the -n flag, and sorting by a specific column instead of the whole line needs -k, two flags that get skipped often enough to produce output that looks right at a glance but is actually wrong.",
+      pt: 'O sort simples ordena as linhas como texto, então 10 vem antes de 2 do mesmo jeito que "apple" vem antes de "banana". Ordenar uma coluna de números precisa da flag -n, e ordenar por uma coluna específica em vez da linha inteira precisa de -k, duas flags que ficam de fora com frequência suficiente para produzir uma saída que parece certa numa olhada rápida mas está errada.',
+    },
   },
 
   uniq: {
@@ -549,6 +561,10 @@ export const fileOperations: CommandKB = {
       '-I': 'generic',
       '-n': 'generic',
     },
+    commonMistake: {
+      en: 'Piping find output straight into xargs breaks on any filename containing a space or newline, since xargs splits its input on whitespace by default. find -print0 paired with xargs -0 separates entries with a null byte instead, which no filename can legally contain, and that pairing is the one worth memorizing rather than the plain pipe.',
+      pt: 'Encanar a saída do find direto para o xargs quebra em qualquer nome de arquivo com espaço ou quebra de linha, já que o xargs separa a entrada por espaço em branco por padrão. O find -print0 combinado com xargs -0 separa as entradas com um byte nulo, que nenhum nome de arquivo pode conter, e essa combinação é a que vale memorizar em vez do pipe simples.',
+    },
   },
 
   sed: {
@@ -620,6 +636,10 @@ export const fileOperations: CommandKB = {
     argHint: {
       en: 'One of the two files or folders being compared.',
       pt: 'Um dos dois arquivos ou pastas sendo comparados.',
+    },
+    commonMistake: {
+      en: 'diff returns exit code 1 when the files differ, not only when something breaks, so a script that checks for success the usual way (if diff a b; then ...) treats every difference as a failure. Reading the actual exit code, 0 for identical, 1 for different, 2 for an error, instead of assuming zero means success avoids that trap.',
+      pt: 'O diff retorna o código de saída 1 quando os arquivos são diferentes, não só quando algo quebra, então um script que checa sucesso do jeito comum (if diff a b; then ...) trata qualquer diferença como falha. Ler o código de saída de verdade, 0 para idênticos, 1 para diferentes, 2 para erro, em vez de supor que zero significa sucesso, evita essa armadilha.',
     },
   },
 
