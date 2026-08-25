@@ -26,7 +26,7 @@ export const shellBuiltins: CommandKB = {
         pt: 'Imprime o caminho do programa se ele existir no PATH, sem executá-lo. Usado normalmente para checar se uma ferramenta está instalada.',
       },
       '-p': {
-        en: "Uses a default, safe PATH to look up the command, ignoring any custom PATH the user has set.",
+        en: 'Uses a default, safe PATH to look up the command, ignoring any custom PATH the user has set.',
         pt: 'Usa um PATH padrão e seguro para procurar o comando, ignorando qualquer PATH customizado definido pelo usuário.',
       },
     },
@@ -138,7 +138,7 @@ export const shellBuiltins: CommandKB = {
         pt: 'Mostra um prompt antes de ler, na mesma linha da entrada.',
       },
       '-r': {
-        en: "Reads the raw input literally, without treating a trailing backslash as a line-continuation character.",
+        en: 'Reads the raw input literally, without treating a trailing backslash as a line-continuation character.',
         pt: 'Lê a entrada bruta literalmente, sem tratar uma barra invertida no final como caractere de continuação de linha.',
       },
       '-s': {
@@ -183,7 +183,7 @@ export const shellBuiltins: CommandKB = {
 
   eval: {
     desc: {
-      en: "A shell builtin that takes a string and runs it as if it had been typed directly as a command, a second pass of shell parsing applied to text that was itself built dynamically, such as a variable holding a whole command. It is powerful and genuinely useful for a handful of specific patterns, but running eval on anything derived from user input is a classic injection vulnerability, since the string is parsed with the full authority of the shell, whatever it contains, it runs.",
+      en: 'A shell builtin that takes a string and runs it as if it had been typed directly as a command, a second pass of shell parsing applied to text that was itself built dynamically, such as a variable holding a whole command. It is powerful and genuinely useful for a handful of specific patterns, but running eval on anything derived from user input is a classic injection vulnerability, since the string is parsed with the full authority of the shell, whatever it contains, it runs.',
       pt: 'Um comando interno do shell que pega uma string e a roda como se tivesse sido digitada diretamente como comando, uma segunda passada de análise do shell aplicada a um texto que foi ele mesmo construído dinamicamente, como uma variável guardando um comando inteiro. É poderoso e genuinamente útil para um punhado de padrões específicos, mas rodar eval em qualquer coisa derivada de entrada do usuário é uma vulnerabilidade clássica de injeção, já que a string é interpretada com a autoridade total do shell, seja lá o que ela contiver, ela roda.',
     },
     subcommands: {},
@@ -219,5 +219,4 @@ export const shellBuiltins: CommandKB = {
       '-u': 'generic',
     },
   },
-
 };

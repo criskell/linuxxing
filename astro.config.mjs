@@ -9,10 +9,10 @@ export default defineConfig({
     locales: ['en', 'pt'],
     defaultLocale: 'en',
     routing: {
-      prefixDefaultLocale: true
-    }
+      prefixDefaultLocale: true,
+    },
   },
   vite: {
-    plugins: [tailwindcss()]
-  }
+    plugins: [tailwindcss()],
+  },
 });

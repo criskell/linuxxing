@@ -25,7 +25,7 @@ export const permissionsUsers: CommandKB = {
 
   chown: {
     desc: {
-      en: "Changes which user and group own a file or folder, separate from what chmod controls (which is what the owner and group are allowed to do). It is typically used with root privileges, since only root or the current owner can hand a file off to someone else, and it comes up constantly when deploying software: a web server process running as a low-privilege user like www-data needs to actually own the files it serves, or every read will be denied regardless of what the permission bits say.",
+      en: 'Changes which user and group own a file or folder, separate from what chmod controls (which is what the owner and group are allowed to do). It is typically used with root privileges, since only root or the current owner can hand a file off to someone else, and it comes up constantly when deploying software: a web server process running as a low-privilege user like www-data needs to actually own the files it serves, or every read will be denied regardless of what the permission bits say.',
       pt: 'Altera qual usuário e grupo são donos de um arquivo ou pasta, algo separado do que o chmod controla (que é o que esse dono e grupo têm permissão de fazer). É normalmente usado com privilégios de root, já que só o root ou o dono atual pode transferir um arquivo para outra pessoa, e aparece constantemente no dia a dia de deploy: um processo de servidor web rodando como um usuário de baixo privilégio, como www-data, precisa realmente ser dono dos arquivos que serve, ou toda leitura será negada independente do que os bits de permissão digam.',
     },
     subcommands: {},
@@ -64,7 +64,7 @@ export const permissionsUsers: CommandKB = {
 
   whoami: {
     desc: {
-      en: "Prints the username of whichever user the current shell session is running as. It sounds trivial but is genuinely useful after switching users with su or sudo, or inside a script that needs to confirm it is not accidentally running as root before doing something destructive, since the effective user can be easy to lose track of a few su and ssh hops deep.",
+      en: 'Prints the username of whichever user the current shell session is running as. It sounds trivial but is genuinely useful after switching users with su or sudo, or inside a script that needs to confirm it is not accidentally running as root before doing something destructive, since the effective user can be easy to lose track of a few su and ssh hops deep.',
       pt: 'Imprime o nome de usuário sob o qual a sessão de shell atual está rodando. Parece trivial mas é genuinamente útil depois de trocar de usuário com su ou sudo, ou dentro de um script que precisa confirmar que não está rodando como root sem querer antes de fazer algo destrutivo, já que o usuário efetivo pode ser fácil de perder de vista depois de alguns pulos de su e ssh.',
     },
     subcommands: {},
@@ -82,7 +82,7 @@ export const permissionsUsers: CommandKB = {
 
   useradd: {
     desc: {
-      en: "Creates a new user account on the system, adding an entry to /etc/passwd and, in most setups, a matching group. On its own it leaves several things half-done that most real setups need, no home directory unless -m is given, no shell assigned unless -s is given, and no password set at all (the account stays locked until passwd is run separately), which is why usermod and passwd are almost always the next commands typed right after useradd.",
+      en: 'Creates a new user account on the system, adding an entry to /etc/passwd and, in most setups, a matching group. On its own it leaves several things half-done that most real setups need, no home directory unless -m is given, no shell assigned unless -s is given, and no password set at all (the account stays locked until passwd is run separately), which is why usermod and passwd are almost always the next commands typed right after useradd.',
       pt: 'Cria uma nova conta de usuário no sistema, adicionando uma entrada ao /etc/passwd e, na maioria das configurações, um grupo correspondente. Sozinho, deixa várias coisas pela metade que a maioria das configurações reais precisa, sem diretório home a menos que -m seja passado, sem shell atribuído a menos que -s seja passado, e sem senha nenhuma definida (a conta fica bloqueada até o passwd ser rodado separadamente), motivo pelo qual usermod e passwd quase sempre são os próximos comandos digitados logo depois do useradd.',
     },
     subcommands: {},
@@ -265,7 +265,7 @@ export const permissionsUsers: CommandKB = {
 
   groups: {
     desc: {
-      en: "Prints the groups a user belongs to, a quicker, more narrowly focused alternative to id when the only thing that matters is group membership, such as confirming a user was really added to the docker or sudo group.",
+      en: 'Prints the groups a user belongs to, a quicker, more narrowly focused alternative to id when the only thing that matters is group membership, such as confirming a user was really added to the docker or sudo group.',
       pt: 'Imprime os grupos aos quais um usuário pertence, uma alternativa mais rápida e focada ao id quando só a associação de grupo importa, como confirmar se um usuário foi mesmo adicionado ao grupo docker ou sudo.',
     },
     subcommands: {},
@@ -278,7 +278,7 @@ export const permissionsUsers: CommandKB = {
 
   visudo: {
     desc: {
-      en: "Opens /etc/sudoers (or a file under /etc/sudoers.d) for editing, but never directly with a plain text editor: visudo locks the file against simultaneous edits and, critically, validates the syntax before saving, refusing to write a broken file. That validation matters enormously here specifically, because a syntax error in sudoers can lock every user, including root via sudo, out of administrative access, and visudo is the only sanctioned way to avoid that outcome.",
+      en: 'Opens /etc/sudoers (or a file under /etc/sudoers.d) for editing, but never directly with a plain text editor: visudo locks the file against simultaneous edits and, critically, validates the syntax before saving, refusing to write a broken file. That validation matters enormously here specifically, because a syntax error in sudoers can lock every user, including root via sudo, out of administrative access, and visudo is the only sanctioned way to avoid that outcome.',
       pt: 'Abre o /etc/sudoers (ou um arquivo em /etc/sudoers.d) para edição, mas nunca diretamente com um editor de texto simples: o visudo trava o arquivo contra edições simultâneas e, criticamente, valida a sintaxe antes de salvar, recusando-se a escrever um arquivo quebrado. Essa validação importa enormemente aqui especificamente, porque um erro de sintaxe no sudoers pode trancar todo usuário, incluindo o root via sudo, fora do acesso administrativo, e o visudo é a única forma sancionada de evitar esse resultado.',
     },
     subcommands: {},
@@ -302,5 +302,4 @@ export const permissionsUsers: CommandKB = {
       pt: 'O grupo para o qual trocar.',
     },
   },
-
 };

@@ -173,7 +173,7 @@ export const fileOperations: CommandKB = {
 
   find: {
     desc: {
-      en: "Searches for files and folders within a directory tree, based on criteria like name, type, size, or modification date, and can act on whatever it finds. Where grep searches inside file contents, find searches the filesystem structure itself: it starts at a given path and walks every subfolder, testing each entry against the filters given. Its real strength shows up combined with -exec or piped into xargs, letting you find every file matching a pattern and then delete, move, or otherwise process all of them in a single command, which is why it shows up constantly in cleanup scripts and cron jobs.",
+      en: 'Searches for files and folders within a directory tree, based on criteria like name, type, size, or modification date, and can act on whatever it finds. Where grep searches inside file contents, find searches the filesystem structure itself: it starts at a given path and walks every subfolder, testing each entry against the filters given. Its real strength shows up combined with -exec or piped into xargs, letting you find every file matching a pattern and then delete, move, or otherwise process all of them in a single command, which is why it shows up constantly in cleanup scripts and cron jobs.',
       pt: 'Procura arquivos e pastas dentro de uma árvore de diretórios, com base em critérios como nome, tipo, tamanho ou data de modificação, e pode agir sobre o que encontrar. Enquanto o grep procura dentro do conteúdo dos arquivos, o find procura na própria estrutura do sistema de arquivos: ele começa em um caminho dado e percorre cada subpasta, testando cada item contra os filtros passados. Sua força de verdade aparece combinado com -exec ou encadeado com o xargs, permitindo achar todo arquivo que combina com um padrão e então apagar, mover ou processar todos eles em um único comando, motivo pelo qual aparece constantemente em scripts de limpeza e tarefas de cron.',
     },
     subcommands: {},
@@ -219,7 +219,7 @@ export const fileOperations: CommandKB = {
     subcommands: {},
     flags: {
       '-p': {
-        en: "Creates intermediate folders needed along the path, without erroring if one already exists.",
+        en: 'Creates intermediate folders needed along the path, without erroring if one already exists.',
         pt: 'Cria pastas intermediárias necessárias no caminho, sem dar erro se alguma já existir.',
       },
     },
@@ -362,7 +362,7 @@ export const fileOperations: CommandKB = {
       '-g': 'generic',
     },
     argHint: {
-      en: "The source file to install, or, with -d, a directory to create. When two paths are given without -d, the first is the source and the last is the destination.",
+      en: 'The source file to install, or, with -d, a directory to create. When two paths are given without -d, the first is the source and the last is the destination.',
       pt: 'O arquivo de origem a instalar, ou, com -d, um diretório a criar. Quando dois caminhos são dados sem -d, o primeiro é a origem e o último é o destino.',
     },
   },
@@ -382,7 +382,7 @@ export const fileOperations: CommandKB = {
 
   less: {
     desc: {
-      en: "Shows the contents of a file one screen at a time, letting you scroll up and down, jump to a specific line, and search forward or backward for text, all without loading the whole file into memory first. Its name is a joke on the older command more (it does everything more does and more), and despite that name, less is actually the one commonly installed and used today, since it can scroll backward, which more famously could not. It is also what man pages, git log, and countless other commands pipe their output through automatically when it is longer than one screen.",
+      en: 'Shows the contents of a file one screen at a time, letting you scroll up and down, jump to a specific line, and search forward or backward for text, all without loading the whole file into memory first. Its name is a joke on the older command more (it does everything more does and more), and despite that name, less is actually the one commonly installed and used today, since it can scroll backward, which more famously could not. It is also what man pages, git log, and countless other commands pipe their output through automatically when it is longer than one screen.',
       pt: 'Mostra o conteúdo de um arquivo uma tela por vez, permitindo rolar para cima e para baixo, pular para uma linha específica, e buscar texto para frente ou para trás, tudo sem carregar o arquivo inteiro na memória primeiro. O nome é uma piada em cima do comando mais antigo more (ele faz tudo que o more faz e mais), e apesar do nome, o less é o que de fato costuma vir instalado e ser usado hoje, já que consegue rolar para trás, coisa que o more, famosamente, não conseguia. É também por onde páginas de manual, git log, e incontáveis outros comandos encanam a própria saída automaticamente quando ela é maior que uma tela.',
     },
     subcommands: {},
@@ -558,7 +558,7 @@ export const fileOperations: CommandKB = {
 
   awk: {
     desc: {
-      en: "A full text-processing programming language, not just a command, built around a simple but powerful loop: for every line of input, split it into fields (by whitespace by default, or a custom separator with -F), and run a small script against them, with variables like $1, $2 referring to each field and $0 to the whole line. That structure makes it a natural fit for tabular data, generating quick reports, summing a column, reformatting log output, without the ceremony of writing a real program, and its name is literally the initials of its three creators, Aho, Weinberger, and Kernighan.",
+      en: 'A full text-processing programming language, not just a command, built around a simple but powerful loop: for every line of input, split it into fields (by whitespace by default, or a custom separator with -F), and run a small script against them, with variables like $1, $2 referring to each field and $0 to the whole line. That structure makes it a natural fit for tabular data, generating quick reports, summing a column, reformatting log output, without the ceremony of writing a real program, and its name is literally the initials of its three creators, Aho, Weinberger, and Kernighan.',
       pt: 'Uma linguagem de programação completa de processamento de texto, não só um comando, construída em torno de um laço simples mas poderoso: para cada linha da entrada, divida-a em campos (por espaço em branco por padrão, ou um separador customizado com -F), e rode um pequeno script contra eles, com variáveis como $1, $2 se referindo a cada campo e $0 à linha inteira. Essa estrutura o torna natural para dados tabulares, gerar relatórios rápidos, somar uma coluna, reformatar saída de log, sem a cerimônia de escrever um programa de verdade, e o nome é literalmente as iniciais dos três criadores, Aho, Weinberger e Kernighan.',
     },
     subcommands: {},
@@ -678,13 +678,13 @@ export const fileOperations: CommandKB = {
 
   file: {
     desc: {
-      en: "Identifies what kind of data a file actually contains by inspecting its content, not its name or extension, which is exactly what makes it useful: a file renamed from photo.exe to photo.jpg is still detected as an executable, because file reads the first bytes and checks them against a database of known signatures (magic numbers) rather than trusting the label on the tin. It is a fast, low-stakes first step whenever a file of unknown or suspicious origin needs to be understood before opening it with something else.",
+      en: 'Identifies what kind of data a file actually contains by inspecting its content, not its name or extension, which is exactly what makes it useful: a file renamed from photo.exe to photo.jpg is still detected as an executable, because file reads the first bytes and checks them against a database of known signatures (magic numbers) rather than trusting the label on the tin. It is a fast, low-stakes first step whenever a file of unknown or suspicious origin needs to be understood before opening it with something else.',
       pt: 'Identifica que tipo de dado um arquivo realmente contém inspecionando seu conteúdo, não o nome ou a extensão, o que é exatamente o que o torna útil: um arquivo renomeado de foto.exe para foto.jpg ainda é detectado como um executável, porque o file lê os primeiros bytes e os checa contra um banco de assinaturas conhecidas (magic numbers) em vez de confiar no rótulo. É um primeiro passo rápido e de baixo risco sempre que um arquivo de origem desconhecida ou suspeita precisa ser entendido antes de abri-lo com outra coisa.',
     },
     subcommands: {},
     flags: {
       '-i': {
-        en: "Reports the MIME type (like text/plain or image/jpeg) instead of a human-readable description.",
+        en: 'Reports the MIME type (like text/plain or image/jpeg) instead of a human-readable description.',
         pt: 'Relata o tipo MIME (como text/plain ou image/jpeg) em vez de uma descrição legível por humanos.',
       },
     },
@@ -722,7 +722,7 @@ export const fileOperations: CommandKB = {
 
   printf: {
     desc: {
-      en: "Prints formatted text, following the same format-string convention as the C standard library function of the same name, with placeholders like %s for a string and %d for a number. It is the more precise, more portable sibling of echo: unlike echo, its behavior does not vary between shells, it never accidentally interprets a leading dash in the text as a flag, and it never appends a trailing newline unless the format string explicitly includes \\n, which makes it the safer choice inside scripts that build output carefully.",
+      en: 'Prints formatted text, following the same format-string convention as the C standard library function of the same name, with placeholders like %s for a string and %d for a number. It is the more precise, more portable sibling of echo: unlike echo, its behavior does not vary between shells, it never accidentally interprets a leading dash in the text as a flag, and it never appends a trailing newline unless the format string explicitly includes \\n, which makes it the safer choice inside scripts that build output carefully.',
       pt: 'Imprime texto formatado, seguindo a mesma convenção de string de formato da função de mesmo nome da biblioteca padrão C, com marcadores como %s para uma string e %d para um número. É o irmão mais preciso e portável do echo: diferente do echo, seu comportamento não varia entre shells, ele nunca interpreta por acidente um hífen no início do texto como uma flag, e nunca acrescenta uma quebra de linha no final a menos que a string de formato inclua \\n explicitamente, o que o torna a escolha mais segura dentro de scripts que constroem saída com cuidado.',
     },
     subcommands: {},
@@ -782,7 +782,7 @@ export const fileOperations: CommandKB = {
 
   join: {
     desc: {
-      en: "Joins the lines of two sorted files that share a common field, similar in spirit to a SQL JOIN but operating on plain text files by field position or delimiter rather than database tables. Like comm and sort -m, it depends on both inputs being sorted on the join field beforehand, which is a common source of confusing empty output when someone forgets that requirement.",
+      en: 'Joins the lines of two sorted files that share a common field, similar in spirit to a SQL JOIN but operating on plain text files by field position or delimiter rather than database tables. Like comm and sort -m, it depends on both inputs being sorted on the join field beforehand, which is a common source of confusing empty output when someone forgets that requirement.',
       pt: 'Junta as linhas de dois arquivos ordenados que compartilham um campo comum, parecido em espírito com um JOIN de SQL mas operando em arquivos de texto puro por posição de campo ou delimitador, não em tabelas de banco de dados. Como o comm e o sort -m, depende de ambas as entradas estarem ordenadas pelo campo de junção antes, o que é uma fonte comum de saída vazia confusa quando alguém esquece esse requisito.',
     },
     subcommands: {},
@@ -859,7 +859,7 @@ export const fileOperations: CommandKB = {
 
   readlink: {
     desc: {
-      en: "Prints the target a symbolic link points to, or, with -f, resolves a path all the way through every symlink to its final canonical absolute form, similar to realpath. It is a common building block in scripts that need to find out where a script itself actually lives on disk, since $0 can be a symlink and readlink -f \"$0\" resolves it to the real file.",
+      en: 'Prints the target a symbolic link points to, or, with -f, resolves a path all the way through every symlink to its final canonical absolute form, similar to realpath. It is a common building block in scripts that need to find out where a script itself actually lives on disk, since $0 can be a symlink and readlink -f "$0" resolves it to the real file.',
       pt: 'Imprime o alvo para o qual um link simbólico aponta, ou, com -f, resolve um caminho por completo através de todo link simbólico até sua forma absoluta canônica final, parecido com o realpath. É um bloco de construção comum em scripts que precisam descobrir onde o próprio script realmente está no disco, já que $0 pode ser um link simbólico e readlink -f "$0" o resolve para o arquivo real.',
     },
     subcommands: {},
@@ -902,7 +902,7 @@ export const fileOperations: CommandKB = {
 
   locate: {
     desc: {
-      en: "Finds files by name almost instantly by searching a prebuilt index of the entire filesystem, instead of walking the directory tree live the way find does. That speed comes at the cost of freshness: the index (built by updatedb, usually run automatically once a day via cron) can be hours out of date, so a file created moments ago may simply not show up yet.",
+      en: 'Finds files by name almost instantly by searching a prebuilt index of the entire filesystem, instead of walking the directory tree live the way find does. That speed comes at the cost of freshness: the index (built by updatedb, usually run automatically once a day via cron) can be hours out of date, so a file created moments ago may simply not show up yet.',
       pt: 'Encontra arquivos pelo nome quase instantaneamente pesquisando um índice pré-construído do sistema de arquivos inteiro, em vez de percorrer a árvore de diretórios ao vivo como o find faz. Essa velocidade custa em atualidade: o índice (construído pelo updatedb, geralmente rodado automaticamente uma vez por dia via cron) pode estar horas desatualizado, então um arquivo criado momentos atrás pode simplesmente ainda não aparecer.',
     },
     subcommands: {},
@@ -920,7 +920,7 @@ export const fileOperations: CommandKB = {
 
   mktemp: {
     desc: {
-      en: "Creates a new, empty file (or, with -d, a directory) with a guaranteed-unique, randomly generated name inside a temporary location, and prints that name so a script can capture it. Using mktemp instead of hardcoding a temp file name like /tmp/myscript.tmp avoids a real security and correctness problem: a predictable temp file name can be created in advance by another process (or attacker) to intercept or corrupt what the script writes to it.",
+      en: 'Creates a new, empty file (or, with -d, a directory) with a guaranteed-unique, randomly generated name inside a temporary location, and prints that name so a script can capture it. Using mktemp instead of hardcoding a temp file name like /tmp/myscript.tmp avoids a real security and correctness problem: a predictable temp file name can be created in advance by another process (or attacker) to intercept or corrupt what the script writes to it.',
       pt: 'Cria um arquivo novo e vazio (ou, com -d, um diretório) com um nome garantidamente único e gerado aleatoriamente dentro de um local temporário, e imprime esse nome para que um script possa capturá-lo. Usar mktemp em vez de fixar um nome de arquivo temporário como /tmp/meuscript.tmp evita um problema real de segurança e corretude: um nome de arquivo temporário previsível pode ser criado com antecedência por outro processo (ou atacante) para interceptar ou corromper o que o script escreve nele.',
     },
     subcommands: {},
@@ -973,7 +973,7 @@ export const fileOperations: CommandKB = {
 
   tac: {
     desc: {
-      en: "Prints a file with its lines in reverse order, last line first, exactly cat spelled backwards and doing exactly the opposite: where cat concatenates files in order, tac reverses their line order. It shows up when the most recent entries in an append-only log (where new lines get added at the end) need to be read newest-first.",
+      en: 'Prints a file with its lines in reverse order, last line first, exactly cat spelled backwards and doing exactly the opposite: where cat concatenates files in order, tac reverses their line order. It shows up when the most recent entries in an append-only log (where new lines get added at the end) need to be read newest-first.',
       pt: 'Imprime um arquivo com suas linhas em ordem reversa, última linha primeiro, exatamente cat escrito ao contrário e fazendo exatamente o oposto: onde o cat concatena arquivos em ordem, o tac inverte a ordem das linhas deles. Aparece quando as entradas mais recentes de um log só-de-anexar (onde linhas novas são adicionadas no final) precisam ser lidas da mais nova para a mais antiga.',
     },
     subcommands: {},
@@ -1041,7 +1041,7 @@ export const fileOperations: CommandKB = {
 
   split: {
     desc: {
-      en: "Breaks a single large file into multiple smaller pieces, by size or by number of lines, each with a generated sequential suffix, and cat is the tool that reverses the process (concatenating the pieces back together in order restores the original). It commonly shows up when a file is too big to email, upload, or fit on removable media as one piece.",
+      en: 'Breaks a single large file into multiple smaller pieces, by size or by number of lines, each with a generated sequential suffix, and cat is the tool that reverses the process (concatenating the pieces back together in order restores the original). It commonly shows up when a file is too big to email, upload, or fit on removable media as one piece.',
       pt: 'Divide um único arquivo grande em vários pedaços menores, por tamanho ou por número de linhas, cada um com um sufixo sequencial gerado, e o cat é a ferramenta que reverte o processo (concatenar os pedaços de volta em ordem restaura o original). Costuma aparecer quando um arquivo é grande demais para mandar por email, enviar, ou caber em mídia removível de uma vez só.',
     },
     subcommands: {},
@@ -1064,5 +1064,4 @@ export const fileOperations: CommandKB = {
       pt: 'O arquivo a dividir em pedaços.',
     },
   },
-
 };

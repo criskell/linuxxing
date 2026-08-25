@@ -13,7 +13,7 @@ export const archivesHashing: CommandKB = {
         pt: 'Cria um novo arquivo tar.',
       },
       '-x': {
-        en: "Extracts the contents of a tar archive.",
+        en: 'Extracts the contents of a tar archive.',
         pt: 'Extrai o conteúdo de um arquivo tar.',
       },
       '-v': {
@@ -73,7 +73,7 @@ export const archivesHashing: CommandKB = {
 
   gzip: {
     desc: {
-      en: "Compresses a single file using the DEFLATE algorithm, replacing the original with a .gz version of the same name by default, which is different from zip: gzip compresses exactly one file at a time and has no built-in concept of an archive containing several files, which is exactly why it is so often paired with tar (tar first bundles many files into one, then gzip compresses that single bundle). It favors speed over maximum compression ratio, which is part of why it remains the default choice for things like compressing log files and HTTP response bodies.",
+      en: 'Compresses a single file using the DEFLATE algorithm, replacing the original with a .gz version of the same name by default, which is different from zip: gzip compresses exactly one file at a time and has no built-in concept of an archive containing several files, which is exactly why it is so often paired with tar (tar first bundles many files into one, then gzip compresses that single bundle). It favors speed over maximum compression ratio, which is part of why it remains the default choice for things like compressing log files and HTTP response bodies.',
       pt: 'Compacta um único arquivo usando o algoritmo DEFLATE, substituindo o original por uma versão .gz de mesmo nome por padrão, o que é diferente do zip: o gzip compacta exatamente um arquivo por vez e não tem conceito embutido de um arquivo contendo vários outros dentro, e é exatamente por isso que costuma vir emparelhado com o tar (o tar primeiro empacota vários arquivos em um só, depois o gzip compacta esse pacote único). Ele prioriza velocidade em vez de taxa de compactação máxima, o que é parte do motivo dele continuar sendo a escolha padrão para coisas como compactar arquivos de log e corpos de resposta HTTP.',
     },
     subcommands: {},
@@ -117,7 +117,7 @@ export const archivesHashing: CommandKB = {
 
   base64: {
     desc: {
-      en: "Encodes binary data into a text-safe ASCII representation, or decodes it back, used whenever binary content, an image, a certificate, a credential, needs to travel through a system that only reliably handles plain text, like an environment variable, a JSON field, or an email attachment from decades ago when this format was first designed for exactly that purpose. It is text encoding, not encryption or compression, decoding a base64 string requires no secret or key at all, and reverses it perfectly back to the original bytes, and it actually makes the data slightly larger, not smaller.",
+      en: 'Encodes binary data into a text-safe ASCII representation, or decodes it back, used whenever binary content, an image, a certificate, a credential, needs to travel through a system that only reliably handles plain text, like an environment variable, a JSON field, or an email attachment from decades ago when this format was first designed for exactly that purpose. It is text encoding, not encryption or compression, decoding a base64 string requires no secret or key at all, and reverses it perfectly back to the original bytes, and it actually makes the data slightly larger, not smaller.',
       pt: 'Codifica dados binários em uma representação ASCII segura para texto, ou decodifica de volta, usado sempre que conteúdo binário, uma imagem, um certificado, uma credencial, precisa passar por um sistema que só lida de forma confiável com texto puro, como uma variável de ambiente, um campo JSON, ou um anexo de email de décadas atrás, quando esse formato foi criado justamente para esse propósito. É codificação de texto, não criptografia nem compactação, decodificar uma string base64 não exige segredo nem chave nenhuma, e reverte perfeitamente de volta aos bytes originais, e na verdade deixa os dados um pouco maiores, não menores.',
     },
     subcommands: {},
@@ -167,7 +167,7 @@ export const archivesHashing: CommandKB = {
 
   zip: {
     desc: {
-      en: "Packs one or more files into a .zip archive, optionally compressing them at the same time, the counterpart to unzip. Unlike tar, zip both bundles and compresses in the same step and format, and it can add files to an existing archive incrementally without rebuilding the whole thing, which is convenient for gradually collecting files but means a .zip can end up with stale duplicate entries if not managed carefully.",
+      en: 'Packs one or more files into a .zip archive, optionally compressing them at the same time, the counterpart to unzip. Unlike tar, zip both bundles and compresses in the same step and format, and it can add files to an existing archive incrementally without rebuilding the whole thing, which is convenient for gradually collecting files but means a .zip can end up with stale duplicate entries if not managed carefully.',
       pt: 'Empacota um ou mais arquivos em um arquivo .zip, opcionalmente compactando-os ao mesmo tempo, o par do unzip. Diferente do tar, o zip empacota e compacta na mesma etapa e formato, e consegue adicionar arquivos a um arquivo existente de forma incremental sem reconstruir tudo, o que é conveniente para coletar arquivos aos poucos mas significa que um .zip pode acabar com entradas duplicadas obsoletas se não for gerenciado com cuidado.',
     },
     subcommands: {},
@@ -193,7 +193,7 @@ export const archivesHashing: CommandKB = {
 
   xz: {
     desc: {
-      en: "Compresses a single file using the LZMA2 algorithm, the same family used by 7-Zip, trading significantly more CPU time and memory during compression for a noticeably smaller output than gzip on the same data. That trade-off is exactly why it shows up for distributing large, compress-once-decompress-many artifacts like Linux kernel source tarballs and software release archives, where the extra compression time is paid once but the smaller download is downloaded by everyone.",
+      en: 'Compresses a single file using the LZMA2 algorithm, the same family used by 7-Zip, trading significantly more CPU time and memory during compression for a noticeably smaller output than gzip on the same data. That trade-off is exactly why it shows up for distributing large, compress-once-decompress-many artifacts like Linux kernel source tarballs and software release archives, where the extra compression time is paid once but the smaller download is downloaded by everyone.',
       pt: 'Compacta um único arquivo usando o algoritmo LZMA2, a mesma família usada pelo 7-Zip, trocando bem mais tempo de CPU e memória durante a compactação por uma saída visivelmente menor que o gzip nos mesmos dados. Essa troca é exatamente o motivo dele aparecer para distribuir artefatos grandes, compactados uma vez e descompactados muitas, como tarballs de código-fonte do kernel Linux e pacotes de release de software, onde o tempo extra de compactação é pago uma vez só, mas o download menor é baixado por todo mundo.',
     },
     subcommands: {},
@@ -261,8 +261,8 @@ export const archivesHashing: CommandKB = {
         en: 'Displays or manipulates an X.509 certificate.',
         pt: 'Exibe ou manipula um certificado X.509.',
       },
-      's_client': {
-        en: "Opens a raw connection to a remote server and shows its TLS/SSL handshake and certificate details.",
+      s_client: {
+        en: 'Opens a raw connection to a remote server and shows its TLS/SSL handshake and certificate details.',
         pt: 'Abre uma conexão bruta com um servidor remoto e mostra o handshake TLS/SSL e os detalhes do certificado dele.',
       },
       enc: {
@@ -319,7 +319,7 @@ export const archivesHashing: CommandKB = {
 
   cksum: {
     desc: {
-      en: "Computes a CRC checksum and byte count for a file, a much older and weaker integrity check than md5sum or sha256sum, designed to catch accidental corruption (a bad transfer, a flipped bit) rather than deliberate tampering, which it offers essentially no protection against.",
+      en: 'Computes a CRC checksum and byte count for a file, a much older and weaker integrity check than md5sum or sha256sum, designed to catch accidental corruption (a bad transfer, a flipped bit) rather than deliberate tampering, which it offers essentially no protection against.',
       pt: 'Calcula um checksum CRC e a contagem de bytes de um arquivo, uma checagem de integridade bem mais antiga e fraca que md5sum ou sha256sum, feita para pegar corrupção acidental (uma transferência ruim, um bit invertido), não adulteração deliberada, contra a qual oferece essencialmente nenhuma proteção.',
     },
     subcommands: {},
@@ -332,11 +332,10 @@ export const archivesHashing: CommandKB = {
 
   uuidgen: {
     desc: {
-      en: "Generates a random UUID (universally unique identifier), a 128-bit value formatted as a string of hex digits that is, for all practical purposes, guaranteed unique across every machine that will ever generate one, without any central coordination needed. It shows up constantly as a quick way to mint a unique ID for a database row, a request trace, or a temporary resource name.",
+      en: 'Generates a random UUID (universally unique identifier), a 128-bit value formatted as a string of hex digits that is, for all practical purposes, guaranteed unique across every machine that will ever generate one, without any central coordination needed. It shows up constantly as a quick way to mint a unique ID for a database row, a request trace, or a temporary resource name.',
       pt: 'Gera um UUID aleatório (identificador único universal), um valor de 128 bits formatado como uma string de dígitos hexadecimais que é, para todos os efeitos práticos, garantido único em toda máquina que algum dia gerar um, sem coordenação central nenhuma necessária. Aparece constantemente como uma forma rápida de cunhar um ID único para uma linha de banco de dados, um rastro de requisição, ou um nome de recurso temporário.',
     },
     subcommands: {},
     flags: {},
   },
-
 };

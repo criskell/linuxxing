@@ -63,10 +63,8 @@ export const ui = {
       'Argument: a value the command will use, such as a file name, service, host, or branch, depending on context.',
     'fallback.dash':
       "A standalone dash. Its meaning depends on the command: often a placeholder for standard input or output, or (as in 'cd -') a shortcut for the previous value.",
-    'fallback.test':
-      'Tests a condition. The block that follows only runs if this evaluates as true.',
-    'special.chmodOctal':
-      'Octal permission notation: each digit sets read/write/execute for owner, group, and others.',
+    'fallback.test': 'Tests a condition. The block that follows only runs if this evaluates as true.',
+    'special.chmodOctal': 'Octal permission notation: each digit sets read/write/execute for owner, group, and others.',
     'special.octalModeDecode': (owner: string, group: string, other: string) =>
       `Owner: ${owner}. Group: ${group}. Others: ${other}.`,
     'special.flagValue': (value: string) => `Here it's set to "${value}".`,
@@ -90,7 +88,7 @@ export const ui = {
             : 'check at boot, after the root filesystem';
       return `A line for /etc/fstab, in "device mount-point type options dump pass" format. Device "${device}", mount point ${mountDesc}, filesystem type "${fstype}", options "${opts}", dump "${dump}" (${dumpDesc}), pass "${pass}" (${passDesc}).`;
     },
-    'comment.desc': "A comment, ignored by the shell and left in the script as a note for whoever reads it.",
+    'comment.desc': 'A comment, ignored by the shell and left in the script as a note for whoever reads it.',
     'operator.and': 'Runs the next command only if this one succeeded (exit code 0).',
     'operator.or': 'Runs the next command only if this one failed (non-zero exit code).',
     'operator.seq': 'Runs the next command right after this one finishes, regardless of whether it succeeded.',
@@ -160,9 +158,9 @@ export const ui = {
     'fallback.flagLong': (name: string) =>
       `Opção longa (estilo GNU). Não tenho uma explicação específica para "${name}" neste comando, mas o formato "--nome" costuma ativar ou configurar um comportamento específico.`,
     'fallback.flagLongValue': (value: string) => ` Aqui ela recebe o valor "${value}".`,
-    'fallback.flagShortCombinedKnown': (letters: string) =>
-      `Combina várias opções curtas em uma só: ${letters}.`,
-    'fallback.flagShortCombinedUnknown': ' Não tenho uma explicação específica cadastrada para essa combinação neste comando.',
+    'fallback.flagShortCombinedKnown': (letters: string) => `Combina várias opções curtas em uma só: ${letters}.`,
+    'fallback.flagShortCombinedUnknown':
+      ' Não tenho uma explicação específica cadastrada para essa combinação neste comando.',
     'fallback.flagShort': (tok: string) =>
       `Opção curta no estilo Unix (um hífen + letra). Não tenho uma explicação específica cadastrada para "${tok}" neste comando.`,
     'fallback.subcommandExpected': (base: string, tok: string, examples: string) =>
@@ -171,14 +169,14 @@ export const ui = {
       'Argumento: um valor que o comando vai usar, como o nome de um arquivo, serviço, host ou branch, dependendo do contexto.',
     'fallback.dash':
       "Um hífen sozinho. O significado depende do comando: geralmente representa a entrada ou saída padrão, ou (como em 'cd -') um atalho para o valor anterior.",
-    'fallback.test':
-      'Testa uma condição. O bloco que vem a seguir só roda se isso for verdadeiro.',
+    'fallback.test': 'Testa uma condição. O bloco que vem a seguir só roda se isso for verdadeiro.',
     'special.chmodOctal':
       'Notação octal de permissão: cada dígito define leitura/escrita/execução para dono, grupo e outros.',
     'special.octalModeDecode': (owner: string, group: string, other: string) =>
       `Dono: ${owner}. Grupo: ${group}. Outros: ${other}.`,
     'special.flagValue': (value: string) => `Aqui está definido como "${value}".`,
-    'special.assignmentLiteral': (name: string, value: string) => `Define a variável de shell "${name}" como "${value}".`,
+    'special.assignmentLiteral': (name: string, value: string) =>
+      `Define a variável de shell "${name}" como "${value}".`,
     'special.assignmentVariable': (name: string, sourceName: string) =>
       `Define a variável de shell "${name}" com o valor atual da variável "${sourceName}".`,
     'special.assignmentSubstitution': (name: string) =>

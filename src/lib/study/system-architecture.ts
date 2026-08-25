@@ -10,7 +10,10 @@ export const systemArchitectureCards: StudyCard[] = [
   {
     id: 'boot-process',
     topic: 'system-architecture',
-    front: { en: 'What happens when a Linux machine boots?', pt: 'O que acontece quando uma máquina Linux inicializa?' },
+    front: {
+      en: 'What happens when a Linux machine boots?',
+      pt: 'O que acontece quando uma máquina Linux inicializa?',
+    },
     back: {
       en: 'The firmware (BIOS or UEFI) runs a power-on self-test and hands control to a bootloader, the bootloader loads the Linux kernel into memory and starts it, the kernel initializes hardware and mounts the root filesystem, and finally the kernel starts the first user-space process (traditionally PID 1, usually systemd today), which brings up every other service in order.',
       pt: 'O firmware (BIOS ou UEFI) roda um autoteste de inicialização e passa o controle para um bootloader, o bootloader carrega o kernel do Linux na memória e o inicia, o kernel inicializa o hardware e monta o sistema de arquivos raiz, e por fim o kernel inicia o primeiro processo em espaço de usuário (tradicionalmente o PID 1, hoje geralmente o systemd), que sobe todos os outros serviços em ordem.',

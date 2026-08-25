@@ -132,7 +132,11 @@ const classifyArgument = (
   return { classification: { type: 'arg' as const, consumedValueFlag, keyValueMatch, isRedirectTarget }, state };
 };
 
-export const classifyCommandToken = (token: string, knowledgeBase: CommandDef | undefined, state: CommandTokenState) => {
+export const classifyCommandToken = (
+  token: string,
+  knowledgeBase: CommandDef | undefined,
+  state: CommandTokenState,
+) => {
   const consumedValueFlag = state.pendingValueFlag;
   const consumedRedirectTarget = state.pendingRedirectTarget;
   const clearedState: CommandTokenState = { ...state, pendingValueFlag: null, pendingRedirectTarget: false };

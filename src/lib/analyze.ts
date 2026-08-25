@@ -130,7 +130,12 @@ function describeArgToken(
   return knowledgeBase?.argHint?.[locale] ?? t(locale, 'fallback.arg');
 }
 
-function pushAssignmentSteps(steps: Step[], token: string, assignment: { name: string; value: string }, locale: Locale): void {
+function pushAssignmentSteps(
+  steps: Step[],
+  token: string,
+  assignment: { name: string; value: string },
+  locale: Locale,
+): void {
   const substitutionInner = extractCommandSubstitution(assignment.value);
   if (substitutionInner !== null) {
     steps.push({ token, type: 'assignment', desc: t(locale, 'special.assignmentSubstitution')(assignment.name) });
@@ -140,11 +145,19 @@ function pushAssignmentSteps(steps: Step[], token: string, assignment: { name: s
 
   const sourceVariable = extractVariableExpansion(assignment.value);
   if (sourceVariable !== null) {
-    steps.push({ token, type: 'assignment', desc: t(locale, 'special.assignmentVariable')(assignment.name, sourceVariable) });
+    steps.push({
+      token,
+      type: 'assignment',
+      desc: t(locale, 'special.assignmentVariable')(assignment.name, sourceVariable),
+    });
     return;
   }
 
-  steps.push({ token, type: 'assignment', desc: t(locale, 'special.assignmentLiteral')(assignment.name, assignment.value) });
+  steps.push({
+    token,
+    type: 'assignment',
+    desc: t(locale, 'special.assignmentLiteral')(assignment.name, assignment.value),
+  });
 }
 
 export function analyze(tokens: string[], locale: Locale): Step[] {
@@ -208,7 +221,11 @@ export function analyze(tokens: string[], locale: Locale): Step[] {
         break;
       case 'unknown': {
         const examples = Object.keys(knowledgeBase!.subcommands).slice(0, 3).join(', ');
-        steps.push({ token: tok, type: 'unknown', desc: t(locale, 'fallback.subcommandExpected')(baseCmd, tok, examples) });
+        steps.push({
+          token: tok,
+          type: 'unknown',
+          desc: t(locale, 'fallback.subcommandExpected')(baseCmd, tok, examples),
+        });
         break;
       }
       case 'arg':
@@ -235,7 +252,10 @@ export function analyze(tokens: string[], locale: Locale): Step[] {
 }
 
 function buildTestStep(expr: string, locale: Locale): Step {
-  const inner = expr.replace(/^\[\[?/, '').replace(/\]\]?$/, '').trim();
+  const inner = expr
+    .replace(/^\[\[?/, '')
+    .replace(/\]\]?$/, '')
+    .trim();
   const innerTokens = tokenize(inner);
   const matched = innerTokens
     .map((tok) => {

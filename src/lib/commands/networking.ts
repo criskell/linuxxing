@@ -64,7 +64,7 @@ export const networking: CommandKB = {
         pt: 'Segue redirecionamentos automaticamente.',
       },
       '-s': {
-        en: "Silent mode: hides the progress bar and error messages.",
+        en: 'Silent mode: hides the progress bar and error messages.',
         pt: 'Modo silencioso: não mostra barra de progresso nem mensagens de erro.',
       },
       '-I': {
@@ -148,7 +148,7 @@ export const networking: CommandKB = {
 
   rsync: {
     desc: {
-      en: "Synchronizes files and folders between two locations, local-to-local, local-to-remote, or remote-to-remote over SSH, using a delta-transfer algorithm that compares both sides and sends only the parts of a file that actually changed rather than the whole file again. This makes it dramatically faster than a plain copy for repeated backups or deployments, where most files are usually unchanged between runs. Combined with --delete it becomes a true mirror tool, making the destination an exact copy of the source, including removing files that no longer exist there, which is why it is the standard building block for backup scripts.",
+      en: 'Synchronizes files and folders between two locations, local-to-local, local-to-remote, or remote-to-remote over SSH, using a delta-transfer algorithm that compares both sides and sends only the parts of a file that actually changed rather than the whole file again. This makes it dramatically faster than a plain copy for repeated backups or deployments, where most files are usually unchanged between runs. Combined with --delete it becomes a true mirror tool, making the destination an exact copy of the source, including removing files that no longer exist there, which is why it is the standard building block for backup scripts.',
       pt: 'Sincroniza arquivos e pastas entre dois lugares, local para local, local para remoto, ou remoto para remoto via SSH, usando um algoritmo de transferência por delta que compara os dois lados e envia só as partes de um arquivo que realmente mudaram, em vez do arquivo inteiro de novo. Isso o torna dramaticamente mais rápido que uma cópia simples para backups ou deploys repetidos, onde a maioria dos arquivos costuma estar inalterada entre uma execução e outra. Combinado com --delete ele vira uma ferramenta de espelhamento de verdade, fazendo do destino uma cópia exata da origem, inclusive removendo arquivos que não existem mais lá, e é por isso que é a peça padrão de construção de scripts de backup.',
     },
     subcommands: {},
@@ -215,7 +215,7 @@ export const networking: CommandKB = {
 
   'ssh-keygen': {
     desc: {
-      en: "Generates a new SSH key pair, a private key that must never leave the machine it was created on and a matching public key that gets copied to every server you want to log into. Authentication then works by proving possession of the private key through public-key cryptography, without ever sending a password over the network, which is both more convenient (no typing a password on every connection) and considerably more secure than password authentication, since the private key never leaves your machine and can itself be protected by a passphrase. ed25519 is the modern recommended key type: shorter, faster, and just as secure as a much larger traditional RSA key.",
+      en: 'Generates a new SSH key pair, a private key that must never leave the machine it was created on and a matching public key that gets copied to every server you want to log into. Authentication then works by proving possession of the private key through public-key cryptography, without ever sending a password over the network, which is both more convenient (no typing a password on every connection) and considerably more secure than password authentication, since the private key never leaves your machine and can itself be protected by a passphrase. ed25519 is the modern recommended key type: shorter, faster, and just as secure as a much larger traditional RSA key.',
       pt: 'Gera um novo par de chaves SSH, uma chave privada que nunca deve sair da máquina onde foi criada e uma chave pública correspondente que é copiada para cada servidor no qual se quer logar. A autenticação então funciona provando a posse da chave privada por criptografia de chave pública, sem nunca enviar uma senha pela rede, o que é ao mesmo tempo mais conveniente (sem digitar senha a cada conexão) e consideravelmente mais seguro do que autenticação por senha, já que a chave privada nunca sai da sua máquina e ainda pode ser protegida por uma frase-senha própria. O ed25519 é o tipo de chave moderno recomendado: mais curto, mais rápido, e tão seguro quanto uma chave RSA tradicional muito maior.',
     },
     subcommands: {},
@@ -247,7 +247,7 @@ export const networking: CommandKB = {
 
   ip: {
     desc: {
-      en: "Shows and configures network interfaces, IP addresses, and routing, the modern replacement for the older ifconfig and route commands, which are deprecated and often not even installed by default anymore on current distributions. It is organized into objects (addr for addresses, link for the interfaces themselves, route for the routing table), each with its own set of actions, a structure carried over from the wider iproute2 suite it belongs to, which is more consistent, if a bit more to type, than the commands it replaced.",
+      en: 'Shows and configures network interfaces, IP addresses, and routing, the modern replacement for the older ifconfig and route commands, which are deprecated and often not even installed by default anymore on current distributions. It is organized into objects (addr for addresses, link for the interfaces themselves, route for the routing table), each with its own set of actions, a structure carried over from the wider iproute2 suite it belongs to, which is more consistent, if a bit more to type, than the commands it replaced.',
       pt: 'Mostra e configura interfaces de rede, endereços IP e roteamento, o substituto moderno dos antigos ifconfig e route, que já estão obsoletos e muitas vezes nem vêm mais instalados por padrão nas distribuições atuais. É organizado em objetos (addr para endereços, link para as próprias interfaces, route para a tabela de rotas), cada um com seu próprio conjunto de ações, uma estrutura herdada do conjunto mais amplo iproute2 ao qual pertence, mais consistente, ainda que um pouco mais longa de digitar, do que os comandos que substituiu.',
     },
     subcommands: {
@@ -329,7 +329,7 @@ export const networking: CommandKB = {
 
   nc: {
     desc: {
-      en: "Netcat, often nicknamed the network Swiss Army knife: reads and writes raw data straight over a network connection, with none of the protocol assumptions of curl or ssh. That bare-bones simplicity is exactly its value: it can act as a quick client to poke at any TCP or UDP port and see what comes back, as a minimal server with -l for testing, or as a fast, no-frills way to pipe data between two machines, all without needing to know or implement whatever protocol the two sides would normally speak.",
+      en: 'Netcat, often nicknamed the network Swiss Army knife: reads and writes raw data straight over a network connection, with none of the protocol assumptions of curl or ssh. That bare-bones simplicity is exactly its value: it can act as a quick client to poke at any TCP or UDP port and see what comes back, as a minimal server with -l for testing, or as a fast, no-frills way to pipe data between two machines, all without needing to know or implement whatever protocol the two sides would normally speak.',
       pt: 'Netcat, muitas vezes apelidado de canivete suíço da rede: lê e escreve dados brutos direto em uma conexão de rede, sem nenhuma das suposições de protocolo do curl ou do ssh. Essa simplicidade básica é exatamente seu valor: consegue agir como cliente rápido para cutucar qualquer porta TCP ou UDP e ver o que volta, como servidor mínimo com -l para testes, ou como forma rápida e sem frescura de encanar dados entre duas máquinas, tudo sem precisar saber ou implementar qualquer protocolo que os dois lados normalmente falariam.',
     },
     subcommands: {},
@@ -471,7 +471,7 @@ export const networking: CommandKB = {
 
   arp: {
     desc: {
-      en: "Shows or edits the ARP table, the local cache mapping neighboring IP addresses on the same network segment to their physical (MAC) hardware addresses. Every device needs this mapping to actually deliver a packet at the link layer, and a wrong or poisoned ARP entry is a classic way local network traffic gets silently redirected, which is exactly why arp -a (listing the current table) is a genuinely useful step in diagnosing strange local-network connectivity problems.",
+      en: 'Shows or edits the ARP table, the local cache mapping neighboring IP addresses on the same network segment to their physical (MAC) hardware addresses. Every device needs this mapping to actually deliver a packet at the link layer, and a wrong or poisoned ARP entry is a classic way local network traffic gets silently redirected, which is exactly why arp -a (listing the current table) is a genuinely useful step in diagnosing strange local-network connectivity problems.',
       pt: 'Mostra ou edita a tabela ARP, o cache local que mapeia endereços IP vizinhos no mesmo segmento de rede para seus endereços físicos (MAC) de hardware. Todo dispositivo precisa desse mapeamento para de fato entregar um pacote na camada de enlace, e uma entrada ARP errada ou envenenada é uma forma clássica de tráfego de rede local ser redirecionado silenciosamente, motivo exato pelo qual arp -a (listando a tabela atual) é um passo genuinamente útil ao diagnosticar problemas estranhos de conectividade na rede local.',
     },
     subcommands: {},
@@ -524,11 +524,10 @@ export const networking: CommandKB = {
 
   'ssh-agent': {
     desc: {
-      en: "Runs a background process that holds decrypted SSH private keys in memory for the duration of a session, so a passphrase-protected key only needs to be unlocked once (with ssh-add) instead of on every single SSH connection. It is what makes a passphrase-protected key practical to use day to day instead of a genuine inconvenience typed dozens of times a day.",
+      en: 'Runs a background process that holds decrypted SSH private keys in memory for the duration of a session, so a passphrase-protected key only needs to be unlocked once (with ssh-add) instead of on every single SSH connection. It is what makes a passphrase-protected key practical to use day to day instead of a genuine inconvenience typed dozens of times a day.',
       pt: 'Roda um processo em segundo plano que guarda chaves SSH privadas descriptografadas em memória pela duração de uma sessão, para que uma chave protegida por frase-senha só precise ser desbloqueada uma vez (com ssh-add) em vez de em toda conexão SSH individual. É o que torna uma chave protegida por frase-senha prática de usar no dia a dia, em vez de um incômodo genuíno digitado dezenas de vezes por dia.',
     },
     subcommands: {},
     flags: {},
   },
-
 };

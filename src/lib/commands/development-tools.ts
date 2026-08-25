@@ -28,7 +28,7 @@ export const developmentTools: CommandKB = {
         pt: 'Traz e aplica as mudanças de um repositório remoto para o repositório local.',
       },
       fetch: {
-        en: "Downloads changes from a remote repository without applying them yet.",
+        en: 'Downloads changes from a remote repository without applying them yet.',
         pt: 'Baixa as mudanças de um repositório remoto sem aplicá-las ainda.',
       },
       clone: {
@@ -155,7 +155,7 @@ export const developmentTools: CommandKB = {
         pt: 'Roda múltiplos passos de build independentes em paralelo, acelerando muito builds grandes em máquinas com vários núcleos.',
       },
       '-n': {
-        en: "Shows what commands would run without actually running them, useful for checking what a target does before triggering it.",
+        en: 'Shows what commands would run without actually running them, useful for checking what a target does before triggering it.',
         pt: 'Mostra quais comandos rodariam sem realmente executá-los, útil para checar o que um alvo faz antes de disparar.',
       },
     },
@@ -352,5 +352,4 @@ export const developmentTools: CommandKB = {
       pt: 'O arquivo a editar.',
     },
   },
-
 };

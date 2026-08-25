@@ -46,7 +46,10 @@ export const userInterfacesCards: StudyCard[] = [
   {
     id: 'accessibility',
     topic: 'user-interfaces',
-    front: { en: 'What does accessibility mean in a desktop environment?', pt: 'O que significa acessibilidade em um ambiente de trabalho?' },
+    front: {
+      en: 'What does accessibility mean in a desktop environment?',
+      pt: 'O que significa acessibilidade em um ambiente de trabalho?',
+    },
     back: {
       en: 'Accessibility features let people with visual, hearing, motor, or cognitive impairments use a desktop effectively: screen readers that speak window content aloud, high-contrast themes, on-screen keyboards, sticky keys for people who cannot hold multiple keys at once, and similar tools, most major desktop environments ship these built in and configurable from a dedicated settings panel.',
       pt: 'Recursos de acessibilidade permitem que pessoas com deficiências visuais, auditivas, motoras ou cognitivas usem uma área de trabalho de forma eficaz: leitores de tela que falam o conteúdo das janelas em voz alta, temas de alto contraste, teclados na tela, teclas de aderência para quem não consegue segurar várias teclas ao mesmo tempo, e ferramentas semelhantes, a maioria dos ambientes de trabalho principais já traz isso embutido e configurável em um painel de ajustes dedicado.',

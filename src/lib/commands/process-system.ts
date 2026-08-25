@@ -39,7 +39,7 @@ export const processSystem: CommandKB = {
         pt: 'Mostra informações completas sobre cada processo (formato completo).',
       },
       aux: {
-        en: "Classic combination that shows every process from every user, in detail, including those without a terminal.",
+        en: 'Classic combination that shows every process from every user, in detail, including those without a terminal.',
         pt: 'Combinação clássica que mostra todos os processos de todos os usuários, com detalhes, mesmo os sem terminal associado.',
       },
     },
@@ -71,7 +71,7 @@ export const processSystem: CommandKB = {
         pt: 'Mostra os tamanhos em formato legível (KB, MB, GB) em vez de blocos.',
       },
       '-s': {
-        en: "Shows only the total for each folder, without detailing subfolders.",
+        en: 'Shows only the total for each folder, without detailing subfolders.',
         pt: 'Mostra apenas o total de cada pasta, sem detalhar subpastas.',
       },
     },
@@ -100,7 +100,7 @@ export const processSystem: CommandKB = {
 
   mkswap: {
     desc: {
-      en: "Formats a file or partition as swap space by writing the swap signature and metadata the kernel expects, the same way mkfs formats a partition as ext4 or xfs, but for swap specifically. This is a required middle step between creating the space (with fallocate or by partitioning a disk) and actually using it (with swapon): the kernel refuses to treat raw, unformatted space as swap, since it needs that metadata to manage it safely.",
+      en: 'Formats a file or partition as swap space by writing the swap signature and metadata the kernel expects, the same way mkfs formats a partition as ext4 or xfs, but for swap specifically. This is a required middle step between creating the space (with fallocate or by partitioning a disk) and actually using it (with swapon): the kernel refuses to treat raw, unformatted space as swap, since it needs that metadata to manage it safely.',
       pt: 'Formata um arquivo ou partição como área de swap, escrevendo a assinatura e os metadados que o kernel espera, da mesma forma que o mkfs formata uma partição como ext4 ou xfs, mas especificamente para swap. É um passo intermediário obrigatório entre criar o espaço (com fallocate ou particionando um disco) e realmente usá-lo (com swapon): o kernel se recusa a tratar espaço bruto, sem formatação, como swap, já que precisa desses metadados para gerenciá-lo com segurança.',
     },
     subcommands: {},
@@ -113,7 +113,7 @@ export const processSystem: CommandKB = {
 
   swapon: {
     desc: {
-      en: "Enables a swap file or partition that has already been formatted with mkswap, telling the kernel it can start using it as virtual memory right away. This activation does not survive a reboot on its own, a line has to be added to /etc/fstab for the swap to be turned back on automatically at startup, which is exactly why swapon usually appears as the last step of a small script that also touches fstab.",
+      en: 'Enables a swap file or partition that has already been formatted with mkswap, telling the kernel it can start using it as virtual memory right away. This activation does not survive a reboot on its own, a line has to be added to /etc/fstab for the swap to be turned back on automatically at startup, which is exactly why swapon usually appears as the last step of a small script that also touches fstab.',
       pt: 'Ativa um arquivo ou partição de swap que já foi formatado com mkswap, avisando ao kernel que ele já pode começar a usá-lo como memória virtual. Essa ativação não sobrevive sozinha a um reinício, é preciso adicionar uma linha ao /etc/fstab para que o swap volte a ser ativado automaticamente na inicialização, e é exatamente por isso que o swapon costuma aparecer como o último passo de um pequeno script que também mexe no fstab.',
     },
     subcommands: {},
@@ -175,7 +175,7 @@ export const processSystem: CommandKB = {
 
   uptime: {
     desc: {
-      en: "Shows how long the system has been running since its last boot, how many users are currently logged in, and the load average, three numbers representing the average number of processes wanting CPU time over the last 1, 5, and 15 minutes. That last part is the one worth understanding: a load average of 1.0 on a single-core machine means the CPU was fully busy on average, so the same number means something very different on a machine with 16 cores, where it would barely register as a blip.",
+      en: 'Shows how long the system has been running since its last boot, how many users are currently logged in, and the load average, three numbers representing the average number of processes wanting CPU time over the last 1, 5, and 15 minutes. That last part is the one worth understanding: a load average of 1.0 on a single-core machine means the CPU was fully busy on average, so the same number means something very different on a machine with 16 cores, where it would barely register as a blip.',
       pt: 'Mostra há quanto tempo o sistema está ligado desde o último boot, quantos usuários estão logados no momento, e a carga média (load average), três números representando a média de processos querendo tempo de CPU nos últimos 1, 5 e 15 minutos. Essa última parte é a que vale entender: uma carga média de 1.0 em uma máquina de um núcleo só significa que a CPU esteve totalmente ocupada em média, então o mesmo número significa algo bem diferente em uma máquina com 16 núcleos, onde mal seria perceptível.',
     },
     subcommands: {},
@@ -247,7 +247,7 @@ export const processSystem: CommandKB = {
 
   nohup: {
     desc: {
-      en: "Runs a command in a way that makes it immune to the hangup signal (SIGHUP), which the shell normally sends to every child process when the terminal that launched them closes. Without it, starting a long-running task over SSH and then disconnecting will kill that task the moment the connection drops; nohup, usually combined with a trailing & to also push it into the background, lets the process keep running after logout, its output redirected by default into a file called nohup.out. Tools like tmux and screen solve the same underlying problem in a more complete way, letting you reattach to a whole session rather than just keeping one process alive.",
+      en: 'Runs a command in a way that makes it immune to the hangup signal (SIGHUP), which the shell normally sends to every child process when the terminal that launched them closes. Without it, starting a long-running task over SSH and then disconnecting will kill that task the moment the connection drops; nohup, usually combined with a trailing & to also push it into the background, lets the process keep running after logout, its output redirected by default into a file called nohup.out. Tools like tmux and screen solve the same underlying problem in a more complete way, letting you reattach to a whole session rather than just keeping one process alive.',
       pt: 'Roda um comando de forma imune ao sinal de hangup (SIGHUP), que o shell normalmente envia para todo processo filho quando o terminal que os iniciou é fechado. Sem isso, iniciar uma tarefa longa via SSH e depois desconectar mataria essa tarefa no instante em que a conexão caísse; o nohup, geralmente combinado com um & no final para também jogá-lo em segundo plano, permite que o processo continue rodando depois do logout, com sua saída redirecionada por padrão para um arquivo chamado nohup.out. Ferramentas como tmux e screen resolvem o mesmo problema de fundo de forma mais completa, permitindo reconectar a uma sessão inteira, não só manter um processo vivo.',
     },
     subcommands: {},
@@ -328,7 +328,7 @@ export const processSystem: CommandKB = {
 
   killall: {
     desc: {
-      en: "Sends a signal to every process matching an exact name, similar in spirit to pkill but requiring an exact name match by default rather than a pattern, which makes it slightly less prone to accidentally catching unrelated processes. Worth a note for anyone coming from macOS: its killall behaves quite differently and is not a drop-in equivalent to the Linux one, so scripts or muscle memory built on one do not necessarily translate safely to the other.",
+      en: 'Sends a signal to every process matching an exact name, similar in spirit to pkill but requiring an exact name match by default rather than a pattern, which makes it slightly less prone to accidentally catching unrelated processes. Worth a note for anyone coming from macOS: its killall behaves quite differently and is not a drop-in equivalent to the Linux one, so scripts or muscle memory built on one do not necessarily translate safely to the other.',
       pt: 'Envia um sinal a todo processo que combina exatamente com um nome, parecido em espírito com o pkill mas exigindo correspondência exata de nome por padrão em vez de um padrão, o que o torna um pouco menos propenso a pegar processos não relacionados por acidente. Vale uma nota para quem vem do macOS: o killall de lá se comporta de forma bem diferente e não é um equivalente direto do killall do Linux, então scripts ou memória muscular construídos em um não se traduzem necessariamente com segurança para o outro.',
     },
     subcommands: {},
@@ -350,7 +350,7 @@ export const processSystem: CommandKB = {
 
   mount: {
     desc: {
-      en: "Attaches a filesystem, a disk partition, a USB drive, a network share, to a specific directory in the existing filesystem tree, making its contents accessible at that path. Linux has no separate drive letters the way Windows does; everything is grafted onto one unified tree starting at /, and mount is the command that performs that graft, matching exactly the device-and-options format used in /etc/fstab for filesystems that should be mounted automatically at boot.",
+      en: 'Attaches a filesystem, a disk partition, a USB drive, a network share, to a specific directory in the existing filesystem tree, making its contents accessible at that path. Linux has no separate drive letters the way Windows does; everything is grafted onto one unified tree starting at /, and mount is the command that performs that graft, matching exactly the device-and-options format used in /etc/fstab for filesystems that should be mounted automatically at boot.',
       pt: 'Anexa um sistema de arquivos, uma partição de disco, um pendrive USB, um compartilhamento de rede, a um diretório específico dentro da árvore de sistema de arquivos existente, tornando seu conteúdo acessível naquele caminho. O Linux não tem letras de unidade separadas como o Windows; tudo é enxertado em uma única árvore unificada começando em /, e o mount é o comando que faz esse enxerto, seguindo exatamente o mesmo formato de dispositivo e opções usado no /etc/fstab para sistemas de arquivos que devem ser montados automaticamente no boot.',
     },
     subcommands: {},
@@ -380,7 +380,7 @@ export const processSystem: CommandKB = {
 
   umount: {
     desc: {
-      en: "Detaches a mounted filesystem from the directory tree, the exact reverse of mount. It refuses to detach anything currently in use, if a program has a file open on it or a shell has that directory as its current working folder, which is a safety feature rather than a bug: forcibly disconnecting a filesystem still being written to risks corrupting data, so the fix is almost always to close whatever is using it first, not to force the unmount.",
+      en: 'Detaches a mounted filesystem from the directory tree, the exact reverse of mount. It refuses to detach anything currently in use, if a program has a file open on it or a shell has that directory as its current working folder, which is a safety feature rather than a bug: forcibly disconnecting a filesystem still being written to risks corrupting data, so the fix is almost always to close whatever is using it first, not to force the unmount.',
       pt: 'Desanexa um sistema de arquivos montado da árvore de diretórios, o inverso exato do mount. Ele se recusa a desanexar qualquer coisa em uso no momento, se um programa tem um arquivo aberto nele ou um shell tem aquele diretório como pasta de trabalho atual, o que é um recurso de segurança, não um bug: desconectar à força um sistema de arquivos ainda sendo escrito arrisca corromper dados, então o ajuste quase sempre é fechar o que está usando primeiro, não forçar a desmontagem.',
     },
     subcommands: {},
@@ -471,7 +471,7 @@ export const processSystem: CommandKB = {
 
   renice: {
     desc: {
-      en: "Changes the scheduling priority of a process that is already running, identified by its PID, the same adjustment nice makes at startup but applied after the fact without restarting the process.",
+      en: 'Changes the scheduling priority of a process that is already running, identified by its PID, the same adjustment nice makes at startup but applied after the fact without restarting the process.',
       pt: 'Altera a prioridade de escalonamento de um processo que já está em execução, identificado pelo seu PID, o mesmo ajuste que o nice faz na inicialização, mas aplicado depois, sem reiniciar o processo.',
     },
     subcommands: {},
@@ -515,19 +515,19 @@ export const processSystem: CommandKB = {
     },
     subcommands: {},
     flags: {
-      'if': {
+      if: {
         en: 'Sets the input file or device to read from.',
         pt: 'Define o arquivo ou dispositivo de entrada de onde ler.',
       },
-      'of': {
+      of: {
         en: 'Sets the output file or device to write to.',
         pt: 'Define o arquivo ou dispositivo de saída para onde escrever.',
       },
-      'bs': {
+      bs: {
         en: 'Sets the block size used for each read/write operation, affecting throughput.',
         pt: 'Define o tamanho de bloco usado em cada operação de leitura/escrita, afetando a taxa de transferência.',
       },
-      'status': {
+      status: {
         en: "Controls how much progress information is shown; 'status=progress' shows a live transfer rate.",
         pt: 'Controla quanta informação de progresso é mostrada; "status=progress" mostra uma taxa de transferência ao vivo.',
       },
@@ -536,7 +536,7 @@ export const processSystem: CommandKB = {
 
   jobs: {
     desc: {
-      en: "A shell builtin that lists the background and stopped jobs started from the current shell session, each with a job number that bg, fg, and kill can reference with a percent sign, like %1, as a shorter alternative to a full PID.",
+      en: 'A shell builtin that lists the background and stopped jobs started from the current shell session, each with a job number that bg, fg, and kill can reference with a percent sign, like %1, as a shorter alternative to a full PID.',
       pt: 'Um comando interno do shell que lista as tarefas em segundo plano e paradas iniciadas a partir da sessão de shell atual, cada uma com um número de tarefa que o bg, o fg e o kill conseguem referenciar com um sinal de porcentagem, como %1, como alternativa mais curta a um PID completo.',
     },
     subcommands: {},
@@ -550,7 +550,7 @@ export const processSystem: CommandKB = {
 
   bg: {
     desc: {
-      en: "A shell builtin that resumes a stopped job (one paused with Ctrl+Z) and continues running it in the background, freeing up the terminal for other commands while that job keeps working.",
+      en: 'A shell builtin that resumes a stopped job (one paused with Ctrl+Z) and continues running it in the background, freeing up the terminal for other commands while that job keeps working.',
       pt: 'Um comando interno do shell que retoma uma tarefa parada (uma pausada com Ctrl+Z) e continua rodando ela em segundo plano, liberando o terminal para outros comandos enquanto essa tarefa continua trabalhando.',
     },
     subcommands: {},
@@ -607,7 +607,7 @@ export const processSystem: CommandKB = {
 
   lscpu: {
     desc: {
-      en: "Prints a summary of the CPU architecture: how many cores and threads are available, the model name, clock speed, cache sizes, and virtualization support, all gathered from /proc/cpuinfo and sysfs but organized into one readable report instead of a long raw dump.",
+      en: 'Prints a summary of the CPU architecture: how many cores and threads are available, the model name, clock speed, cache sizes, and virtualization support, all gathered from /proc/cpuinfo and sysfs but organized into one readable report instead of a long raw dump.',
       pt: 'Imprime um resumo da arquitetura da CPU: quantos núcleos e threads estão disponíveis, o nome do modelo, velocidade de clock, tamanhos de cache, e suporte a virtualização, tudo reunido de /proc/cpuinfo e do sysfs mas organizado em um relatório legível em vez de um despejo bruto longo.',
     },
     subcommands: {},
@@ -630,7 +630,7 @@ export const processSystem: CommandKB = {
 
   lsusb: {
     desc: {
-      en: "Lists every device currently connected to a USB bus, the USB counterpart to lspci, useful for confirming a plugged-in device (a drive, a keyboard, a webcam) is actually being seen by the system at the hardware level before troubleshooting anything further up the stack.",
+      en: 'Lists every device currently connected to a USB bus, the USB counterpart to lspci, useful for confirming a plugged-in device (a drive, a keyboard, a webcam) is actually being seen by the system at the hardware level before troubleshooting anything further up the stack.',
       pt: 'Lista todo dispositivo atualmente conectado a um barramento USB, o equivalente USB do lspci, útil para confirmar que um dispositivo plugado (um drive, um teclado, uma webcam) está de fato sendo visto pelo sistema em nível de hardware antes de investigar qualquer coisa mais acima na pilha.',
     },
     subcommands: {},
@@ -662,7 +662,7 @@ export const processSystem: CommandKB = {
 
   vmstat: {
     desc: {
-      en: "Reports a snapshot (or, given an interval, a repeating series of snapshots) of system-wide virtual memory, process, CPU, and I/O activity in one compact table, useful for spotting whether a slow system is actually bottlenecked on CPU, memory (heavy swapping), or disk I/O at a glance, before diving into a more specialized tool for whichever one turns out to be the culprit.",
+      en: 'Reports a snapshot (or, given an interval, a repeating series of snapshots) of system-wide virtual memory, process, CPU, and I/O activity in one compact table, useful for spotting whether a slow system is actually bottlenecked on CPU, memory (heavy swapping), or disk I/O at a glance, before diving into a more specialized tool for whichever one turns out to be the culprit.',
       pt: 'Relata um retrato (ou, dado um intervalo, uma série repetida de retratos) da atividade de memória virtual, processos, CPU e I/O do sistema inteiro em uma tabela compacta, útil para identificar de relance se um sistema lento está de fato gargalado em CPU, memória (muito swap) ou I/O de disco, antes de mergulhar em uma ferramenta mais especializada para o que quer que se revele o culpado.',
     },
     subcommands: {},
@@ -710,7 +710,7 @@ export const processSystem: CommandKB = {
 
   strace: {
     desc: {
-      en: "Traces every system call a program makes as it runs, printing each one along with its arguments and return value, the definitive way to see exactly what a program is actually doing at the level of the kernel: which files it tries to open (and whether that fails), which network connections it attempts, which permissions checks it fails. When a program errors out with a vague message and no further explanation, strace is the tool that shows the precise syscall that actually failed and why, at the cost of a real slowdown while it is running.",
+      en: 'Traces every system call a program makes as it runs, printing each one along with its arguments and return value, the definitive way to see exactly what a program is actually doing at the level of the kernel: which files it tries to open (and whether that fails), which network connections it attempts, which permissions checks it fails. When a program errors out with a vague message and no further explanation, strace is the tool that shows the precise syscall that actually failed and why, at the cost of a real slowdown while it is running.',
       pt: 'Rastreia toda chamada de sistema que um programa faz enquanto roda, imprimindo cada uma junto com seus argumentos e valor de retorno, a forma definitiva de ver exatamente o que um programa está de fato fazendo no nível do kernel: quais arquivos ele tenta abrir (e se isso falha), quais conexões de rede ele tenta, quais checagens de permissão ele falha. Quando um programa erra com uma mensagem vaga e sem mais explicação, o strace é a ferramenta que mostra a chamada de sistema exata que de fato falhou e por quê, ao custo de uma lentidão real enquanto está rodando.',
     },
     subcommands: {},
@@ -740,7 +740,7 @@ export const processSystem: CommandKB = {
 
   pgrep: {
     desc: {
-      en: "Searches for processes by name (or other attributes) and prints their PIDs, the read-only counterpart to pkill: where pkill matches a pattern and signals every process found, pgrep matches the same way but just reports the PIDs, useful for checking whether something is running or for capturing a PID into a variable before deciding what to do with it.",
+      en: 'Searches for processes by name (or other attributes) and prints their PIDs, the read-only counterpart to pkill: where pkill matches a pattern and signals every process found, pgrep matches the same way but just reports the PIDs, useful for checking whether something is running or for capturing a PID into a variable before deciding what to do with it.',
       pt: 'Procura processos pelo nome (ou outros atributos) e imprime seus PIDs, o par somente-leitura do pkill: onde o pkill combina um padrão e sinaliza todo processo encontrado, o pgrep combina da mesma forma mas só relata os PIDs, útil para checar se algo está rodando ou para capturar um PID em uma variável antes de decidir o que fazer com ele.',
     },
     subcommands: {},
@@ -805,7 +805,7 @@ export const processSystem: CommandKB = {
 
   mkfs: {
     desc: {
-      en: "Creates a new filesystem on a disk partition or device, formatting it with a specific filesystem type (ext4, xfs, and so on) so the kernel can actually mount and use it, exactly the step mkswap performs specifically for swap space, but mkfs is the general-purpose version for real, mountable filesystems. It is a destructive operation, running it on a partition wipes whatever data was already there.",
+      en: 'Creates a new filesystem on a disk partition or device, formatting it with a specific filesystem type (ext4, xfs, and so on) so the kernel can actually mount and use it, exactly the step mkswap performs specifically for swap space, but mkfs is the general-purpose version for real, mountable filesystems. It is a destructive operation, running it on a partition wipes whatever data was already there.',
       pt: 'Cria um novo sistema de arquivos em uma partição de disco ou dispositivo, formatando-o com um tipo de sistema de arquivos específico (ext4, xfs, e assim por diante) para que o kernel consiga de fato montá-lo e usá-lo, exatamente o passo que o mkswap realiza especificamente para área de swap, mas o mkfs é a versão de propósito geral para sistemas de arquivos reais e montáveis. É uma operação destrutiva, rodá-la em uma partição apaga o que quer que já estivesse lá.',
     },
     subcommands: {},
@@ -823,5 +823,4 @@ export const processSystem: CommandKB = {
       pt: 'A partição ou dispositivo a formatar.',
     },
   },
-
 };

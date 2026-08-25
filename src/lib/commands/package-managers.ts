@@ -3,7 +3,7 @@ import type { CommandKB } from './types';
 export const packageManagers: CommandKB = {
   docker: {
     desc: {
-      en: 'Tool for building, running, and managing containers, isolated, lightweight environments that package an application together with its libraries, dependencies, and configuration so it behaves the same wherever it runs. Containers share the host machine\'s kernel instead of virtualizing a whole operating system, which makes them far faster to start and lighter on resources than a traditional virtual machine, while still keeping applications from interfering with each other. Docker popularized this workflow with a simple image format (the Dockerfile), a registry for sharing images (Docker Hub), and a consistent CLI, which is why it became the default way to package and ship software across development, testing, and production.',
+      en: "Tool for building, running, and managing containers, isolated, lightweight environments that package an application together with its libraries, dependencies, and configuration so it behaves the same wherever it runs. Containers share the host machine's kernel instead of virtualizing a whole operating system, which makes them far faster to start and lighter on resources than a traditional virtual machine, while still keeping applications from interfering with each other. Docker popularized this workflow with a simple image format (the Dockerfile), a registry for sharing images (Docker Hub), and a consistent CLI, which is why it became the default way to package and ship software across development, testing, and production.",
       pt: 'Ferramenta para construir, rodar e gerenciar containers, ambientes isolados e leves que empacotam uma aplicação junto com suas bibliotecas, dependências e configuração, para que ela se comporte da mesma forma em qualquer lugar onde rodar. Containers compartilham o kernel da máquina host em vez de virtualizar um sistema operacional inteiro, o que os torna muito mais rápidos para iniciar e mais leves em recursos do que uma máquina virtual tradicional, ao mesmo tempo em que mantêm as aplicações isoladas umas das outras. O Docker popularizou esse fluxo de trabalho com um formato de imagem simples (o Dockerfile), um registro para compartilhar imagens (o Docker Hub), e uma CLI consistente, motivo pelo qual se tornou a forma padrão de empacotar e distribuir software entre desenvolvimento, testes e produção.',
     },
     subcommands: {
@@ -66,7 +66,7 @@ export const packageManagers: CommandKB = {
     },
     flags: {
       '-d': {
-        en: "Runs the container in the background (detached mode), returning control of the terminal right away.",
+        en: 'Runs the container in the background (detached mode), returning control of the terminal right away.',
         pt: "Roda o container em segundo plano (modo 'detached'), devolvendo o controle do terminal na hora.",
       },
       '--detach': {
@@ -182,7 +182,7 @@ export const packageManagers: CommandKB = {
         pt: 'Instala o pacote globalmente, disponível em qualquer projeto do sistema.',
       },
       '--save-dev': {
-        en: "Adds the package as a development dependency, not needed in production.",
+        en: 'Adds the package as a development dependency, not needed in production.',
         pt: 'Adiciona o pacote como dependência de desenvolvimento, não necessária em produção.',
       },
       '-D': {
@@ -294,7 +294,7 @@ export const packageManagers: CommandKB = {
 
   pnpm: {
     desc: {
-      en: "A JavaScript package manager built around a single shared storage of packages on disk, with projects linking to that store instead of each project keeping its own full copy of every dependency. That design is what makes it dramatically faster and lighter on disk space than npm or yarn on a machine with many JavaScript projects, since a library used by ten projects is only ever actually stored once.",
+      en: 'A JavaScript package manager built around a single shared storage of packages on disk, with projects linking to that store instead of each project keeping its own full copy of every dependency. That design is what makes it dramatically faster and lighter on disk space than npm or yarn on a machine with many JavaScript projects, since a library used by ten projects is only ever actually stored once.',
       pt: 'Um gerenciador de pacotes JavaScript construído em torno de um armazenamento único e compartilhado de pacotes no disco, com os projetos se ligando a esse armazém em vez de cada projeto guardar sua própria cópia completa de cada dependência. Esse design é o que o torna dramaticamente mais rápido e mais leve em espaço de disco do que npm ou yarn em uma máquina com muitos projetos JavaScript, já que uma biblioteca usada por dez projetos só é de fato armazenada uma vez.',
     },
     subcommands: {
@@ -425,7 +425,7 @@ export const packageManagers: CommandKB = {
 
   dnf: {
     desc: {
-      en: "The modern package manager on Fedora and current RHEL/CentOS releases, the direct successor to yum, keeping the same general command shape (install, remove, update, search) while resolving dependencies faster and more reliably underneath.",
+      en: 'The modern package manager on Fedora and current RHEL/CentOS releases, the direct successor to yum, keeping the same general command shape (install, remove, update, search) while resolving dependencies faster and more reliably underneath.',
       pt: 'O gerenciador de pacotes moderno no Fedora e nas versões atuais do RHEL/CentOS, o sucessor direto do yum, mantendo a mesma forma geral de comando (install, remove, update, search) enquanto resolve dependências de forma mais rápida e confiável por baixo.',
     },
     subcommands: {

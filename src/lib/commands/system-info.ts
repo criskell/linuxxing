@@ -3,7 +3,7 @@ import type { CommandKB } from './types';
 export const systemInfo: CommandKB = {
   systemctl: {
     desc: {
-      en: 'Controls systemd, the init system and service manager used by most modern Linux distributions to start, stop, and supervise background programs, called units. Rather than just launching a program and forgetting about it, systemd tracks each unit\'s state, can restart it automatically if it crashes, and lets units declare dependencies on each other, so a database can be guaranteed to come up before the application that needs it. It replaced older init systems like SysV and Upstart, and today is the standard way to manage anything meant to run continuously, from web servers to scheduled timers.',
+      en: "Controls systemd, the init system and service manager used by most modern Linux distributions to start, stop, and supervise background programs, called units. Rather than just launching a program and forgetting about it, systemd tracks each unit's state, can restart it automatically if it crashes, and lets units declare dependencies on each other, so a database can be guaranteed to come up before the application that needs it. It replaced older init systems like SysV and Upstart, and today is the standard way to manage anything meant to run continuously, from web servers to scheduled timers.",
       pt: 'Controla o systemd, o sistema de inicialização e gerenciador de serviços usado pela maioria das distribuições Linux modernas para iniciar, parar e supervisionar programas em segundo plano, chamados de units. Em vez de simplesmente rodar um programa e esquecê-lo, o systemd acompanha o estado de cada unit, pode reiniciá-la automaticamente se ela travar, e permite que units declarem dependências entre si, garantindo por exemplo que um banco de dados suba antes da aplicação que depende dele. Ele substituiu sistemas de inicialização mais antigos como SysV e Upstart, e hoje é a forma padrão de gerenciar qualquer coisa que deva rodar continuamente, de servidores web a tarefas agendadas.',
     },
     subcommands: {
@@ -310,5 +310,4 @@ export const systemInfo: CommandKB = {
       pt: 'O horário para rodar a tarefa, como "2am tomorrow" ou "now + 1 hour".',
     },
   },
-
 };

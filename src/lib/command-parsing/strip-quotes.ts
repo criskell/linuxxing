@@ -8,9 +8,7 @@ interface StripQuotesAccumulator {
 const stripQuotesStep = (accumulator: StripQuotesAccumulator, character: string) => {
   if (accumulator.quote) {
     const closesQuote = character === accumulator.quote;
-    return closesQuote
-      ? { ...accumulator, quote: null }
-      : { ...accumulator, result: accumulator.result + character };
+    return closesQuote ? { ...accumulator, quote: null } : { ...accumulator, result: accumulator.result + character };
   }
 
   if (isQuoteCharacter(character)) {

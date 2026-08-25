@@ -57,10 +57,18 @@ const scanStep = (accumulator: ScanAccumulator, index: number, code: string) => 
       return { ...accumulator, quote: character, currentText: accumulator.currentText + character };
     }
     if (startsSubstitutionAt(code, index)) {
-      return { ...accumulator, substitutionDepth: accumulator.substitutionDepth + 1, currentText: accumulator.currentText + character };
+      return {
+        ...accumulator,
+        substitutionDepth: accumulator.substitutionDepth + 1,
+        currentText: accumulator.currentText + character,
+      };
     }
     if (character === ')') {
-      return { ...accumulator, substitutionDepth: accumulator.substitutionDepth - 1, currentText: accumulator.currentText + character };
+      return {
+        ...accumulator,
+        substitutionDepth: accumulator.substitutionDepth - 1,
+        currentText: accumulator.currentText + character,
+      };
     }
     return { ...accumulator, currentText: accumulator.currentText + character };
   }

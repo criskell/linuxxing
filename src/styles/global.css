@@ -1,7 +1,7 @@
-@import "tailwindcss";
-@import "@fontsource-variable/instrument-sans";
-@import "@fontsource/instrument-serif";
-@import "@fontsource-variable/geist-mono";
+@import 'tailwindcss';
+@import '@fontsource-variable/instrument-sans';
+@import '@fontsource/instrument-serif';
+@import '@fontsource-variable/geist-mono';
 
 :root {
   --n-100: oklch(1 0 0);
@@ -112,9 +112,9 @@
 }
 
 @theme inline {
-  --font-sans: "Instrument Sans Variable", system-ui, sans-serif;
-  --font-display: "Instrument Serif", Georgia, serif;
-  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+  --font-sans: 'Instrument Sans Variable', system-ui, sans-serif;
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
 
   --text-2xs: var(--step-2xs);
   --text-xs: var(--step-xs);
@@ -199,7 +199,10 @@
 body {
   background-color: var(--surface-page);
   color: var(--text-default);
-  font-feature-settings: "cv02" 1, "cv03" 1, "cv04" 1;
+  font-feature-settings:
+    'cv02' 1,
+    'cv03' 1,
+    'cv04' 1;
   letter-spacing: var(--tracking-normal);
   line-height: var(--leading-normal);
 }
@@ -210,7 +213,10 @@ body {
   border-radius: var(--radius-xs);
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   letter-spacing: var(--tracking-tight);
   line-height: var(--leading-tight);
   text-wrap: balance;
@@ -368,16 +374,30 @@ html {
     animation: fade-in var(--duration-base) var(--ease-standard) both;
   }
 
-  .stagger-1 { animation-delay: 40ms; }
-  .stagger-2 { animation-delay: 80ms; }
-  .stagger-3 { animation-delay: 120ms; }
-  .stagger-4 { animation-delay: 160ms; }
-  .stagger-5 { animation-delay: 200ms; }
-  .stagger-6 { animation-delay: 240ms; }
+  .stagger-1 {
+    animation-delay: 40ms;
+  }
+  .stagger-2 {
+    animation-delay: 80ms;
+  }
+  .stagger-3 {
+    animation-delay: 120ms;
+  }
+  .stagger-4 {
+    animation-delay: 160ms;
+  }
+  .stagger-5 {
+    animation-delay: 200ms;
+  }
+  .stagger-6 {
+    animation-delay: 240ms;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;

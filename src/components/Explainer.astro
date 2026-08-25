@@ -58,12 +58,14 @@ const legendItems: { type: string; label: string }[] = [
 <div data-locale={locale} class="grid gap-6 md:grid-cols-2 md:items-start">
   <div class="flex flex-col gap-5 md:sticky md:top-24">
     <div class="flex flex-col gap-3">
-      <div class="relative rounded-lg border border-hairline bg-surface-nested focus-within:border-accent focus-within:ring-2 focus-within:ring-accent-quiet">
+      <div
+        class="relative rounded-lg border border-hairline bg-surface-nested focus-within:border-accent focus-within:ring-2 focus-within:ring-accent-quiet"
+      >
         <pre
           id="highlight-layer"
           aria-hidden="true"
-          class="pointer-events-none m-0 min-h-24 whitespace-pre-wrap break-words px-4 py-3.5 font-mono text-sm leading-relaxed text-default"
-        ></pre>
+          class="pointer-events-none m-0 min-h-24 whitespace-pre-wrap break-words px-4 py-3.5 font-mono text-sm leading-relaxed text-default">
+        </pre>
         <textarea
           id="cmd-input"
           rows="3"
@@ -86,15 +88,17 @@ const legendItems: { type: string; label: string }[] = [
     <div>
       <p class="eyebrow mb-2">{t(locale, 'examples.label')}</p>
       <div id="examples" class="flex flex-wrap gap-2">
-        {EXAMPLES[locale].map((ex) => (
-          <button
-            type="button"
-            class="example-chip interactive rounded-md border border-hairline bg-surface-raised px-3 py-1.5 font-mono text-xs text-muted hover:text-default"
-            data-cmd={ex.cmd}
-          >
-            {ex.label}
-          </button>
-        ))}
+        {
+          EXAMPLES[locale].map((ex) => (
+            <button
+              type="button"
+              class="example-chip interactive rounded-md border border-hairline bg-surface-raised px-3 py-1.5 font-mono text-xs text-muted hover:text-default"
+              data-cmd={ex.cmd}
+            >
+              {ex.label}
+            </button>
+          ))
+        }
       </div>
     </div>
   </div>
@@ -108,12 +112,14 @@ const legendItems: { type: string; label: string }[] = [
       <div id="steps" class="flex flex-col gap-3"></div>
 
       <div id="legend" class="mt-8 flex flex-wrap gap-x-4 gap-y-2 border-t border-hairline pt-5 text-xs text-faint">
-        {legendItems.map((item) => (
-          <div class="flex items-center gap-1.5">
-            <span class="h-2 w-2 rounded-full" style={`background: var(--color-${item.type})`}></span>
-            {item.label}
-          </div>
-        ))}
+        {
+          legendItems.map((item) => (
+            <div class="flex items-center gap-1.5">
+              <span class="h-2 w-2 rounded-full" style={`background: var(--color-${item.type})`} />
+              {item.label}
+            </div>
+          ))
+        }
       </div>
     </div>
   </div>
@@ -169,7 +175,9 @@ const legendItems: { type: string; label: string }[] = [
   function renderHighlight() {
     const spans = highlightScript(input.value);
     highlightLayer.innerHTML = spans
-      .map((s) => (s.type ? `<span style="color:${colorVar(s.type)}">${escapeHtml(s.text)}</span>` : escapeHtml(s.text)))
+      .map((s) =>
+        s.type ? `<span style="color:${colorVar(s.type)}">${escapeHtml(s.text)}</span>` : escapeHtml(s.text),
+      )
       .join('');
   }
 

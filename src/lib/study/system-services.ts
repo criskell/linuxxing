@@ -12,7 +12,7 @@ export const systemServicesCards: StudyCard[] = [
     topic: 'system-services',
     front: { en: 'What is syslog?', pt: 'O que é o syslog?' },
     back: {
-      en: 'syslog is the traditional standard and protocol for system logging on Unix-like systems: programs send log messages, tagged with a source and a severity level, to a central logging daemon that writes them to files under /var/log, and can also forward them to a remote log server. It is what makes it possible to check one place for what happened across an entire system, instead of hunting through each program\'s own output.',
+      en: "syslog is the traditional standard and protocol for system logging on Unix-like systems: programs send log messages, tagged with a source and a severity level, to a central logging daemon that writes them to files under /var/log, and can also forward them to a remote log server. It is what makes it possible to check one place for what happened across an entire system, instead of hunting through each program's own output.",
       pt: 'O syslog é o padrão e protocolo tradicional de registro de log em sistemas Unix: programas enviam mensagens de log, marcadas com uma origem e um nível de severidade, para um daemon de log central que as escreve em arquivos sob /var/log, e também pode encaminhá-las para um servidor de log remoto. É o que torna possível checar um único lugar para saber o que aconteceu em um sistema inteiro, em vez de caçar na saída de cada programa individualmente.',
     },
   },
@@ -30,7 +30,7 @@ export const systemServicesCards: StudyCard[] = [
     topic: 'system-services',
     front: { en: 'What is NTP?', pt: 'O que é o NTP?' },
     back: {
-      en: 'NTP (Network Time Protocol) keeps a machine\'s clock synchronized with accurate time servers over the network, correcting drift that would otherwise accumulate over days or weeks. Accurate, consistent time matters far beyond just displaying the correct clock: log timestamps, TLS certificate validation, and distributed systems all depend on machines agreeing closely on what time it is.',
+      en: "NTP (Network Time Protocol) keeps a machine's clock synchronized with accurate time servers over the network, correcting drift that would otherwise accumulate over days or weeks. Accurate, consistent time matters far beyond just displaying the correct clock: log timestamps, TLS certificate validation, and distributed systems all depend on machines agreeing closely on what time it is.",
       pt: 'O NTP (Network Time Protocol) mantém o relógio de uma máquina sincronizado com servidores de tempo precisos pela rede, corrigindo o desvio que de outra forma se acumularia ao longo de dias ou semanas. Tempo preciso e consistente importa muito além de só mostrar o relógio certo: timestamps de log, validação de certificado TLS, e sistemas distribuídos dependem de máquinas concordarem de perto sobre que horas são.',
     },
   },

@@ -48,7 +48,7 @@ export const shellsScriptingCards: StudyCard[] = [
     topic: 'shells-scripting',
     front: { en: 'Why does quoting matter in the shell?', pt: 'Por que aspas importam no shell?' },
     back: {
-      en: 'Without quotes, the shell splits a variable\'s value on whitespace and expands wildcards before a command ever sees it, so a filename with a space in it can silently become two separate arguments. Double quotes ("$var") keep the value together as one argument while still allowing variable expansion, single quotes (\'$var\') keep it completely literal, expanding nothing at all, this is one of the most common sources of subtle shell scripting bugs.',
+      en: "Without quotes, the shell splits a variable's value on whitespace and expands wildcards before a command ever sees it, so a filename with a space in it can silently become two separate arguments. Double quotes (\"$var\") keep the value together as one argument while still allowing variable expansion, single quotes ('$var') keep it completely literal, expanding nothing at all, this is one of the most common sources of subtle shell scripting bugs.",
       pt: 'Sem aspas, o shell divide o valor de uma variável nos espaços em branco e expande curingas antes mesmo de um comando vê-lo, então um nome de arquivo com espaço pode silenciosamente virar dois argumentos separados. Aspas duplas ("$var") mantêm o valor junto como um único argumento enquanto ainda permitem expansão de variável, aspas simples (\'$var\') mantêm tudo completamente literal, sem expandir nada, essa é uma das fontes mais comuns de bugs sutis em scripts de shell.',
     },
   },

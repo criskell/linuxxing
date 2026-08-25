@@ -11,18 +11,18 @@ const restWithTrailingSlash = rest ? `${rest}/` : '';
 ---
 
 <div class="inline-flex gap-0.5 rounded-md border border-hairline bg-surface-raised p-0.5">
-  {locales.map((loc) => (
-    <a
-      href={`${base}/${loc}/${restWithTrailingSlash}`}
-      aria-current={loc === currentLocale ? 'page' : undefined}
-      class:list={[
-        'rounded-sm px-2.5 py-1 font-mono text-2xs font-medium transition-colors duration-[var(--duration-fast)]',
-        loc === currentLocale
-          ? 'bg-accent text-on-accent'
-          : 'text-muted hover:text-strong',
-      ]}
-    >
-      {loc.toUpperCase()}
-    </a>
-  ))}
+  {
+    locales.map((loc) => (
+      <a
+        href={`${base}/${loc}/${restWithTrailingSlash}`}
+        aria-current={loc === currentLocale ? 'page' : undefined}
+        class:list={[
+          'rounded-sm px-2.5 py-1 font-mono text-2xs font-medium transition-colors duration-[var(--duration-fast)]',
+          loc === currentLocale ? 'bg-accent text-on-accent' : 'text-muted hover:text-strong',
+        ]}
+      >
+        {loc.toUpperCase()}
+      </a>
+    ))
+  }
 </div>
