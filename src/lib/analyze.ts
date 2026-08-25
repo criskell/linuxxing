@@ -206,7 +206,7 @@ export function analyze(tokens: string[], locale: Locale): Step[] {
       continue;
     }
 
-    steps.push({ token: tok, type: 'arg', desc: t(locale, 'fallback.arg') });
+    steps.push({ token: tok, type: 'arg', desc: kb?.argHint?.[locale] ?? t(locale, 'fallback.arg') });
   }
 
   return steps;

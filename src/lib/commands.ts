@@ -9,6 +9,7 @@ export interface CommandDef {
   subcommands: Record<string, LocalizedText>;
   flags: Record<string, LocalizedText>;
   valueFlags?: Record<string, ValueKind>;
+  argHint?: LocalizedText;
 }
 
 export type CommandKB = Record<string, CommandDef>;
@@ -377,6 +378,10 @@ export const COMMANDS: CommandKB = {
         pt: 'Colore a saída de acordo com o tipo de cada item (pasta, executável, link, etc.).',
       },
     },
+    argHint: {
+      en: 'The folder to list. Defaults to the current directory when omitted.',
+      pt: 'A pasta a listar. Por padrão é o diretório atual, quando omitido.',
+    },
   },
 
   chmod: {
@@ -395,6 +400,10 @@ export const COMMANDS: CommandKB = {
         pt: 'Mostra na tela o que foi alterado (modo verboso).',
       },
     },
+    argHint: {
+      en: 'The file or folder whose permissions are being changed.',
+      pt: 'O arquivo ou pasta cujas permissões estão sendo alteradas.',
+    },
   },
 
   chown: {
@@ -408,6 +417,10 @@ export const COMMANDS: CommandKB = {
         en: 'Applies the change recursively to every file inside a folder.',
         pt: 'Aplica a mudança recursivamente, a todos os arquivos dentro de uma pasta.',
       },
+    },
+    argHint: {
+      en: 'The new owner (optionally owner:group), or the file/folder being changed. The owner spec comes first.',
+      pt: 'O novo dono (opcionalmente dono:grupo), ou o arquivo/pasta sendo alterado. O dono vem primeiro.',
     },
   },
 
@@ -439,6 +452,10 @@ export const COMMANDS: CommandKB = {
         pt: 'Mostra na tela cada arquivo removido (modo verboso).',
       },
     },
+    argHint: {
+      en: 'The file or folder to remove.',
+      pt: 'O arquivo ou pasta a remover.',
+    },
   },
 
   cp: {
@@ -465,6 +482,10 @@ export const COMMANDS: CommandKB = {
         pt: 'Pede confirmação antes de sobrescrever um arquivo existente.',
       },
     },
+    argHint: {
+      en: 'The source path to copy, or the destination (the last argument is normally the destination).',
+      pt: 'O caminho de origem a copiar, ou o destino (o último argumento normalmente é o destino).',
+    },
   },
 
   mv: {
@@ -482,6 +503,10 @@ export const COMMANDS: CommandKB = {
         en: 'Shows each moved file on screen (verbose mode).',
         pt: 'Mostra na tela cada arquivo movido (modo verboso).',
       },
+    },
+    argHint: {
+      en: 'The source path to move or rename, or the destination (the last argument is normally the destination).',
+      pt: 'O caminho de origem a mover ou renomear, ou o destino (o último argumento normalmente é o destino).',
     },
   },
 
@@ -521,6 +546,10 @@ export const COMMANDS: CommandKB = {
         pt: 'Interpreta o padrão como uma expressão regular estendida.',
       },
     },
+    argHint: {
+      en: 'The search pattern, or a file to search in. The pattern normally comes first.',
+      pt: 'O padrão de busca, ou um arquivo onde procurar. O padrão normalmente vem primeiro.',
+    },
   },
 
   find: {
@@ -557,6 +586,10 @@ export const COMMANDS: CommandKB = {
       '-mtime': 'generic',
       '-size': 'generic',
     },
+    argHint: {
+      en: 'The starting directory to search from, usually the first argument.',
+      pt: 'O diretório inicial de onde procurar, geralmente o primeiro argumento.',
+    },
   },
 
   ssh: {
@@ -587,6 +620,10 @@ export const COMMANDS: CommandKB = {
       '-p': 'generic',
       '-i': 'generic',
       '-L': 'generic',
+    },
+    argHint: {
+      en: 'The remote host to connect to, optionally as user@host.',
+      pt: 'O host remoto ao qual conectar, opcionalmente como usuario@host.',
     },
   },
 
@@ -640,6 +677,10 @@ export const COMMANDS: CommandKB = {
       '-d': 'generic',
       '-o': 'generic',
     },
+    argHint: {
+      en: 'The URL to request.',
+      pt: 'A URL a requisitar.',
+    },
   },
 
   kill: {
@@ -657,6 +698,10 @@ export const COMMANDS: CommandKB = {
         en: 'Sends the SIGTERM signal, asking the process to terminate gracefully (this is the default).',
         pt: 'Envia o sinal SIGTERM, pedindo ao processo que termine de forma graciosa (é o padrão).',
       },
+    },
+    argHint: {
+      en: 'The process ID (PID) to send the signal to.',
+      pt: 'O ID de processo (PID) para o qual enviar o sinal.',
     },
   },
 
@@ -824,6 +869,10 @@ export const COMMANDS: CommandKB = {
     valueFlags: {
       '-f': 'generic',
     },
+    argHint: {
+      en: 'A specific file inside the archive to add or extract, when not adding/extracting everything.',
+      pt: 'Um arquivo específico dentro do pacote para adicionar ou extrair, quando não se está adicionando/extraindo tudo.',
+    },
   },
 
   mkdir: {
@@ -838,6 +887,10 @@ export const COMMANDS: CommandKB = {
         pt: 'Cria pastas intermediárias necessárias no caminho, sem dar erro se alguma já existir.',
       },
     },
+    argHint: {
+      en: 'The folder to create.',
+      pt: 'A pasta a criar.',
+    },
   },
 
   cd: {
@@ -847,6 +900,10 @@ export const COMMANDS: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    argHint: {
+      en: 'The directory to switch to.',
+      pt: 'O diretório para o qual mudar.',
+    },
   },
 
   cat: {
@@ -860,6 +917,10 @@ export const COMMANDS: CommandKB = {
         en: 'Numbers every line of the output.',
         pt: 'Numera todas as linhas da saída.',
       },
+    },
+    argHint: {
+      en: 'The file to print.',
+      pt: 'O arquivo a mostrar.',
     },
   },
 
@@ -877,6 +938,10 @@ export const COMMANDS: CommandKB = {
     },
     valueFlags: {
       '-n': 'generic',
+    },
+    argHint: {
+      en: 'The file to read.',
+      pt: 'O arquivo a ler.',
     },
   },
 
@@ -898,6 +963,10 @@ export const COMMANDS: CommandKB = {
     },
     valueFlags: {
       '-n': 'generic',
+    },
+    argHint: {
+      en: 'The file to read.',
+      pt: 'O arquivo a ler.',
     },
   },
 
@@ -948,6 +1017,10 @@ export const COMMANDS: CommandKB = {
     valueFlags: {
       '-c': 'generic',
     },
+    argHint: {
+      en: 'The host or IP address to test.',
+      pt: 'O host ou endereço IP a testar.',
+    },
   },
 
   command: {
@@ -983,6 +1056,10 @@ export const COMMANDS: CommandKB = {
     valueFlags: {
       '-l': 'generic',
     },
+    argHint: {
+      en: 'The file to allocate space for.',
+      pt: 'O arquivo para o qual alocar espaço.',
+    },
   },
 
   mkswap: {
@@ -992,6 +1069,10 @@ export const COMMANDS: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    argHint: {
+      en: 'The swap file or partition to format.',
+      pt: 'O arquivo ou partição de swap a formatar.',
+    },
   },
 
   swapon: {
@@ -1001,6 +1082,10 @@ export const COMMANDS: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    argHint: {
+      en: 'The swap file or partition to enable.',
+      pt: 'O arquivo ou partição de swap a ativar.',
+    },
   },
 
   free: {
@@ -1079,6 +1164,10 @@ export const COMMANDS: CommandKB = {
     valueFlags: {
       '-O': 'generic',
     },
+    argHint: {
+      en: 'The URL to download.',
+      pt: 'A URL a baixar.',
+    },
   },
 
   rsync: {
@@ -1112,6 +1201,10 @@ export const COMMANDS: CommandKB = {
     valueFlags: {
       '-e': 'generic',
     },
+    argHint: {
+      en: 'The source path to sync, or the destination (the last argument is normally the destination).',
+      pt: 'O caminho de origem a sincronizar, ou o destino (o último argumento normalmente é o destino).',
+    },
   },
 
   scp: {
@@ -1137,6 +1230,10 @@ export const COMMANDS: CommandKB = {
     valueFlags: {
       '-P': 'generic',
       '-i': 'generic',
+    },
+    argHint: {
+      en: 'The source path to copy, or the destination, written as user@host:/path for a remote side. The last argument is normally the destination.',
+      pt: 'O caminho de origem a copiar, ou o destino, escrito como usuario@host:/caminho para o lado remoto. O último argumento normalmente é o destino.',
     },
   },
 
@@ -1195,6 +1292,10 @@ export const COMMANDS: CommandKB = {
     valueFlags: {
       '-d': 'generic',
     },
+    argHint: {
+      en: 'The .zip file to extract, or a specific file inside it to extract only that one.',
+      pt: 'O arquivo .zip a extrair, ou um arquivo específico dentro dele para extrair só esse.',
+    },
   },
 
   gzip: {
@@ -1217,6 +1318,10 @@ export const COMMANDS: CommandKB = {
         pt: 'Usa o nível de compactação mais alto (e mais lento).',
       },
     },
+    argHint: {
+      en: 'The file to compress.',
+      pt: 'O arquivo a compactar.',
+    },
   },
 
   gunzip: {
@@ -1230,6 +1335,10 @@ export const COMMANDS: CommandKB = {
         en: 'Keeps the compressed .gz file instead of removing it.',
         pt: 'Mantém o arquivo .gz compactado em vez de removê-lo.',
       },
+    },
+    argHint: {
+      en: 'The .gz file to decompress.',
+      pt: 'O arquivo .gz a descompactar.',
     },
   },
 
@@ -1248,6 +1357,10 @@ export const COMMANDS: CommandKB = {
         en: 'Removes the destination file first if it already exists.',
         pt: 'Remove o arquivo de destino primeiro, se ele já existir.',
       },
+    },
+    argHint: {
+      en: 'The target being linked to, or the link name to create (the last argument is normally the new link).',
+      pt: 'O alvo sendo referenciado, ou o nome do link a criar (o último argumento normalmente é o novo link).',
     },
   },
 
@@ -1292,6 +1405,10 @@ export const COMMANDS: CommandKB = {
       '-o': 'generic',
       '-g': 'generic',
     },
+    argHint: {
+      en: "The source file to install, or, with -d, a directory to create. When two paths are given without -d, the first is the source and the last is the destination.",
+      pt: 'O arquivo de origem a instalar, ou, com -d, um diretório a criar. Quando dois caminhos são dados sem -d, o primeiro é a origem e o último é o destino.',
+    },
   },
 
   touch: {
@@ -1301,6 +1418,10 @@ export const COMMANDS: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    argHint: {
+      en: 'The file to create or update.',
+      pt: 'O arquivo a criar ou atualizar.',
+    },
   },
 
   less: {
@@ -1315,6 +1436,10 @@ export const COMMANDS: CommandKB = {
         pt: 'Mostra os números das linhas.',
       },
     },
+    argHint: {
+      en: 'The file to view.',
+      pt: 'O arquivo a visualizar.',
+    },
   },
 
   man: {
@@ -1324,6 +1449,10 @@ export const COMMANDS: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    argHint: {
+      en: 'The command or topic to look up.',
+      pt: 'O comando ou tópico a consultar.',
+    },
   },
 
   which: {
@@ -1333,6 +1462,10 @@ export const COMMANDS: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    argHint: {
+      en: 'The command name to look up.',
+      pt: 'O nome do comando a procurar.',
+    },
   },
 
   wc: {
@@ -1354,6 +1487,10 @@ export const COMMANDS: CommandKB = {
         en: 'Counts only bytes.',
         pt: 'Conta só os bytes.',
       },
+    },
+    argHint: {
+      en: 'The file to count.',
+      pt: 'O arquivo a contar.',
     },
   },
 
@@ -1384,6 +1521,10 @@ export const COMMANDS: CommandKB = {
     valueFlags: {
       '-k': 'generic',
     },
+    argHint: {
+      en: 'The file to sort.',
+      pt: 'O arquivo a ordenar.',
+    },
   },
 
   uniq: {
@@ -1401,6 +1542,10 @@ export const COMMANDS: CommandKB = {
         en: 'Shows only the lines that had duplicates.',
         pt: 'Mostra apenas as linhas que tiveram duplicatas.',
       },
+    },
+    argHint: {
+      en: 'The file to deduplicate.',
+      pt: 'O arquivo a deduplicar.',
     },
   },
 
@@ -1423,6 +1568,10 @@ export const COMMANDS: CommandKB = {
     valueFlags: {
       '-d': 'generic',
       '-f': 'generic',
+    },
+    argHint: {
+      en: 'The file to extract from.',
+      pt: 'O arquivo do qual extrair.',
     },
   },
 
@@ -1510,6 +1659,10 @@ export const COMMANDS: CommandKB = {
         pt: 'Compara pastas recursivamente.',
       },
     },
+    argHint: {
+      en: 'One of the two files or folders being compared.',
+      pt: 'Um dos dois arquivos ou pastas sendo comparados.',
+    },
   },
 
   stat: {
@@ -1519,6 +1672,10 @@ export const COMMANDS: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    argHint: {
+      en: 'The file to inspect.',
+      pt: 'O arquivo a inspecionar.',
+    },
   },
 
   basename: {
@@ -1528,6 +1685,10 @@ export const COMMANDS: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    argHint: {
+      en: 'The path to strip the directory from.',
+      pt: 'O caminho do qual remover o diretório.',
+    },
   },
 
   dirname: {
@@ -1537,6 +1698,10 @@ export const COMMANDS: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    argHint: {
+      en: 'The path to strip the file name from.',
+      pt: 'O caminho do qual remover o nome do arquivo.',
+    },
   },
 
   whoami: {
@@ -1815,6 +1980,10 @@ export const COMMANDS: CommandKB = {
       '-s': 'generic',
       '-G': 'generic',
     },
+    argHint: {
+      en: 'The name of the user to create.',
+      pt: 'O nome do usuário a criar.',
+    },
   },
 
   passwd: {
@@ -1828,6 +1997,10 @@ export const COMMANDS: CommandKB = {
         en: 'Locks the account, preventing password login.',
         pt: 'Bloqueia a conta, impedindo login por senha.',
       },
+    },
+    argHint: {
+      en: 'The username whose password is being changed. Defaults to the current user.',
+      pt: 'O nome de usuário cuja senha está sendo alterada. Por padrão é o usuário atual.',
     },
   },
 
@@ -1849,6 +2022,10 @@ export const COMMANDS: CommandKB = {
     },
     valueFlags: {
       '-c': 'generic',
+    },
+    argHint: {
+      en: 'The user to switch to. Defaults to root when omitted.',
+      pt: 'O usuário para o qual trocar. Por padrão é o root, quando omitido.',
     },
   },
 
@@ -2128,6 +2305,10 @@ export const COMMANDS: CommandKB = {
     valueFlags: {
       '-u': 'generic',
     },
+    argHint: {
+      en: 'The name pattern of the process(es) to match.',
+      pt: 'O padrão de nome do(s) processo(s) a combinar.',
+    },
   },
 
   killall: {
@@ -2146,6 +2327,10 @@ export const COMMANDS: CommandKB = {
         pt: 'Pede confirmação antes de enviar o sinal a cada processo correspondente.',
       },
     },
+    argHint: {
+      en: 'The exact name of the process(es) to match.',
+      pt: 'O nome exato do(s) processo(s) a combinar.',
+    },
   },
 
   groupadd: {
@@ -2163,6 +2348,10 @@ export const COMMANDS: CommandKB = {
     valueFlags: {
       '-g': 'generic',
     },
+    argHint: {
+      en: 'The name of the group to create.',
+      pt: 'O nome do grupo a criar.',
+    },
   },
 
   chgrp: {
@@ -2176,6 +2365,10 @@ export const COMMANDS: CommandKB = {
         en: 'Applies the change recursively to every file inside a folder.',
         pt: 'Aplica a mudança recursivamente, a todos os arquivos dentro de uma pasta.',
       },
+    },
+    argHint: {
+      en: 'The new group name, or the file/folder being changed. The group comes first.',
+      pt: 'O novo nome de grupo, ou o arquivo/pasta sendo alterado. O grupo vem primeiro.',
     },
   },
 
@@ -2212,6 +2405,10 @@ export const COMMANDS: CommandKB = {
       '-t': 'generic',
       '-o': 'generic',
     },
+    argHint: {
+      en: 'The device/source to mount, or the mount point (the last argument is normally the mount point).',
+      pt: 'O dispositivo/origem a montar, ou o ponto de montagem (o último argumento normalmente é o ponto de montagem).',
+    },
   },
 
   umount: {
@@ -2225,6 +2422,10 @@ export const COMMANDS: CommandKB = {
         en: 'Forces the unmount even if the filesystem appears busy, a last resort that risks data loss or corruption.',
         pt: 'Força a desmontagem mesmo que o sistema de arquivos pareça ocupado, um último recurso que arrisca perda ou corrupção de dados.',
       },
+    },
+    argHint: {
+      en: 'The mounted device or mount point to unmount.',
+      pt: 'O dispositivo montado ou ponto de montagem a desmontar.',
     },
   },
 
@@ -2279,6 +2480,10 @@ export const COMMANDS: CommandKB = {
     valueFlags: {
       '-L': 'generic',
     },
+    argHint: {
+      en: 'The directory to display. Defaults to the current directory when omitted.',
+      pt: 'O diretório a exibir. Por padrão é o diretório atual, quando omitido.',
+    },
   },
 
   jq: {
@@ -2325,6 +2530,10 @@ export const COMMANDS: CommandKB = {
         pt: 'Verifica um arquivo contra uma lista de hashes previamente calculados, em vez de calcular um novo.',
       },
     },
+    argHint: {
+      en: 'The file to hash.',
+      pt: 'O arquivo a calcular o hash.',
+    },
   },
 
   sha256sum: {
@@ -2339,6 +2548,10 @@ export const COMMANDS: CommandKB = {
         pt: 'Verifica um arquivo contra uma lista de hashes previamente calculados, em vez de calcular um novo.',
       },
     },
+    argHint: {
+      en: 'The file to hash.',
+      pt: 'O arquivo a calcular o hash.',
+    },
   },
 
   realpath: {
@@ -2348,6 +2561,10 @@ export const COMMANDS: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    argHint: {
+      en: 'The path to resolve.',
+      pt: 'O caminho a resolver.',
+    },
   },
 
   seq: {
@@ -2365,6 +2582,10 @@ export const COMMANDS: CommandKB = {
     valueFlags: {
       '-s': 'generic',
     },
+    argHint: {
+      en: 'A boundary number for the sequence (start, and optionally step and end).',
+      pt: 'Um número de limite da sequência (início, e opcionalmente passo e fim).',
+    },
   },
 
   sleep: {
@@ -2374,6 +2595,10 @@ export const COMMANDS: CommandKB = {
     },
     subcommands: {},
     flags: {},
+    argHint: {
+      en: 'The duration to pause for.',
+      pt: 'A duração da pausa.',
+    },
   },
 
   date: {
@@ -2395,6 +2620,10 @@ export const COMMANDS: CommandKB = {
     valueFlags: {
       '-d': 'generic',
     },
+    argHint: {
+      en: 'A format string starting with + (like +%Y-%m-%d) controlling the output shape.',
+      pt: 'Uma string de formato começando com + (como +%Y-%m-%d) controlando o formato da saída.',
+    },
   },
 
   dig: {
@@ -2408,6 +2637,10 @@ export const COMMANDS: CommandKB = {
         en: 'Prints only the essential answer, skipping the full detailed output.',
         pt: 'Imprime só a resposta essencial, sem a saída detalhada completa.',
       },
+    },
+    argHint: {
+      en: 'The domain name to query.',
+      pt: 'O domínio a consultar.',
     },
   },
 };
