@@ -42,7 +42,10 @@ export const ui = {
     'fallback.test':
       'Tests a condition. The block that follows only runs if this evaluates as true.',
     'special.chmodOctal':
-      'Octal permission notation: each digit sets read/write/execute for owner, group, and others (e.g. 600 = owner can read and write, nobody else gets access).',
+      'Octal permission notation: each digit sets read/write/execute for owner, group, and others.',
+    'special.octalModeDecode': (owner: string, group: string, other: string) =>
+      `Owner: ${owner}. Group: ${group}. Others: ${other}.`,
+    'special.flagValue': (value: string) => `Here it's set to "${value}".`,
     'special.fstabLine': (device: string, mount: string, fstype: string, opts: string, dump: string, pass: string) => {
       const mountDesc = mount === 'none' ? '"none" (no mount point, typical for swap)' : `"${mount}"`;
       const dumpDesc = dump === '0' ? 'skip backup' : 'back this up with the dump utility';
@@ -114,7 +117,10 @@ export const ui = {
     'fallback.test':
       'Testa uma condição. O bloco que vem a seguir só roda se isso for verdadeiro.',
     'special.chmodOctal':
-      'Notação octal de permissão: cada dígito define leitura/escrita/execução para dono, grupo e outros (ex: 600 = dono pode ler e escrever, ninguém mais tem acesso).',
+      'Notação octal de permissão: cada dígito define leitura/escrita/execução para dono, grupo e outros.',
+    'special.octalModeDecode': (owner: string, group: string, other: string) =>
+      `Dono: ${owner}. Grupo: ${group}. Outros: ${other}.`,
+    'special.flagValue': (value: string) => `Aqui está definido como "${value}".`,
     'special.fstabLine': (device: string, mount: string, fstype: string, opts: string, dump: string, pass: string) => {
       const mountDesc = mount === 'none' ? '"none" (sem ponto de montagem, típico de swap)' : `"${mount}"`;
       const dumpDesc = dump === '0' ? 'ignorar backup' : 'fazer backup deste com a ferramenta dump';

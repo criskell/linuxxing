@@ -117,3 +117,14 @@ export const TEST_FLAGS: Record<string, LocalizedText> = {
     pt: 'Verdadeiro se o primeiro número é maior ou igual ao segundo.',
   },
 };
+
+export const OCTAL_DIGIT_MEANINGS: Record<string, LocalizedText> = {
+  '0': { en: 'no access', pt: 'nenhum acesso' },
+  '1': { en: 'execute only', pt: 'somente execução' },
+  '2': { en: 'write only', pt: 'somente escrita' },
+  '3': { en: 'write and execute', pt: 'escrita e execução' },
+  '4': { en: 'read only', pt: 'somente leitura' },
+  '5': { en: 'read and execute', pt: 'leitura e execução' },
+  '6': { en: 'read and write', pt: 'leitura e escrita' },
+  '7': { en: 'read, write, and execute', pt: 'leitura, escrita e execução' },
+};

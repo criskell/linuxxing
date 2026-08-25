@@ -2,10 +2,13 @@ import type { Locale } from '../i18n/languages';
 
 export type LocalizedText = Record<Locale, string>;
 
+export type ValueKind = 'generic' | 'octal-mode';
+
 export interface CommandDef {
   desc: LocalizedText;
   subcommands: Record<string, LocalizedText>;
   flags: Record<string, LocalizedText>;
+  valueFlags?: Record<string, ValueKind>;
 }
 
 export type CommandKB = Record<string, CommandDef>;
@@ -107,6 +110,9 @@ export const COMMANDS: CommandKB = {
         en: 'Filters the listing by unit type, such as service, socket, or timer.',
         pt: 'Filtra a listagem por tipo de unit, como service, socket ou timer.',
       },
+    },
+    valueFlags: {
+      '--type': 'generic',
     },
   },
 
@@ -223,6 +229,11 @@ export const COMMANDS: CommandKB = {
         pt: 'Modifica o commit mais recente em vez de criar um novo.',
       },
     },
+    valueFlags: {
+      '-m': 'generic',
+      '--message': 'generic',
+      '-b': 'generic',
+    },
   },
 
   docker: {
@@ -321,6 +332,12 @@ export const COMMANDS: CommandKB = {
         en: 'Sets an environment variable inside the container.',
         pt: 'Define uma variável de ambiente dentro do container.',
       },
+    },
+    valueFlags: {
+      '-p': 'generic',
+      '--name': 'generic',
+      '-v': 'generic',
+      '-e': 'generic',
     },
   },
 
@@ -534,6 +551,12 @@ export const COMMANDS: CommandKB = {
         pt: 'Executa um comando em cada arquivo encontrado.',
       },
     },
+    valueFlags: {
+      '-name': 'generic',
+      '-type': 'generic',
+      '-mtime': 'generic',
+      '-size': 'generic',
+    },
   },
 
   ssh: {
@@ -559,6 +582,11 @@ export const COMMANDS: CommandKB = {
         en: 'Creates a tunnel that forwards a local port to a port on the remote machine.',
         pt: 'Cria um túnel que encaminha uma porta local para uma porta na máquina remota.',
       },
+    },
+    valueFlags: {
+      '-p': 'generic',
+      '-i': 'generic',
+      '-L': 'generic',
     },
   },
 
@@ -605,6 +633,12 @@ export const COMMANDS: CommandKB = {
         en: 'Shows an error message if curl fails, even when combined with -s (silent mode).',
         pt: 'Mostra uma mensagem de erro se o curl falhar, mesmo combinado com -s (modo silencioso).',
       },
+    },
+    valueFlags: {
+      '-X': 'generic',
+      '-H': 'generic',
+      '-d': 'generic',
+      '-o': 'generic',
     },
   },
 
@@ -663,6 +697,9 @@ export const COMMANDS: CommandKB = {
         en: "Starts a login session simulating the target user's environment.",
         pt: 'Inicia uma sessão de login simulando o ambiente do usuário alvo.',
       },
+    },
+    valueFlags: {
+      '-u': 'generic',
     },
   },
 
@@ -784,6 +821,9 @@ export const COMMANDS: CommandKB = {
         pt: 'Lista o conteúdo de um arquivo tar sem extrair.',
       },
     },
+    valueFlags: {
+      '-f': 'generic',
+    },
   },
 
   mkdir: {
@@ -835,6 +875,9 @@ export const COMMANDS: CommandKB = {
         pt: 'Define quantas linhas do início do arquivo mostrar.',
       },
     },
+    valueFlags: {
+      '-n': 'generic',
+    },
   },
 
   tail: {
@@ -852,6 +895,9 @@ export const COMMANDS: CommandKB = {
         en: 'Keeps following the file in real time, showing new lines as they are written.',
         pt: 'Continua acompanhando o arquivo em tempo real, mostrando novas linhas assim que são escritas.',
       },
+    },
+    valueFlags: {
+      '-n': 'generic',
     },
   },
 
@@ -899,6 +945,9 @@ export const COMMANDS: CommandKB = {
         pt: 'Define quantos pacotes enviar antes de parar automaticamente.',
       },
     },
+    valueFlags: {
+      '-c': 'generic',
+    },
   },
 
   command: {
@@ -930,6 +979,9 @@ export const COMMANDS: CommandKB = {
         en: 'Sets the length/size of the space to allocate (e.g. 4G for 4 gigabytes).',
         pt: 'Define o tamanho do espaço a ser alocado (ex: 4G para 4 gigabytes).',
       },
+    },
+    valueFlags: {
+      '-l': 'generic',
     },
   },
 
@@ -1024,6 +1076,9 @@ export const COMMANDS: CommandKB = {
         pt: 'Baixa recursivamente, seguindo links (usado para espelhar um site).',
       },
     },
+    valueFlags: {
+      '-O': 'generic',
+    },
   },
 
   rsync: {
@@ -1054,6 +1109,9 @@ export const COMMANDS: CommandKB = {
         pt: 'Especifica o shell remoto a usar na conexão, geralmente ssh com opções customizadas.',
       },
     },
+    valueFlags: {
+      '-e': 'generic',
+    },
   },
 
   scp: {
@@ -1075,6 +1133,10 @@ export const COMMANDS: CommandKB = {
         en: 'Specifies the private key file to use for authentication.',
         pt: 'Especifica o arquivo de chave privada a ser usado para autenticação.',
       },
+    },
+    valueFlags: {
+      '-P': 'generic',
+      '-i': 'generic',
     },
   },
 
@@ -1102,6 +1164,12 @@ export const COMMANDS: CommandKB = {
         pt: 'Adiciona um comentário à chave, geralmente um email ou rótulo para identificá-la.',
       },
     },
+    valueFlags: {
+      '-t': 'generic',
+      '-b': 'generic',
+      '-f': 'generic',
+      '-C': 'generic',
+    },
   },
 
   unzip: {
@@ -1123,6 +1191,9 @@ export const COMMANDS: CommandKB = {
         en: 'Extracts into a specific destination folder.',
         pt: 'Extrai para uma pasta de destino específica.',
       },
+    },
+    valueFlags: {
+      '-d': 'generic',
     },
   },
 
@@ -1216,6 +1287,11 @@ export const COMMANDS: CommandKB = {
         pt: 'Remove símbolos de depuração do binário instalado, reduzindo o tamanho do arquivo.',
       },
     },
+    valueFlags: {
+      '-m': 'octal-mode',
+      '-o': 'generic',
+      '-g': 'generic',
+    },
   },
 
   touch: {
@@ -1305,6 +1381,9 @@ export const COMMANDS: CommandKB = {
         pt: 'Ordena por uma coluna (campo) específica em vez da linha inteira.',
       },
     },
+    valueFlags: {
+      '-k': 'generic',
+    },
   },
 
   uniq: {
@@ -1341,6 +1420,10 @@ export const COMMANDS: CommandKB = {
         pt: 'Seleciona qual(is) campo(s) extrair.',
       },
     },
+    valueFlags: {
+      '-d': 'generic',
+      '-f': 'generic',
+    },
   },
 
   xargs: {
@@ -1362,6 +1445,10 @@ export const COMMANDS: CommandKB = {
         en: 'Expects null-separated input instead of whitespace-separated, safer for file names with spaces.',
         pt: 'Espera entrada separada por caracteres nulos em vez de espaços, mais seguro para nomes de arquivo com espaço.',
       },
+    },
+    valueFlags: {
+      '-I': 'generic',
+      '-n': 'generic',
     },
   },
 
@@ -1385,6 +1472,9 @@ export const COMMANDS: CommandKB = {
         pt: 'Suprime a impressão automática de cada linha, útil junto com o comando "p" dentro do script.',
       },
     },
+    valueFlags: {
+      '-e': 'generic',
+    },
   },
 
   awk: {
@@ -1398,6 +1488,9 @@ export const COMMANDS: CommandKB = {
         en: 'Sets the field separator used to split each line.',
         pt: 'Define o separador de campo usado para dividir cada linha.',
       },
+    },
+    valueFlags: {
+      '-F': 'generic',
     },
   },
 
@@ -1668,6 +1761,12 @@ export const COMMANDS: CommandKB = {
         pt: 'Mostra apenas os logs a partir de um determinado momento.',
       },
     },
+    valueFlags: {
+      '-u': 'generic',
+      '-n': 'generic',
+      '-p': 'generic',
+      '--since': 'generic',
+    },
   },
 
   crontab: {
@@ -1712,6 +1811,10 @@ export const COMMANDS: CommandKB = {
         pt: 'Adiciona o usuário a um ou mais grupos suplementares.',
       },
     },
+    valueFlags: {
+      '-s': 'generic',
+      '-G': 'generic',
+    },
   },
 
   passwd: {
@@ -1743,6 +1846,9 @@ export const COMMANDS: CommandKB = {
         en: 'Runs a single command as the target user, instead of opening an interactive shell.',
         pt: 'Roda um único comando como o usuário alvo, em vez de abrir um shell interativo.',
       },
+    },
+    valueFlags: {
+      '-c': 'generic',
     },
   },
 
@@ -1881,6 +1987,9 @@ export const COMMANDS: CommandKB = {
         pt: 'Dá um nome à sessão, para que possa ser reconectada depois por esse nome em vez de um número.',
       },
     },
+    valueFlags: {
+      '-s': 'generic',
+    },
   },
 
   screen: {
@@ -1902,6 +2011,9 @@ export const COMMANDS: CommandKB = {
         en: 'Detaches an already-attached session elsewhere before reattaching here, useful when a session was left open on another terminal.',
         pt: 'Desanexa uma sessão já conectada em outro lugar antes de reconectar aqui, útil quando uma sessão ficou aberta em outro terminal.',
       },
+    },
+    valueFlags: {
+      '-S': 'generic',
     },
   },
 
@@ -1928,6 +2040,11 @@ export const COMMANDS: CommandKB = {
         en: 'Lists every file installed by a given package.',
         pt: 'Lista todo arquivo instalado por um determinado pacote.',
       },
+    },
+    valueFlags: {
+      '-i': 'generic',
+      '-r': 'generic',
+      '-L': 'generic',
     },
   },
 
@@ -1961,6 +2078,9 @@ export const COMMANDS: CommandKB = {
         pt: 'Destaca as diferenças entre cada atualização sucessiva.',
       },
     },
+    valueFlags: {
+      '-n': 'generic',
+    },
   },
 
   timeout: {
@@ -1978,6 +2098,10 @@ export const COMMANDS: CommandKB = {
         en: 'Sends a second, stronger signal (SIGKILL) after an additional delay, in case the process ignores the first one.',
         pt: 'Envia um segundo sinal, mais forte (SIGKILL), após um atraso adicional, caso o processo ignore o primeiro.',
       },
+    },
+    valueFlags: {
+      '-s': 'generic',
+      '-k': 'generic',
     },
   },
 
@@ -2000,6 +2124,9 @@ export const COMMANDS: CommandKB = {
         en: 'Only matches processes owned by a specific user.',
         pt: 'Só combina com processos pertencentes a um usuário específico.',
       },
+    },
+    valueFlags: {
+      '-u': 'generic',
     },
   },
 
@@ -2032,6 +2159,9 @@ export const COMMANDS: CommandKB = {
         en: 'Sets a specific numeric group ID (gid) instead of letting the system assign the next available one.',
         pt: 'Define um ID numérico de grupo (gid) específico, em vez de deixar o sistema atribuir o próximo disponível.',
       },
+    },
+    valueFlags: {
+      '-g': 'generic',
     },
   },
 
@@ -2077,6 +2207,10 @@ export const COMMANDS: CommandKB = {
         en: 'Mounts every filesystem listed in /etc/fstab that is not already mounted.',
         pt: 'Monta todo sistema de arquivos listado no /etc/fstab que ainda não está montado.',
       },
+    },
+    valueFlags: {
+      '-t': 'generic',
+      '-o': 'generic',
     },
   },
 
@@ -2141,6 +2275,9 @@ export const COMMANDS: CommandKB = {
         en: 'Shows only directories, omitting files entirely.',
         pt: 'Mostra apenas diretórios, omitindo arquivos por completo.',
       },
+    },
+    valueFlags: {
+      '-L': 'generic',
     },
   },
 
@@ -2225,6 +2362,9 @@ export const COMMANDS: CommandKB = {
         pt: 'Define um separador customizado entre os números, em vez de uma quebra de linha.',
       },
     },
+    valueFlags: {
+      '-s': 'generic',
+    },
   },
 
   sleep: {
@@ -2251,6 +2391,9 @@ export const COMMANDS: CommandKB = {
         en: 'Displays a specific date or a relative expression (like "yesterday" or "+1 day") instead of the current moment.',
         pt: 'Mostra uma data específica ou uma expressão relativa (como "yesterday" ou "+1 day") em vez do momento atual.',
       },
+    },
+    valueFlags: {
+      '-d': 'generic',
     },
   },
 

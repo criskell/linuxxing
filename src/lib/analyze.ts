@@ -1,7 +1,7 @@
 import type { Locale } from '../i18n/languages';
 import { t } from '../i18n/ui';
-import { COMMANDS, type CommandDef } from './commands';
-import { CONTROL_KEYWORDS, TEST_FLAGS } from './shell';
+import { COMMANDS, type CommandDef, type ValueKind } from './commands';
+import { CONTROL_KEYWORDS, OCTAL_DIGIT_MEANINGS, TEST_FLAGS } from './shell';
 
 export type StepType =
   | 'command'
@@ -74,6 +74,12 @@ function matchFstabLine(token: string): [string, string, string, string, string,
   return parts as [string, string, string, string, string, string];
 }
 
+function decodeOctalMode(mode: string, locale: Locale): string {
+  const digits = mode.length === 4 ? mode.slice(1) : mode;
+  const [owner, group, other] = digits.split('').map((d) => OCTAL_DIGIT_MEANINGS[d]?.[locale] ?? d);
+  return t(locale, 'special.octalModeDecode')(owner, group, other);
+}
+
 export function analyze(tokens: string[], locale: Locale): Step[] {
   const steps: Step[] = [];
   if (!tokens.length) return steps;
@@ -98,9 +104,12 @@ export function analyze(tokens: string[], locale: Locale): Step[] {
   });
 
   let subcommandClaimed = false;
+  let pendingValueFlag: { flag: string; kind: ValueKind } | null = null;
 
   for (let i = startIndex + 1; i < tokens.length; i++) {
     const tok = tokens[i];
+    const valueFlag = pendingValueFlag;
+    pendingValueFlag = null;
 
     const redirect = redirectDescription(tok, locale);
     if (redirect) {
@@ -117,6 +126,9 @@ export function analyze(tokens: string[], locale: Locale): Step[] {
       let desc = known ?? t(locale, 'fallback.flagLong')(flagName);
       if (flagValue !== null) {
         desc += t(locale, 'fallback.flagLongValue')(flagValue);
+      } else {
+        const kind = kb?.valueFlags?.[flagName];
+        if (kind) pendingValueFlag = { flag: flagName, kind };
       }
 
       steps.push({ token: tok, type: 'flag-long', desc });
@@ -128,6 +140,8 @@ export function analyze(tokens: string[], locale: Locale): Step[] {
       const known = kb?.flags[tok]?.[locale];
 
       if (known) {
+        const kind = kb?.valueFlags?.[tok];
+        if (kind) pendingValueFlag = { flag: tok, kind };
         steps.push({ token: tok, type: 'flag-short', desc: known });
         continue;
       }
@@ -171,7 +185,7 @@ export function analyze(tokens: string[], locale: Locale): Step[] {
     }
 
     if (baseCmd === 'chmod' && /^[0-7]{3,4}$/.test(tok)) {
-      steps.push({ token: tok, type: 'arg', desc: t(locale, 'special.chmodOctal') });
+      steps.push({ token: tok, type: 'arg', desc: `${t(locale, 'special.chmodOctal')} ${decodeOctalMode(tok, locale)}` });
       continue;
     }
 
@@ -179,6 +193,16 @@ export function analyze(tokens: string[], locale: Locale): Step[] {
     if (fstabFields) {
       const [device, mount, fstype, opts, dump, pass] = fstabFields;
       steps.push({ token: tok, type: 'arg', desc: t(locale, 'special.fstabLine')(device, mount, fstype, opts, dump, pass) });
+      continue;
+    }
+
+    if (valueFlag) {
+      const flagDesc = kb?.flags[valueFlag.flag]?.[locale] ?? '';
+      let desc = `${flagDesc} ${t(locale, 'special.flagValue')(tok)}`;
+      if (valueFlag.kind === 'octal-mode' && /^[0-7]{3,4}$/.test(tok)) {
+        desc += ` ${decodeOctalMode(tok, locale)}`;
+      }
+      steps.push({ token: tok, type: 'arg', desc });
       continue;
     }
 
