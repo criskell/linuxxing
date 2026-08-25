@@ -1180,6 +1180,44 @@ export const COMMANDS: CommandKB = {
     },
   },
 
+  install: {
+    desc: {
+      en: "Copies a file to a destination and sets its permissions, owner, and group in a single atomic step, instead of the multi-command dance of cp followed by chmod and chown. Its real home is inside Makefiles and packaging scripts: a 'make install' target almost always ends with a series of 'install' calls that place freshly built binaries into /usr/local/bin, libraries into /usr/local/lib, and so on, each with the exact permissions that location expects (typically 755 for an executable, 644 for a plain file). Unlike a plain cp, it also creates any missing destination directories on request and replaces the target as a new file rather than editing it in place, which avoids corrupting a binary that another process might have open and already running.",
+      pt: 'Copia um arquivo para um destino e já define suas permissões, dono e grupo em um único passo atômico, em vez da dança de vários comandos com cp seguido de chmod e chown. Seu lugar de verdade é dentro de Makefiles e scripts de empacotamento: um alvo "make install" quase sempre termina com uma série de chamadas a "install" que colocam binários recém-compilados em /usr/local/bin, bibliotecas em /usr/local/lib, e assim por diante, cada um com as permissões exatas que aquele lugar espera (tipicamente 755 para um executável, 644 para um arquivo comum). Diferente de um cp simples, também cria diretórios de destino que faltarem, se pedido, e substitui o alvo como um arquivo novo em vez de editá-lo no lugar, o que evita corromper um binário que outro processo já possa ter aberto e em execução.',
+    },
+    subcommands: {},
+    flags: {
+      '-m': {
+        en: 'Sets the permission mode of the installed file (in octal, like chmod), 755 for an executable and 644 for a plain file are the common defaults.',
+        pt: 'Define o modo de permissão do arquivo instalado (em octal, como no chmod), 755 para um executável e 644 para um arquivo comum são os padrões comuns.',
+      },
+      '-o': {
+        en: 'Sets the owner of the installed file, usually only usable by root.',
+        pt: 'Define o dono do arquivo instalado, geralmente só utilizável pelo root.',
+      },
+      '-g': {
+        en: 'Sets the group of the installed file.',
+        pt: 'Define o grupo do arquivo instalado.',
+      },
+      '-d': {
+        en: 'Creates the given directories instead of installing a file, setting their mode, owner, and group the same way.',
+        pt: 'Cria os diretórios indicados em vez de instalar um arquivo, definindo o modo, dono e grupo deles da mesma forma.',
+      },
+      '-D': {
+        en: 'Creates any missing parent directories along the destination path before installing the file into it.',
+        pt: 'Cria os diretórios pai que faltarem ao longo do caminho de destino antes de instalar o arquivo nele.',
+      },
+      '-v': {
+        en: 'Shows each file as it is installed (verbose mode).',
+        pt: 'Mostra cada arquivo conforme é instalado (modo verboso).',
+      },
+      '-s': {
+        en: 'Strips debug symbols from the installed binary, reducing its file size.',
+        pt: 'Remove símbolos de depuração do binário instalado, reduzindo o tamanho do arquivo.',
+      },
+    },
+  },
+
   touch: {
     desc: {
       en: "Creates an empty file if it does not already exist, or, if it does, simply updates its last-modified timestamp to the current time without touching its actual contents. That second behavior, updating timestamps, is its original and literal purpose (the name comes from 'touching' a file to mark it as recently accessed), and still shows up in build systems and Makefiles that decide whether to rebuild something based on file modification times.",
