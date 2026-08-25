@@ -47,11 +47,7 @@ const alternateUrls = locales.map((loc) => ({
   </head>
   <body class="min-h-screen bg-surface font-sans text-default antialiased">
     <header class="fixed top-0 right-0 left-0 z-50">
-      <div
-        id="header-surface"
-        class="absolute inset-0 transition-[background-color,border-color] duration-[var(--duration-base)] ease-[var(--ease-standard)]"
-      >
-      </div>
+      <div id="header-surface" class="header-surface absolute inset-0" data-scrolled="false"></div>
 
       <div class="relative mx-auto max-w-5xl px-4">
         <div class="flex h-16 items-center justify-between">
@@ -102,9 +98,7 @@ const alternateUrls = locales.map((loc) => ({
     <script>
       const surface = document.getElementById('header-surface')!;
       const onScroll = () => {
-        surface.classList.toggle('glass', window.scrollY > 8);
-        surface.classList.toggle('border-hairline', window.scrollY > 8);
-        surface.classList.toggle('border-b', window.scrollY > 8);
+        surface.dataset.scrolled = String(window.scrollY > 8);
       };
       onScroll();
       window.addEventListener('scroll', onScroll, { passive: true });

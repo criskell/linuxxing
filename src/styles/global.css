@@ -338,6 +338,22 @@ html {
     border-color: var(--hairline);
     color: var(--text-muted);
   }
+
+  .header-surface {
+    background-color: color-mix(in oklab, var(--surface-raised) 0%, transparent);
+    border-bottom: 1px solid transparent;
+    backdrop-filter: blur(0px) saturate(100%);
+    transition:
+      background-color var(--duration-base) var(--ease-standard),
+      border-color var(--duration-base) var(--ease-standard),
+      backdrop-filter var(--duration-base) var(--ease-standard);
+  }
+
+  .header-surface[data-scrolled='true'] {
+    background-color: color-mix(in oklab, var(--surface-raised) 72%, transparent);
+    border-bottom-color: var(--hairline);
+    backdrop-filter: blur(16px) saturate(140%);
+  }
 }
 
 @keyframes rise-in {
