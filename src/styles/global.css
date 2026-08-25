@@ -377,11 +377,6 @@ html {
 }
 
 @layer utilities {
-  .glass {
-    background: color-mix(in oklab, var(--surface-raised) 72%, transparent);
-    backdrop-filter: blur(16px) saturate(140%);
-  }
-
   .motion-rise {
     animation: rise-in var(--duration-base) var(--ease-standard) both;
   }
