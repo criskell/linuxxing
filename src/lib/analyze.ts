@@ -16,6 +16,7 @@ import {
   createCommandTokenState,
   classifyCommandToken,
 } from './command-parsing/token-classification';
+import { extractAssignment, extractCommandSubstitution, extractVariableExpansion } from './command-parsing/expansions';
 
 export type { StepType } from './command-parsing/step-type';
 
@@ -95,6 +96,7 @@ function describeArgToken(
   knowledgeBase: CommandDef | undefined,
   consumedValueFlag: { flag: string; kind: 'generic' | 'octal-mode' } | null,
   keyValueMatch: [string, string] | null,
+  isRedirectTarget: boolean,
   locale: Locale,
 ): string {
   if (baseCmd === 'chmod' && /^[0-7]{3,4}$/.test(token)) {
@@ -121,7 +123,28 @@ function describeArgToken(
     return `${keyValueDesc} ${t(locale, 'special.flagValue')(keyValueMatch[1])}`;
   }
 
+  if (isRedirectTarget) {
+    return t(locale, 'special.redirectTarget');
+  }
+
   return knowledgeBase?.argHint?.[locale] ?? t(locale, 'fallback.arg');
+}
+
+function pushAssignmentSteps(steps: Step[], token: string, assignment: { name: string; value: string }, locale: Locale): void {
+  const substitutionInner = extractCommandSubstitution(assignment.value);
+  if (substitutionInner !== null) {
+    steps.push({ token, type: 'assignment', desc: t(locale, 'special.assignmentSubstitution')(assignment.name) });
+    steps.push(...analyzeScript(substitutionInner, locale));
+    return;
+  }
+
+  const sourceVariable = extractVariableExpansion(assignment.value);
+  if (sourceVariable !== null) {
+    steps.push({ token, type: 'assignment', desc: t(locale, 'special.assignmentVariable')(assignment.name, sourceVariable) });
+    return;
+  }
+
+  steps.push({ token, type: 'assignment', desc: t(locale, 'special.assignmentLiteral')(assignment.name, assignment.value) });
 }
 
 export function analyze(tokens: string[], locale: Locale): Step[] {
@@ -133,6 +156,15 @@ export function analyze(tokens: string[], locale: Locale): Step[] {
     steps.push({ token: tokens[0], type: 'command', desc: COMMANDS.sudo.desc[locale] });
     startIndex = 1;
   }
+
+  while (startIndex < tokens.length) {
+    const assignment = extractAssignment(tokens[startIndex]);
+    if (!assignment) break;
+    pushAssignmentSteps(steps, tokens[startIndex], assignment, locale);
+    startIndex++;
+  }
+
+  if (startIndex >= tokens.length) return steps;
 
   const baseCmd = tokens[startIndex];
   const knowledgeBase = COMMANDS[baseCmd];
@@ -149,6 +181,13 @@ export function analyze(tokens: string[], locale: Locale): Step[] {
     switch (classification.type) {
       case 'redirect':
         steps.push({ token: tok, type: 'redirect', desc: redirectDescription(tok, locale)! });
+        break;
+      case 'substitution':
+        steps.push({ token: tok, type: 'substitution', desc: t(locale, 'special.substitution') });
+        steps.push(...analyzeScript(classification.inner, locale));
+        break;
+      case 'variable':
+        steps.push({ token: tok, type: 'variable', desc: t(locale, 'special.variableExpansion')(classification.name) });
         break;
       case 'flag-long':
         steps.push({
@@ -182,6 +221,7 @@ export function analyze(tokens: string[], locale: Locale): Step[] {
             knowledgeBase,
             classification.consumedValueFlag,
             classification.keyValueMatch,
+            classification.isRedirectTarget,
             locale,
           ),
         });
@@ -293,6 +333,31 @@ export interface HighlightSpan {
   type: StepType | null;
 }
 
+function pushSubstitutionSpans(rawText: string, spans: HighlightSpan[]): boolean {
+  const inner = extractCommandSubstitution(rawText);
+  if (inner === null) return false;
+
+  spans.push({ text: '$(', type: 'substitution' });
+  highlightCode(inner, spans);
+  spans.push({ text: ')', type: 'substitution' });
+  return true;
+}
+
+function pushAssignmentSpans(rawText: string, spans: HighlightSpan[]): boolean {
+  const assignment = extractAssignment(rawText);
+  if (!assignment) return false;
+
+  const prefixLength = assignment.name.length + 1;
+  spans.push({ text: rawText.slice(0, prefixLength), type: 'assignment' });
+
+  const valueText = rawText.slice(prefixLength);
+  if (pushSubstitutionSpans(valueText, spans)) return true;
+
+  const isVariable = extractVariableExpansion(valueText) !== null;
+  spans.push({ text: valueText, type: isVariable ? 'variable' : 'assignment' });
+  return true;
+}
+
 function highlightSegment(chunks: RawChunk[], spans: HighlightSpan[]): void {
   const wordIdxs: number[] = [];
   chunks.forEach((c, i) => {
@@ -352,6 +417,10 @@ function highlightSegment(chunks: RawChunk[], spans: HighlightSpan[]): void {
     const value = stripQuotesForClassification(c.text);
 
     if (!walkState.sawCommand) {
+      if (pushAssignmentSpans(c.text, spans)) {
+        return walkState;
+      }
+
       spans.push({ text: c.text, type: 'command' });
       return value === 'sudo'
         ? { ...walkState, sawCommand: true, afterSudo: true }
@@ -368,7 +437,10 @@ function highlightSegment(chunks: RawChunk[], spans: HighlightSpan[]): void {
       walkState.knowledgeBase,
       walkState.commandTokenState,
     );
-    spans.push({ text: c.text, type: classification.type });
+
+    if (classification.type !== 'substitution' || !pushSubstitutionSpans(c.text, spans)) {
+      spans.push({ text: c.text, type: classification.type });
+    }
     return { ...walkState, commandTokenState: nextCommandTokenState };
   }, initialWalkState);
 }

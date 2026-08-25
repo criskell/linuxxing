@@ -176,6 +176,9 @@
   --color-test: var(--text-faint);
   --color-operator: var(--text-faint);
   --color-redirect: var(--text-faint);
+  --color-assignment: var(--signal-info);
+  --color-substitution: var(--signal-caution);
+  --color-variable: var(--signal-positive);
 
   --color-command-fill: var(--signal-info-fill);
   --color-subcommand-fill: var(--signal-positive-fill);
@@ -188,6 +191,9 @@
   --color-test-fill: var(--surface-nested);
   --color-operator-fill: var(--surface-nested);
   --color-redirect-fill: var(--surface-nested);
+  --color-assignment-fill: var(--signal-info-fill);
+  --color-substitution-fill: var(--signal-caution-fill);
+  --color-variable-fill: var(--signal-positive-fill);
 }
 
 body {

@@ -9,4 +9,7 @@ export type StepType =
   | 'control'
   | 'test'
   | 'operator'
-  | 'redirect';
+  | 'redirect'
+  | 'assignment'
+  | 'substitution'
+  | 'variable';

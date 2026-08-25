@@ -35,12 +35,18 @@ export const ui = {
     'type.test': 'condition',
     'type.operator': 'operator',
     'type.redirect': 'redirect',
+    'type.assignment': 'variable assignment',
+    'type.substitution': 'command substitution',
+    'type.variable': 'variable expansion',
     'legend.command': 'command',
     'legend.subcommand': 'subcommand',
     'legend.flag-long': 'long flag',
     'legend.flag-short': 'short flag',
     'legend.arg': 'argument / value',
     'legend.unknown': 'unknown',
+    'legend.assignment': 'variable assignment',
+    'legend.substitution': 'command substitution',
+    'legend.variable': 'variable expansion',
     'fallback.command': (tok: string) =>
       `No specific explanation cataloged yet for "${tok}", but it's the program being run, the first word of the command.`,
     'fallback.flagLong': (name: string) =>
@@ -64,6 +70,15 @@ export const ui = {
     'special.octalModeDecode': (owner: string, group: string, other: string) =>
       `Owner: ${owner}. Group: ${group}. Others: ${other}.`,
     'special.flagValue': (value: string) => `Here it's set to "${value}".`,
+    'special.assignmentLiteral': (name: string, value: string) => `Sets the shell variable "${name}" to "${value}".`,
+    'special.assignmentVariable': (name: string, sourceName: string) =>
+      `Sets the shell variable "${name}" to the current value of the variable "${sourceName}".`,
+    'special.assignmentSubstitution': (name: string) =>
+      `Sets the shell variable "${name}" to whatever the command below prints, run right before the assignment happens.`,
+    'special.substitution':
+      'Command substitution: runs the command below and replaces this whole expression with whatever it prints.',
+    'special.variableExpansion': (name: string) => `Expands to the current value of the variable "${name}".`,
+    'special.redirectTarget': 'The file or device the redirect above reads from or writes to.',
     'special.fstabLine': (device: string, mount: string, fstype: string, opts: string, dump: string, pass: string) => {
       const mountDesc = mount === 'none' ? '"none" (no mount point, typical for swap)' : `"${mount}"`;
       const dumpDesc = dump === '0' ? 'skip backup' : 'back this up with the dump utility';
@@ -128,12 +143,18 @@ export const ui = {
     'type.test': 'condição',
     'type.operator': 'operador',
     'type.redirect': 'redirecionamento',
+    'type.assignment': 'atribuição de variável',
+    'type.substitution': 'substituição de comando',
+    'type.variable': 'expansão de variável',
     'legend.command': 'comando',
     'legend.subcommand': 'subcomando',
     'legend.flag-long': 'opção longa',
     'legend.flag-short': 'opção curta',
     'legend.arg': 'argumento / valor',
     'legend.unknown': 'desconhecido',
+    'legend.assignment': 'atribuição de variável',
+    'legend.substitution': 'substituição de comando',
+    'legend.variable': 'expansão de variável',
     'fallback.command': (tok: string) =>
       `Não tenho uma explicação específica cadastrada para "${tok}", mas é o programa que está sendo executado, a primeira palavra do comando.`,
     'fallback.flagLong': (name: string) =>
@@ -157,6 +178,15 @@ export const ui = {
     'special.octalModeDecode': (owner: string, group: string, other: string) =>
       `Dono: ${owner}. Grupo: ${group}. Outros: ${other}.`,
     'special.flagValue': (value: string) => `Aqui está definido como "${value}".`,
+    'special.assignmentLiteral': (name: string, value: string) => `Define a variável de shell "${name}" como "${value}".`,
+    'special.assignmentVariable': (name: string, sourceName: string) =>
+      `Define a variável de shell "${name}" com o valor atual da variável "${sourceName}".`,
+    'special.assignmentSubstitution': (name: string) =>
+      `Define a variável de shell "${name}" com o que o comando abaixo imprimir, rodado bem antes da atribuição acontecer.`,
+    'special.substitution':
+      'Substituição de comando: roda o comando abaixo e troca essa expressão inteira pelo que ele imprimir.',
+    'special.variableExpansion': (name: string) => `Expande para o valor atual da variável "${name}".`,
+    'special.redirectTarget': 'O arquivo ou dispositivo que o redirecionamento acima lê ou onde ele escreve.',
     'special.fstabLine': (device: string, mount: string, fstype: string, opts: string, dump: string, pass: string) => {
       const mountDesc = mount === 'none' ? '"none" (sem ponto de montagem, típico de swap)' : `"${mount}"`;
       const dumpDesc = dump === '0' ? 'ignorar backup' : 'fazer backup deste com a ferramenta dump';

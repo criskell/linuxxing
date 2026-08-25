@@ -49,6 +49,9 @@ const legendItems: { type: string; label: string }[] = [
   { type: 'flag-short', label: t(locale, 'legend.flag-short') },
   { type: 'arg', label: t(locale, 'legend.arg') },
   { type: 'unknown', label: t(locale, 'legend.unknown') },
+  { type: 'assignment', label: t(locale, 'legend.assignment') },
+  { type: 'substitution', label: t(locale, 'legend.substitution') },
+  { type: 'variable', label: t(locale, 'legend.variable') },
 ];
 ---
 
@@ -144,6 +147,9 @@ const legendItems: { type: string; label: string }[] = [
     test: 'type.test',
     operator: 'type.operator',
     redirect: 'type.redirect',
+    assignment: 'type.assignment',
+    substitution: 'type.substitution',
+    variable: 'type.variable',
   };
 
   function colorVar(type: StepType) {

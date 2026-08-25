@@ -10,12 +10,15 @@ const OPERATOR_TOKENS = ['&&', '||', '|', ';'] as const;
 const matchOperatorAt = (code: string, index: number) =>
   OPERATOR_TOKENS.find((operator) => code.startsWith(operator, index)) ?? null;
 
+const startsSubstitutionAt = (code: string, index: number) => code[index] === '$' && code[index + 1] === '(';
+
 interface ScanAccumulator {
   chunks: RawChunk[];
   currentText: string;
   currentKind: 'whitespace' | 'word' | null;
   quote: string | null;
   skipRemaining: number;
+  substitutionDepth: number;
 }
 
 const flushRun = (accumulator: ScanAccumulator) => {
@@ -49,9 +52,27 @@ const scanStep = (accumulator: ScanAccumulator, index: number, code: string) => 
     };
   }
 
+  if (accumulator.substitutionDepth > 0) {
+    if (isQuoteCharacter(character)) {
+      return { ...accumulator, quote: character, currentText: accumulator.currentText + character };
+    }
+    if (startsSubstitutionAt(code, index)) {
+      return { ...accumulator, substitutionDepth: accumulator.substitutionDepth + 1, currentText: accumulator.currentText + character };
+    }
+    if (character === ')') {
+      return { ...accumulator, substitutionDepth: accumulator.substitutionDepth - 1, currentText: accumulator.currentText + character };
+    }
+    return { ...accumulator, currentText: accumulator.currentText + character };
+  }
+
   if (isQuoteCharacter(character)) {
     const opened = openRun(accumulator, 'word');
     return { ...opened, quote: character, currentText: opened.currentText + character };
+  }
+
+  if (startsSubstitutionAt(code, index)) {
+    const opened = openRun(accumulator, 'word');
+    return { ...opened, substitutionDepth: 1, currentText: opened.currentText + character };
   }
 
   const operator = matchOperatorAt(code, index);
@@ -74,7 +95,14 @@ const scanStep = (accumulator: ScanAccumulator, index: number, code: string) => 
 };
 
 export const scanChunks = (code: string) => {
-  const initial: ScanAccumulator = { chunks: [], currentText: '', currentKind: null, quote: null, skipRemaining: 0 };
+  const initial: ScanAccumulator = {
+    chunks: [],
+    currentText: '',
+    currentKind: null,
+    quote: null,
+    skipRemaining: 0,
+    substitutionDepth: 0,
+  };
   const final = indicesOf(code).reduce((accumulator, index) => scanStep(accumulator, index, code), initial);
   return flushRun(final).chunks;
 };

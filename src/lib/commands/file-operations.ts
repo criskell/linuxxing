@@ -258,9 +258,14 @@ export const fileOperations: CommandKB = {
         en: 'Sets how many lines from the start of the file to show.',
         pt: 'Define quantas linhas do início do arquivo mostrar.',
       },
+      '-c': {
+        en: 'Shows the first N bytes instead of the first N lines, useful for binary data or, combined with a random source, for cutting a stream of random bytes down to an exact length.',
+        pt: 'Mostra os primeiros N bytes em vez das primeiras N linhas, útil para dados binários ou, combinado com uma fonte aleatória, para cortar um fluxo de bytes aleatórios em um comprimento exato.',
+      },
     },
     valueFlags: {
       '-n': 'generic',
+      '-c': 'generic',
     },
     argHint: {
       en: 'The file to read.',
@@ -691,8 +696,8 @@ export const fileOperations: CommandKB = {
 
   tr: {
     desc: {
-      en: "Translates or deletes individual characters from its input, one character at a time, streamed straight through without ever understanding lines or fields the way sed or awk do. 'tr a-z A-Z' upper-cases text by mapping each lowercase letter to its uppercase counterpart, and 'tr -d' deletes every character in a given set outright, both classic building blocks in shell one-liners for quick text cleanup.",
-      pt: 'Traduz ou apaga caracteres individuais da entrada, um caractere de cada vez, direto no fluxo sem nunca entender linhas ou campos como o sed ou o awk fazem. "tr a-z A-Z" transforma texto em maiúsculas mapeando cada letra minúscula para sua correspondente maiúscula, e "tr -d" apaga de vez todo caractere em um conjunto dado, ambos blocos clássicos de construção em one-liners de shell para limpeza rápida de texto.',
+      en: "Translates or deletes individual characters from its input, one character at a time, streamed straight through without ever understanding lines or fields the way sed or awk do. 'tr a-z A-Z' upper-cases text by mapping each lowercase letter to its uppercase counterpart, and 'tr -d' deletes every character in a given set outright, both classic building blocks in shell one-liners for quick text cleanup. Combined as 'tr -dc SET', it keeps only the characters in SET and deletes everything else, the standard idiom behind reading /dev/urandom to generate a random password built only from an allowed character set.",
+      pt: 'Traduz ou apaga caracteres individuais da entrada, um caractere de cada vez, direto no fluxo sem nunca entender linhas ou campos como o sed ou o awk fazem. "tr a-z A-Z" transforma texto em maiúsculas mapeando cada letra minúscula para sua correspondente maiúscula, e "tr -d" apaga de vez todo caractere em um conjunto dado, ambos blocos clássicos de construção em one-liners de shell para limpeza rápida de texto. Combinado como "tr -dc CONJUNTO", ele mantém só os caracteres do CONJUNTO e apaga todo o resto, o idioma padrão por trás de ler o /dev/urandom para gerar uma senha aleatória construída só com um conjunto de caracteres permitido.',
     },
     subcommands: {},
     flags: {
@@ -700,14 +705,18 @@ export const fileOperations: CommandKB = {
         en: 'Deletes every character in the given set, instead of translating.',
         pt: 'Apaga todo caractere no conjunto dado, em vez de traduzir.',
       },
+      '-c': {
+        en: 'Complements the given set: operates on every character NOT in it, instead of the characters listed. Combined with -d, this deletes everything outside the set, keeping only allowed characters.',
+        pt: 'Complementa o conjunto dado: opera em todo caractere que NÃO está nele, em vez dos caracteres listados. Combinado com -d, isso apaga tudo fora do conjunto, mantendo só os caracteres permitidos.',
+      },
       '-s': {
         en: 'Squeezes repeated consecutive occurrences of a character down to a single one.',
         pt: 'Reduz ocorrências consecutivas repetidas de um caractere para uma só.',
       },
     },
     argHint: {
-      en: 'The set of characters to translate from, or (with -d) to delete.',
-      pt: 'O conjunto de caracteres a traduzir, ou (com -d) a apagar.',
+      en: "The set of characters to translate from, or (with -d) to delete, or (with -dc together) to keep, deleting everything else. Ranges like A-Z and classes like 0-9 can be combined freely, as in 'A-Za-z0-9'.",
+      pt: 'O conjunto de caracteres a traduzir, ou (com -d) a apagar, ou (com -dc juntos) a manter, apagando todo o resto. Faixas como A-Z e classes como 0-9 podem ser combinadas livremente, como em "A-Za-z0-9".',
     },
   },
 

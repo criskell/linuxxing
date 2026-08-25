@@ -48,6 +48,10 @@ export const shellBuiltins: CommandKB = {
         pt: 'Interpreta sequências de escape com barra invertida como \\n (nova linha) e \\t (tab).',
       },
     },
+    argHint: {
+      en: 'The text to print, or a variable to print the value of.',
+      pt: 'O texto a imprimir, ou uma variável para imprimir o valor dela.',
+    },
   },
 
   sh: {
