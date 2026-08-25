@@ -17,7 +17,7 @@ const pageTitle = title ?? t(locale, 'site.title');
 <html lang={locale}>
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}/favicon.svg`} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
@@ -33,7 +33,7 @@ const pageTitle = title ?? t(locale, 'site.title');
       <div class="relative mx-auto max-w-5xl px-4">
         <div class="flex h-16 items-center justify-between">
           <a
-            href={`/${locale}/`}
+            href={`${import.meta.env.BASE_URL}/${locale}/`}
             class="shrink-0 text-lg font-semibold tracking-tight text-strong transition-colors duration-[var(--duration-fast)] hover:text-muted"
           >
             linuxxing
