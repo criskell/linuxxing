@@ -2,17 +2,12 @@
 import Layout from '../../layouts/Layout.astro';
 import Explainer from '../../components/Explainer.astro';
 import { t } from '../../i18n/ui';
-import { COMMANDS } from '../../lib/commands/registry';
 
 const locale = 'en' as const;
-const commandCount = Object.keys(COMMANDS).length;
 ---
 
 <Layout locale={locale}>
-  <div class="motion-rise flex flex-col gap-3">
-    <p class="display text-2xl md:text-3xl">{t(locale, 'site.tagline')}</p>
-    <p class="eyebrow">{t(locale, 'hero.count')(commandCount)}</p>
-  </div>
+  <p class="motion-rise display text-2xl md:text-3xl">{t(locale, 'site.tagline')}</p>
 
   <div class="motion-rise stagger-1 mt-10">
     <Explainer locale={locale} />
