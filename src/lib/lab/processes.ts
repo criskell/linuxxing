@@ -20,7 +20,7 @@ export const processesExercises: LabExercise[] = [
       pt: 'Um e comercial no fim de um comando manda ele para segundo plano. Logo depois disso, o shell guarda o identificador do último job em segundo plano na variável $!.',
     },
     setupCommand:
-      'mkdir -p /root/lab; rm -f /root/lab/sleeper.pid; for pid in $(pidof sleep); do kill $pid; done; true',
+      'killall listener.sh 2>/dev/null; mkdir -p /root/lab; rm -f /root/lab/sleeper.pid; for pid in $(pidof sleep); do kill $pid; done; sleep 1; true',
     checks: [
       {
         label: { en: 'a sleep 1200 is running', pt: 'um sleep 1200 está rodando' },
@@ -49,7 +49,8 @@ export const processesExercises: LabExercise[] = [
       en: 'ps prints the process ID in the first column and the command line after it, so awk can pull the number out. kill sends SIGTERM to whatever ID it receives.',
       pt: 'O ps imprime o identificador do processo na primeira coluna e a linha de comando depois dele, então o awk consegue extrair o número. O kill envia SIGTERM para o identificador que receber.',
     },
-    setupCommand: 'for pid in $(pidof sleep); do kill $pid; done; sleep 300 & sleep 600 & sleep 900 & sleep 1',
+    setupCommand:
+      'killall listener.sh 2>/dev/null; for pid in $(pidof sleep); do kill $pid; done; sleep 1; sleep 300 & sleep 600 & sleep 900 & sleep 1',
     checks: [
       {
         label: { en: 'the sleep 600 is gone', pt: 'o sleep 600 se foi' },
@@ -78,7 +79,7 @@ export const processesExercises: LabExercise[] = [
       en: 'nice -n runs a command with the priority you ask for, and the ampersand still sends it to the background. The kernel exposes the value it settled on in the nineteenth field of /proc/PID/stat.',
       pt: 'O nice -n roda um comando com a prioridade que você pedir, e o e comercial continua mandando ele para segundo plano. O kernel expõe o valor que ficou valendo no décimo nono campo de /proc/PID/stat.',
     },
-    setupCommand: 'for pid in $(pidof sleep); do kill $pid; done; true',
+    setupCommand: 'killall listener.sh 2>/dev/null; for pid in $(pidof sleep); do kill $pid; done; sleep 1; true',
     checks: [
       {
         label: { en: 'a sleep 1200 is running', pt: 'um sleep 1200 está rodando' },
@@ -104,7 +105,7 @@ export const processesExercises: LabExercise[] = [
       pt: 'O kernel mantém um diretório por processo dentro do /proc, com o nome do PID, e o cwd lá dentro é um link simbólico para o diretório de trabalho. O readlink imprime para onde um link aponta, e o pidof acha o número a usar.',
     },
     setupCommand:
-      'for pid in $(pidof sleep); do kill $pid; done; rm -f /root/lab/service-cwd.txt; mkdir -p /root/lab/service; cd /root/lab/service; sleep 1500 & cd /root; sleep 1',
+      'killall listener.sh 2>/dev/null; for pid in $(pidof sleep); do kill $pid; done; sleep 1; rm -f /root/lab/service-cwd.txt; mkdir -p /root/lab/service; cd /root/lab/service; sleep 1500 & cd /root; sleep 1',
     checks: [
       {
         label: { en: 'service-cwd.txt holds /root/lab/service', pt: 'service-cwd.txt guarda /root/lab/service' },
@@ -126,7 +127,7 @@ export const processesExercises: LabExercise[] = [
       pt: 'O killall recebe o nome do programa e sinaliza todo processo que estiver rodando ele, o que poupa você de ler PIDs um a um. Ele casa pelo nome do programa, então um laço de shell com outro nome fica de fora.',
     },
     setupCommand:
-      'for pid in $(pidof sleep); do kill $pid; done; killall watchdog.sh 2>/dev/null; mkdir -p /root/lab; printf "#!/bin/sh\nwhile true; do read line; done\n" > /root/lab/watchdog.sh; chmod +x /root/lab/watchdog.sh; sleep 400 & sleep 500 & sleep 600 & sleep 700 & /root/lab/watchdog.sh < /dev/null & sleep 1',
+      'killall listener.sh 2>/dev/null; for pid in $(pidof sleep); do kill $pid; done; sleep 1; killall watchdog.sh 2>/dev/null; mkdir -p /root/lab; printf "#!/bin/sh\nwhile true; do read line; done\n" > /root/lab/watchdog.sh; chmod +x /root/lab/watchdog.sh; sleep 400 & sleep 500 & sleep 600 & sleep 700 & /root/lab/watchdog.sh < /dev/null & sleep 1',
     checks: [
       {
         label: { en: 'no sleep process is left', pt: 'nenhum processo sleep sobrou' },
@@ -138,6 +139,147 @@ export const processesExercises: LabExercise[] = [
       },
     ],
     solutionCommand: 'killall sleep',
+  },
+  {
+    id: 'pause-a-running-process',
+    track: 'processes',
+    title: { en: 'Pause a running process', pt: 'Pause um processo em execução' },
+    task: {
+      en: 'A sleep 1800 is running. Suspend it without ending it, so the kernel reports it as stopped in the third field of /proc/PID/stat, and leave it suspended.',
+      pt: 'Um sleep 1800 está rodando. Suspenda ele sem encerrar, de modo que o kernel informe ele como parado no terceiro campo de /proc/PID/stat, e deixe ele suspenso.',
+    },
+    hint: {
+      en: 'kill sends whatever signal you name, not only the default one, and SIGSTOP suspends a process instead of asking it to finish. The state letter T means stopped, while S means sleeping.',
+      pt: 'O kill envia o sinal que você nomear, não só o padrão, e o SIGSTOP suspende um processo em vez de pedir que ele termine. A letra de estado T significa parado, enquanto S significa dormindo.',
+    },
+    setupCommand:
+      'killall listener.sh 2>/dev/null; for pid in $(pidof sleep); do kill -CONT $pid 2>/dev/null; kill $pid; done; sleep 1; sleep 1800 & sleep 1',
+    checks: [
+      {
+        label: { en: 'the sleep is still alive', pt: 'o sleep continua vivo' },
+        command: 'ps | grep -q "[s]leep 1800"',
+      },
+      {
+        label: { en: 'the kernel reports it as stopped', pt: 'o kernel informa ele como parado' },
+        command: '[ "$(awk \'{print $3}\' /proc/$(pidof sleep)/stat)" = "T" ]',
+      },
+    ],
+    solutionCommand: 'kill -STOP $(pidof sleep)',
+  },
+  {
+    id: 'resume-a-stopped-process',
+    track: 'processes',
+    title: { en: 'Resume a stopped process', pt: 'Retome um processo parado' },
+    task: {
+      en: 'The sleep process on this machine is suspended and will never finish while it stays that way. Put it back to work, so the kernel reports it as sleeping again.',
+      pt: 'O processo sleep desta máquina está suspenso e nunca vai terminar enquanto ficar assim. Coloque ele de volta para funcionar, de modo que o kernel informe ele como dormindo de novo.',
+    },
+    hint: {
+      en: 'SIGCONT is the counterpart of SIGSTOP and tells the kernel to schedule the process again. A stopped process ignores almost everything else, which is why the signal has to be that one.',
+      pt: 'O SIGCONT é a contraparte do SIGSTOP e diz ao kernel para escalonar o processo de novo. Um processo parado ignora quase todo o resto, e é por isso que o sinal precisa ser esse.',
+    },
+    setupCommand:
+      'killall listener.sh 2>/dev/null; for pid in $(pidof sleep); do kill -CONT $pid 2>/dev/null; kill $pid; done; sleep 1; sleep 1800 & sleep 1; kill -STOP $(pidof sleep)',
+    checks: [
+      {
+        label: { en: 'the sleep is still alive', pt: 'o sleep continua vivo' },
+        command: 'ps | grep -q "[s]leep 1800"',
+      },
+      {
+        label: { en: 'the kernel no longer reports it as stopped', pt: 'o kernel não informa mais ele como parado' },
+        command: '[ "$(awk \'{print $3}\' /proc/$(pidof sleep)/stat)" != "T" ]',
+      },
+    ],
+    solutionCommand: 'kill -CONT $(pidof sleep)',
+  },
+  {
+    id: 'catch-a-signal-in-a-script',
+    track: 'processes',
+    title: { en: 'Catch a signal inside a script', pt: 'Capture um sinal dentro de um script' },
+    task: {
+      en: 'Write an executable /root/lab/listener.sh that waits forever and, whenever it receives SIGUSR1, writes the word reloaded into /root/lab/reload.txt. Start it in the background and send the signal to prove it works.',
+      pt: 'Escreva um /root/lab/listener.sh executável que espere para sempre e, sempre que receber SIGUSR1, escreva a palavra reloaded em /root/lab/reload.txt. Inicie ele em segundo plano e mande o sinal para provar que funciona.',
+    },
+    hint: {
+      en: 'trap ties a command to a signal name, and it has to be set before the waiting loop starts. Once the script runs in the background, the shell keeps its PID in $! and kill -USR1 reaches it.',
+      pt: 'O trap liga um comando a um nome de sinal, e precisa ser definido antes do laço de espera começar. Assim que o script roda em segundo plano, o shell guarda o PID dele no $! e o kill -USR1 alcança ele.',
+    },
+    setupCommand:
+      'killall listener.sh 2>/dev/null; mkdir -p /root/lab; rm -f /root/lab/listener.sh /root/lab/reload.txt; true',
+    checks: [
+      {
+        label: { en: 'the script sets a trap for USR1', pt: 'o script define um trap para USR1' },
+        command: 'grep -q "trap" /root/lab/listener.sh && grep -q "USR1" /root/lab/listener.sh',
+      },
+      {
+        label: { en: 'the script is running in the background', pt: 'o script está rodando em segundo plano' },
+        command: 'ps | grep -q "[l]istener.sh"',
+      },
+      {
+        label: { en: 'the signal produced the file', pt: 'o sinal produziu o arquivo' },
+        command: 'grep -qx reloaded /root/lab/reload.txt',
+      },
+    ],
+    solutionCommand:
+      'printf \'#!/bin/sh\\ntrap "echo reloaded > /root/lab/reload.txt" USR1\\nwhile true; do sleep 1; done\\n\' > /root/lab/listener.sh; chmod +x /root/lab/listener.sh; /root/lab/listener.sh & sleep 1; kill -USR1 $(ps | grep "[l]istener.sh" | awk \'{print $1}\' | head -1); sleep 2',
+  },
+  {
+    id: 'find-who-holds-a-file',
+    track: 'processes',
+    title: { en: 'Find who is holding a file open', pt: 'Descubra quem segura um arquivo aberto' },
+    task: {
+      en: 'Something is writing to /root/lab/held.log and the file cannot be removed while that lasts. Write the process identifier holding it into /root/lab/holder.txt, as a bare number.',
+      pt: 'Alguma coisa está escrevendo em /root/lab/held.log e o arquivo não pode ser removido enquanto isso durar. Escreva em /root/lab/holder.txt o identificador do processo que segura ele, como um número puro.',
+    },
+    hint: {
+      en: 'fuser answers which processes have a given file open, printing the identifiers to standard output and a note to the error output. Sending the errors away leaves only the number, and tr can trim the spaces around it.',
+      pt: 'O fuser responde quais processos têm um arquivo aberto, imprimindo os identificadores na saída padrão e um aviso na saída de erro. Mandar os erros embora deixa só o número, e o tr consegue tirar os espaços em volta.',
+    },
+    setupCommand:
+      'killall listener.sh 2>/dev/null; for pid in $(pidof sleep); do kill $pid; done; sleep 1; mkdir -p /root/lab; rm -f /root/lab/holder.txt; sleep 1700 > /root/lab/held.log & sleep 1',
+    checks: [
+      {
+        label: { en: 'the file holds a bare number', pt: 'o arquivo guarda um número puro' },
+        command: 'grep -qE "^[0-9]+$" /root/lab/holder.txt',
+      },
+      {
+        label: {
+          en: 'that number is the process holding the file',
+          pt: 'esse número é o processo que segura o arquivo',
+        },
+        command: '[ "$(cat /root/lab/holder.txt)" = "$(pidof sleep)" ]',
+      },
+    ],
+    solutionCommand: 'fuser /root/lab/held.log 2>/dev/null | tr -d " " > /root/lab/holder.txt',
+  },
+  {
+    id: 'read-the-parent-of-a-process',
+    track: 'processes',
+    title: { en: 'Read the parent of a process', pt: 'Descubra o pai de um processo' },
+    task: {
+      en: 'A sleep process is running in the background of this shell. Write the identifier of its parent process into /root/lab/parent.txt, taking it from the status file the kernel keeps for that process.',
+      pt: 'Um processo sleep está rodando em segundo plano deste shell. Escreva o identificador do processo pai dele em /root/lab/parent.txt, tirando isso do arquivo de status que o kernel mantém para esse processo.',
+    },
+    hint: {
+      en: 'The file /proc/PID/status lists one label per line, and the parent appears in the line labelled PPid. grep narrows it down and awk prints the value next to the label.',
+      pt: 'O arquivo /proc/PID/status lista um rótulo por linha, e o pai aparece na linha rotulada PPid. O grep reduz para ela e o awk imprime o valor ao lado do rótulo.',
+    },
+    setupCommand:
+      'killall listener.sh 2>/dev/null; for pid in $(pidof sleep); do kill $pid; done; sleep 1; mkdir -p /root/lab; rm -f /root/lab/parent.txt; sleep 1600 & sleep 1',
+    checks: [
+      {
+        label: { en: 'the file holds a bare number', pt: 'o arquivo guarda um número puro' },
+        command: 'grep -qE "^[0-9]+$" /root/lab/parent.txt',
+      },
+      {
+        label: {
+          en: 'it matches the PPid the kernel reports',
+          pt: 'ele bate com o PPid que o kernel informa',
+        },
+        command: '[ "$(cat /root/lab/parent.txt)" = "$(awk \'/^PPid:/ {print $2}\' /proc/$(pidof sleep)/status)" ]',
+      },
+    ],
+    solutionCommand: "awk '/^PPid:/ {print $2}' /proc/$(pidof sleep)/status > /root/lab/parent.txt",
   },
   {
     id: 'split-standard-output-from-errors',

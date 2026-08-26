@@ -225,6 +225,114 @@ export const usersAndPermissionsExercises: LabExercise[] = [
     solutionCommand: 'find /root/lab/mixed -type f -user ana | sort > /root/lab/ana-files.txt',
   },
   {
+    id: 'create-a-user-with-a-chosen-identifier',
+    track: 'users-and-permissions',
+    title: { en: 'Create a user with a chosen identifier', pt: 'Crie um usuário com identificador escolhido' },
+    task: {
+      en: 'The deployment tooling expects the account carol to carry the user identifier 1500 exactly, with no home directory created and no password set. Create it that way.',
+      pt: 'A ferramenta de deploy espera que a conta carol tenha exatamente o identificador de usuário 1500, sem criar diretório home e sem definir senha. Crie ela assim.',
+    },
+    hint: {
+      en: 'adduser picks the next free identifier on its own unless -u names one. The flags -D and -H are what keep the password unset and the home directory out of the way.',
+      pt: 'O adduser escolhe sozinho o próximo identificador livre a menos que o -u nomeie um. As flags -D e -H são o que mantém a senha em branco e o diretório home fora do caminho.',
+    },
+    setupCommand: 'deluser carol 2>/dev/null; delgroup carol 2>/dev/null; true',
+    checks: [
+      {
+        label: { en: 'the account carol exists', pt: 'a conta carol existe' },
+        command: 'grep -q "^carol:" /etc/passwd',
+      },
+      {
+        label: { en: 'its user identifier is 1500', pt: 'o identificador de usuário dela é 1500' },
+        command: '[ "$(id -u carol)" = "1500" ]',
+      },
+      {
+        label: { en: 'no home directory was created', pt: 'nenhum diretório home foi criado' },
+        command: '[ ! -d /home/carol ]',
+      },
+    ],
+    solutionCommand: 'adduser -D -H -u 1500 carol',
+  },
+  {
+    id: 'create-a-group-with-a-chosen-identifier',
+    track: 'users-and-permissions',
+    title: { en: 'Create a group with a chosen identifier', pt: 'Crie um grupo com identificador escolhido' },
+    task: {
+      en: 'Create the group backups with the group identifier 2500, so that /etc/group carries both the name and that exact number.',
+      pt: 'Crie o grupo backups com o identificador de grupo 2500, de modo que o /etc/group traga tanto o nome quanto exatamente esse número.',
+    },
+    hint: {
+      en: 'addgroup takes -g to pin the identifier instead of letting the system pick one. The third field of the matching line in /etc/group is where that number ends up.',
+      pt: 'O addgroup recebe o -g para fixar o identificador em vez de deixar o sistema escolher. O terceiro campo da linha correspondente no /etc/group é onde esse número vai parar.',
+    },
+    setupCommand: 'delgroup backups 2>/dev/null; true',
+    checks: [
+      {
+        label: { en: 'the group backups exists', pt: 'o grupo backups existe' },
+        command: 'grep -q "^backups:" /etc/group',
+      },
+      {
+        label: { en: 'its identifier is 2500', pt: 'o identificador dele é 2500' },
+        command: '[ "$(awk -F: \'/^backups:/ {print $3}\' /etc/group)" = "2500" ]',
+      },
+    ],
+    solutionCommand: 'addgroup -g 2500 backups',
+  },
+  {
+    id: 'find-files-by-their-mode',
+    track: 'users-and-permissions',
+    title: { en: 'Audit files by their mode', pt: 'Audite arquivos pelo modo' },
+    task: {
+      en: 'Under /root/lab/audit some files are wide open at mode 777. Write the path of every one of them into /root/lab/open-files.txt, sorted, with the well behaved files left out.',
+      pt: 'Dentro de /root/lab/audit alguns arquivos estão escancarados no modo 777. Escreva o caminho de cada um deles em /root/lab/open-files.txt, ordenado, deixando de fora os arquivos comportados.',
+    },
+    hint: {
+      en: 'find matches the permission bits with -perm, and a plain octal number means exactly that mode, not merely those bits among others. Adding -type f keeps directories out of the answer.',
+      pt: 'O find casa os bits de permissão com o -perm, e um número octal simples significa exatamente aquele modo, não apenas aqueles bits entre outros. Acrescentar -type f mantém os diretórios fora da resposta.',
+    },
+    setupCommand:
+      'rm -rf /root/lab/audit /root/lab/open-files.txt; mkdir -p /root/lab/audit/sub; touch /root/lab/audit/safe.conf /root/lab/audit/open.sh /root/lab/audit/sub/also-open.sh /root/lab/audit/sub/private.key; chmod 644 /root/lab/audit/safe.conf; chmod 600 /root/lab/audit/sub/private.key; chmod 777 /root/lab/audit/open.sh /root/lab/audit/sub/also-open.sh',
+    checks: [
+      {
+        label: { en: 'the list matches the files at mode 777', pt: 'a lista bate com os arquivos em modo 777' },
+        command: 'find /root/lab/audit -type f -perm 777 | sort | diff - /root/lab/open-files.txt',
+      },
+      {
+        label: { en: 'the private key stayed out', pt: 'a chave privada ficou de fora' },
+        command: '! grep -q "private.key" /root/lab/open-files.txt',
+      },
+    ],
+    solutionCommand: 'find /root/lab/audit -type f -perm 777 | sort > /root/lab/open-files.txt',
+  },
+  {
+    id: 'count-the-locked-accounts',
+    track: 'users-and-permissions',
+    title: { en: 'Count the locked accounts', pt: 'Conte as contas travadas' },
+    task: {
+      en: 'An account whose password field in /etc/shadow starts with an exclamation mark cannot log in with a password. Write how many accounts are in that state into /root/lab/locked.txt, as a single number.',
+      pt: 'Uma conta cujo campo de senha no /etc/shadow começa com ponto de exclamação não consegue entrar com senha. Escreva quantas contas estão nesse estado em /root/lab/locked.txt, como um número sozinho.',
+    },
+    hint: {
+      en: 'Each line of /etc/shadow puts the name first and the password hash second, separated by colons. awk with a colon separator can test the second field and count the matches, printing the total at the end.',
+      pt: 'Cada linha do /etc/shadow coloca o nome primeiro e o hash da senha em segundo, separados por dois pontos. O awk com separador de dois pontos consegue testar o segundo campo e contar os casos, imprimindo o total no fim.',
+    },
+    setupCommand: 'mkdir -p /root/lab; rm -f /root/lab/locked.txt',
+    checks: [
+      {
+        label: { en: 'the file holds a bare number', pt: 'o arquivo guarda um número puro' },
+        command: 'grep -qE "^[0-9]+$" /root/lab/locked.txt',
+      },
+      {
+        label: {
+          en: 'it matches what /etc/shadow reports',
+          pt: 'ele bate com o que o /etc/shadow informa',
+        },
+        command: '[ "$(cat /root/lab/locked.txt)" = "$(grep -c \'^[^:]*:!\' /etc/shadow)" ]',
+      },
+    ],
+    solutionCommand: "grep -c '^[^:]*:!' /etc/shadow > /root/lab/locked.txt",
+  },
+  {
     id: 'set-up-a-shared-directory',
     track: 'users-and-permissions',
     title: { en: 'Set up a shared directory', pt: 'Prepare um diretório compartilhado' },
