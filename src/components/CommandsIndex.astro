@@ -13,7 +13,13 @@ const totalCommands = Object.keys(COMMANDS).length;
 ---
 
 <div class="flex flex-col gap-10">
-  <p class="text-sm text-muted">{t(locale, 'commands.indexCount')(totalCommands)}</p>
+  <div class="flex flex-col gap-3">
+    <p class="text-sm text-muted">{t(locale, 'commands.indexCount')(totalCommands)}</p>
+    <p class="text-sm leading-relaxed text-muted">{t(locale, 'lab.commandsIndexInvite')}</p>
+    <a href={`${import.meta.env.BASE_URL}/${locale}/lab/`} class="chip chip-info interactive w-fit px-3 py-1.5">
+      {t(locale, 'lab.openLab')}
+    </a>
+  </div>
 
   {
     COMMAND_CATEGORIES.map((category) => (

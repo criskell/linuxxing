@@ -3,7 +3,9 @@ import type { Locale } from '../i18n/languages';
 import { t } from '../i18n/ui';
 import type { CommandDef } from '../lib/commands/types';
 import { COMMAND_CATEGORIES } from '../lib/commands/registry';
+import { isAvailableInLab } from '../lib/lab/available-commands';
 import CommandExplainer from './CommandExplainer.astro';
+import LabCommandInvite from './LabCommandInvite.astro';
 import CommandFlagBuilder from './CommandFlagBuilder.astro';
 
 interface Props {
@@ -18,6 +20,7 @@ const subcommandEntries = Object.entries(commandDef.subcommands);
 const flagEntries = Object.entries(commandDef.flags);
 
 const category = COMMAND_CATEGORIES.find((c) => c.commands.includes(commandName));
+const runsInLab = isAvailableInLab(commandName);
 const relatedCommands = category ? category.commands.filter((name) => name !== commandName).slice(0, 8) : [];
 ---
 
@@ -95,6 +98,8 @@ const relatedCommands = category ? category.commands.filter((name) => name !== c
       </div>
     )
   }
+
+  {runsInLab && <LabCommandInvite locale={locale} commandName={commandName} />}
 
   {
     relatedCommands.length > 0 && (

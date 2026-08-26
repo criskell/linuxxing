@@ -2,6 +2,7 @@
 import type { Locale } from '../i18n/languages';
 import { t } from '../i18n/ui';
 import { STUDY_TOPICS, STUDY_CARDS } from '../lib/study/registry';
+import { labTracksForObjective } from '../lib/lab/objectives';
 
 interface Props {
   locale: Locale;
@@ -39,9 +40,21 @@ const cardsForTopic = (topicId: string) => STUDY_CARDS.filter((card) => card.top
   {
     STUDY_TOPICS.map((topic) => (
       <section id={topic.id} class="flex scroll-mt-24 flex-col gap-4">
-        <div class="flex items-baseline gap-3 border-b border-hairline pb-2">
-          <p class="eyebrow">LPIC-1 {topic.objectiveCode}</p>
-          <h2 class="text-lg font-semibold text-strong">{topic.title[locale]}</h2>
+        <div class="flex flex-wrap items-baseline justify-between gap-3 border-b border-hairline pb-2">
+          <div class="flex items-baseline gap-3">
+            <p class="eyebrow">LPIC-1 {topic.objectiveCode}</p>
+            <h2 class="text-lg font-semibold text-strong">{topic.title[locale]}</h2>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            {labTracksForObjective(topic.objectiveCode).map((track) => (
+              <a
+                href={`${import.meta.env.BASE_URL}/${locale}/lab/#${track.id}`}
+                class="chip chip-info interactive px-3 py-1"
+              >
+                {track.title[locale]}
+              </a>
+            ))}
+          </div>
         </div>
 
         <div class="flex flex-col gap-4">

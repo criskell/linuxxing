@@ -3,6 +3,7 @@ import type { Locale } from '../i18n/languages';
 import { t } from '../i18n/ui';
 import type { StudyCard, StudyTopic } from '../lib/study/types';
 import { STUDY_CARDS } from '../lib/study/registry';
+import LabTrackInvite from './LabTrackInvite.astro';
 
 interface Props {
   locale: Locale;
@@ -62,6 +63,8 @@ const relatedCards = STUDY_CARDS.filter((other) => other.topic === card.topic &&
       </div>
     )
   }
+
+  <LabTrackInvite locale={locale} objectiveCode={topic.objectiveCode} />
 
   <div>
     <a href={`${import.meta.env.BASE_URL}/${locale}/study/`} class="eyebrow interactive w-fit rounded-md">
