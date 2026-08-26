@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# lab virtual machine assets, fetched by scripts/fetch-lab-assets.mjs
+public/lab/
