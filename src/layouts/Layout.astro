@@ -8,9 +8,11 @@ interface Props {
   locale: Locale;
   title?: string;
   description?: string;
+  width?: 'default' | 'wide';
 }
 
-const { locale, title, description } = Astro.props;
+const { locale, title, description, width = 'default' } = Astro.props;
+const contentWidth = width === 'wide' ? 'max-w-6xl' : 'max-w-5xl';
 const pageTitle = title ?? t(locale, 'site.title');
 const pageDescription = description ?? t(locale, 'site.tagline');
 
@@ -65,6 +67,12 @@ const alternateUrls = locales.map((loc) => ({
               {t(locale, 'nav.commands')}
             </a>
             <a
+              href={`${import.meta.env.BASE_URL}/${locale}/lab/`}
+              class="text-sm font-medium text-muted transition-colors duration-[var(--duration-fast)] hover:text-strong"
+            >
+              {t(locale, 'nav.lab')}
+            </a>
+            <a
               href={`${import.meta.env.BASE_URL}/${locale}/study/`}
               class="text-sm font-medium text-muted transition-colors duration-[var(--duration-fast)] hover:text-strong"
             >
@@ -78,7 +86,7 @@ const alternateUrls = locales.map((loc) => ({
 
     <div class="h-16"></div>
 
-    <main class="mx-auto max-w-5xl px-4 pb-24 pt-10">
+    <main class:list={['mx-auto px-4 pb-24 pt-10', contentWidth]}>
       <slot />
     </main>
 
