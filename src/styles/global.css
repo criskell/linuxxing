@@ -27,13 +27,13 @@
   --n-14: oklch(0.145 0 0);
 
   --green-78: oklch(0.78 0.15 152);
-  --green-50: oklch(0.5 0.15 152);
+  --green-50: oklch(0.44 0.13 152);
   --amber-82: oklch(0.82 0.13 85);
-  --amber-52: oklch(0.52 0.13 70);
+  --amber-52: oklch(0.45 0.11 70);
   --red-70: oklch(0.7 0.19 25);
-  --red-53: oklch(0.53 0.2 25);
+  --red-53: oklch(0.49 0.19 25);
   --blue-75: oklch(0.75 0.11 240);
-  --blue-52: oklch(0.52 0.14 250);
+  --blue-52: oklch(0.47 0.15 250);
 
   --radius-xs: 0.125rem;
   --radius-sm: 0.1875rem;
@@ -50,11 +50,11 @@
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
 
-  --step-2xs: 0.6875rem;
-  --step-xs: 0.75rem;
-  --step-sm: 0.8125rem;
-  --step-base: 0.9375rem;
-  --step-md: 1rem;
+  --step-2xs: 0.75rem;
+  --step-xs: 0.8125rem;
+  --step-sm: 0.875rem;
+  --step-base: 1rem;
+  --step-md: 1.0625rem;
   --step-lg: clamp(1.0625rem, 0.99rem + 0.32vw, 1.25rem);
   --step-xl: clamp(1.25rem, 1.14rem + 0.55vw, 1.625rem);
   --step-2xl: clamp(1.5rem, 1.3rem + 1vw, 2.125rem);
@@ -88,10 +88,10 @@
   --hairline: var(--n-90);
   --hairline-strong: var(--n-84);
 
-  --text-strong: var(--n-22);
-  --text-default: var(--n-32);
-  --text-muted: var(--n-50);
-  --text-faint: var(--n-63);
+  --text-strong: var(--n-14);
+  --text-default: var(--n-26);
+  --text-muted: var(--n-38);
+  --text-faint: var(--n-48);
 
   --accent: var(--n-22);
   --accent-hover: var(--n-32);
@@ -208,9 +208,39 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--text-muted);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: var(--radius-xs);
+}
+
+button:not(:disabled),
+summary,
+[role='button'],
+label:has(input[type='checkbox']) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+button:not(:disabled):active,
+summary:active {
+  transform: translateY(1px);
+}
+
+button {
+  transition: transform var(--duration-instant) var(--ease-standard);
+}
+
+summary::-webkit-details-marker {
+  cursor: pointer;
+}
+
+input[type='checkbox'] {
+  accent-color: var(--accent);
+  cursor: pointer;
 }
 
 h1,
@@ -256,19 +286,12 @@ html {
       color var(--duration-fast) var(--ease-standard);
   }
 
-  .interactive:hover {
-    background-color: var(--surface-nested);
-    border-color: var(--hairline-strong);
-  }
-
-  .interactive:active {
-    background-color: var(--surface-raised);
-  }
 
   .eyebrow {
     font-family: var(--font-mono), ui-monospace, monospace;
-    font-size: var(--step-2xs);
-    letter-spacing: var(--tracking-caps);
+    font-size: var(--step-xs);
+    font-weight: 500;
+    letter-spacing: 0.08em;
     line-height: var(--leading-snug);
     text-transform: uppercase;
     color: var(--text-muted);
@@ -303,7 +326,8 @@ html {
     border-radius: var(--radius-pill);
     border: 1px solid transparent;
     font-family: var(--font-mono), ui-monospace, monospace;
-    font-size: var(--step-2xs);
+    font-size: var(--step-xs);
+    font-weight: 500;
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     white-space: nowrap;
@@ -354,6 +378,20 @@ html {
     border-bottom-color: var(--hairline);
     backdrop-filter: blur(16px) saturate(140%);
   }
+}
+
+.interactive:hover:not([aria-pressed='true']) {
+  background-color: var(--surface-nested);
+  border-color: var(--hairline-strong);
+}
+
+.interactive:active:not([aria-pressed='true']) {
+  background-color: var(--surface-raised);
+}
+
+.chip.interactive:hover:not([aria-pressed='true']) {
+  background-color: color-mix(in oklab, currentColor 14%, var(--surface-raised));
+  border-color: color-mix(in oklab, currentColor 45%, transparent);
 }
 
 @keyframes rise-in {
