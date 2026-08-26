@@ -2,7 +2,7 @@
 import type { Locale } from '../i18n/languages';
 import { t } from '../i18n/ui';
 import { LAB_TRACKS, LAB_EXERCISES } from '../lib/lab/registry';
-import { sandboxSummary } from '../lib/lab/sandbox';
+import { SANDBOX_ITEMS, sandboxIntro } from '../lib/lab/sandbox';
 
 interface Props {
   locale: Locale;
@@ -14,9 +14,9 @@ const exercisesForTrack = (trackId: string) => LAB_EXERCISES.filter((exercise) =
 ---
 
 <div data-lab data-locale={locale} class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:items-start">
-  <section class="surface order-1 flex min-w-0 flex-col gap-3 p-4 lg:sticky lg:top-20 lg:order-2">
+  <section class="surface order-1 flex min-w-0 flex-col gap-4 p-4 lg:sticky lg:top-20 lg:order-2">
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <p class="eyebrow" data-machine-status>{t(locale, 'lab.idleTerminal')}</p>
+      <p class="text-sm font-medium text-strong" data-machine-status>{t(locale, 'lab.idleTerminal')}</p>
       <div class="flex gap-2">
         <button type="button" data-boot class="chip chip-info interactive px-3 py-1.5">
           {t(locale, 'lab.boot')}
@@ -28,19 +28,34 @@ const exercisesForTrack = (trackId: string) => LAB_EXERCISES.filter((exercise) =
     </div>
 
     <div class="terminal-frame" data-terminal-frame>
-      <p class="p-4 text-xs text-faint" data-terminal-placeholder>{t(locale, 'lab.idleTerminal')}</p>
+      <p class="p-4 text-sm text-muted" data-terminal-placeholder>{t(locale, 'lab.idleTerminal')}</p>
       <div class="h-full w-full" data-terminal></div>
     </div>
 
-    <div class="flex flex-col gap-2 border-t border-hairline pt-3">
+    <div class="flex flex-col gap-3 border-t border-hairline pt-4">
       <div class="flex flex-wrap items-center justify-between gap-2">
-        <p class="eyebrow">{t(locale, 'lab.sandboxHeading')}</p>
+        <p class="text-sm font-medium text-strong">{t(locale, 'lab.sandboxHeading')}</p>
         <button type="button" data-prepare-sandbox class="chip chip-neutral interactive px-3 py-1.5">
           {t(locale, 'lab.prepareSandbox')}
         </button>
       </div>
-      <p class="text-xs leading-relaxed text-faint">{sandboxSummary[locale]}</p>
-      <p class="hidden text-xs leading-relaxed" data-sandbox-result></p>
+
+      <details class="text-sm">
+        <summary class="cursor-pointer text-muted">{t(locale, 'lab.sandboxWhatIsInside')}</summary>
+        <p class="mt-2 text-sm text-muted">{sandboxIntro[locale]}</p>
+        <ul class="mt-2 flex flex-col gap-1">
+          {
+            SANDBOX_ITEMS.map((item) => (
+              <li class="grid grid-cols-[9rem_minmax(0,1fr)] gap-2 text-sm">
+                <span class="data text-xs text-strong">{item.name}</span>
+                <span class="text-muted">{item.note[locale]}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </details>
+
+      <p class="hidden text-sm leading-relaxed" data-sandbox-result></p>
     </div>
   </section>
 
@@ -48,7 +63,7 @@ const exercisesForTrack = (trackId: string) => LAB_EXERCISES.filter((exercise) =
     <div class="flex flex-col gap-4">
       <div class="flex items-baseline justify-between gap-3">
         <h2 class="text-lg font-semibold text-strong">{t(locale, 'lab.exercisesHeading')}</h2>
-        <p class="text-xs text-muted" data-lab-progress>{t(locale, 'lab.progress')(0, LAB_EXERCISES.length)}</p>
+        <p class="text-sm text-muted" data-lab-progress>{t(locale, 'lab.progress')(0, LAB_EXERCISES.length)}</p>
       </div>
 
       <label class="flex w-fit items-center gap-2 text-sm text-muted">
@@ -64,8 +79,8 @@ const exercisesForTrack = (trackId: string) => LAB_EXERCISES.filter((exercise) =
               class="interactive flex flex-col gap-1 rounded-md border border-hairline bg-surface-raised px-3 py-2"
             >
               <span class="eyebrow">LPIC-1 {track.objectiveCode}</span>
-              <span class="text-xs text-default">{track.title[locale]}</span>
-              <span class="text-2xs text-faint" data-track-count={track.id} />
+              <span class="text-sm text-default">{track.title[locale]}</span>
+              <span class="text-xs text-faint" data-track-count={track.id} />
             </a>
           ))
         }
@@ -82,15 +97,29 @@ const exercisesForTrack = (trackId: string) => LAB_EXERCISES.filter((exercise) =
 
           {exercisesForTrack(track.id).map((exercise) => (
             <details class="surface" data-exercise={exercise.id}>
-              <summary class="flex cursor-pointer flex-wrap items-center justify-between gap-2 px-5 py-3">
+              <summary class="flex cursor-pointer flex-wrap items-center gap-3 px-5 py-4">
                 <span class="font-semibold text-strong">{exercise.title[locale]}</span>
                 <span class="chip chip-positive hidden" data-solved-badge>
                   {t(locale, 'lab.solved')}
                 </span>
               </summary>
 
-              <div class="flex flex-col gap-3 border-t border-hairline p-5">
-                <p class="text-sm leading-relaxed text-default">{exercise.task[locale]}</p>
+              <div class="flex flex-col gap-5 border-t border-hairline p-5">
+                <p class="leading-relaxed text-default">{exercise.task[locale]}</p>
+
+                <div class="flex flex-col gap-2">
+                  <p class="eyebrow">{t(locale, 'lab.criteriaHeading')}</p>
+                  <ul class="flex flex-col gap-1.5">
+                    {exercise.checks.map((check, index) => (
+                      <li class="flex items-baseline gap-2 text-sm text-muted" data-check-row={index}>
+                        <span class="data w-4 shrink-0 text-center text-faint" data-check-mark>
+                          ·
+                        </span>
+                        <span>{check.label[locale]}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
                 <div class="flex flex-wrap gap-2">
                   <button type="button" data-prepare class="chip chip-neutral interactive px-3 py-1.5">
@@ -101,24 +130,26 @@ const exercisesForTrack = (trackId: string) => LAB_EXERCISES.filter((exercise) =
                   </button>
                 </div>
 
-                <p class="hidden text-xs leading-relaxed" data-result />
+                <p class="hidden text-sm leading-relaxed" data-result />
 
-                <details class="text-sm">
-                  <summary class="eyebrow cursor-pointer">{t(locale, 'lab.hint')}</summary>
-                  <p class="mt-2 leading-relaxed text-muted">{exercise.hint[locale]}</p>
-                </details>
+                <div class="flex flex-col gap-3 border-t border-hairline pt-4">
+                  <details class="text-sm">
+                    <summary class="eyebrow cursor-pointer">{t(locale, 'lab.hint')}</summary>
+                    <p class="mt-2 text-sm leading-relaxed text-muted">{exercise.hint[locale]}</p>
+                  </details>
 
-                <details class="text-sm">
-                  <summary class="eyebrow cursor-pointer">{t(locale, 'lab.solution')}</summary>
-                  <div class="mt-2 flex flex-col items-start gap-2">
-                    <code class="surface-nested data block w-full overflow-x-auto p-3 text-xs text-default">
-                      {exercise.solutionCommand}
-                    </code>
-                    <button type="button" data-type-solution class="chip chip-neutral interactive px-3 py-1.5">
-                      {t(locale, 'lab.typeSolution')}
-                    </button>
-                  </div>
-                </details>
+                  <details class="text-sm">
+                    <summary class="eyebrow cursor-pointer">{t(locale, 'lab.solution')}</summary>
+                    <div class="mt-2 flex flex-col items-start gap-2">
+                      <code class="surface-nested data block w-full overflow-x-auto p-3 text-xs text-default">
+                        {exercise.solutionCommand}
+                      </code>
+                      <button type="button" data-type-solution class="chip chip-neutral interactive px-3 py-1.5">
+                        {t(locale, 'lab.typeSolution')}
+                      </button>
+                    </div>
+                  </details>
+                </div>
               </div>
             </details>
           ))}
@@ -203,9 +234,9 @@ const exercisesForTrack = (trackId: string) => LAB_EXERCISES.filter((exercise) =
   });
 
   const tones = {
-    positive: 'text-xs leading-relaxed text-positive',
-    negative: 'text-xs leading-relaxed text-negative',
-    muted: 'text-xs leading-relaxed text-muted',
+    positive: 'text-sm leading-relaxed text-positive',
+    negative: 'text-sm leading-relaxed text-negative',
+    muted: 'text-sm leading-relaxed text-muted',
   };
 
   const showMessage = (target: HTMLElement, message: string, tone: keyof typeof tones) => {
@@ -215,6 +246,26 @@ const exercisesForTrack = (trackId: string) => LAB_EXERCISES.filter((exercise) =
 
   const showResult = (block: HTMLElement, message: string, tone: keyof typeof tones) =>
     showMessage(block.querySelector<HTMLElement>('[data-result]')!, message, tone);
+
+  const checkMarks = {
+    pending: { mark: '·', markClass: 'data w-4 shrink-0 text-center text-faint', rowClass: 'text-muted' },
+    passed: { mark: '✓', markClass: 'data w-4 shrink-0 text-center text-positive', rowClass: 'text-default' },
+    failed: { mark: '✗', markClass: 'data w-4 shrink-0 text-center text-negative', rowClass: 'text-negative' },
+  };
+
+  const markCheck = (block: HTMLElement, index: number, state: keyof typeof checkMarks) => {
+    const row = block.querySelector<HTMLElement>(`[data-check-row="${index}"]`);
+    if (!row) return;
+    const { mark, markClass, rowClass } = checkMarks[state];
+    row.className = `flex items-baseline gap-2 text-sm ${rowClass}`;
+    const marker = row.querySelector<HTMLElement>('[data-check-mark]')!;
+    marker.textContent = mark;
+    marker.className = markClass;
+  };
+
+  const resetChecks = (block: HTMLElement, total: number) => {
+    for (let index = 0; index < total; index += 1) markCheck(block, index, 'pending');
+  };
 
   const renderProgress = () => {
     const solved = LAB_EXERCISES.filter((exercise) => progress[exercise.id]).length;
@@ -244,6 +295,17 @@ const exercisesForTrack = (trackId: string) => LAB_EXERCISES.filter((exercise) =
     }
     showMessage(sandboxResult, t(locale, 'lab.sandboxReady'), 'muted');
     return true;
+  };
+
+  const runChecks = async (block: HTMLElement, exercise: (typeof LAB_EXERCISES)[number]) => {
+    let passed = 0;
+    for (const [index, check] of exercise.checks.entries()) {
+      const exitCode = await machine.run(check.command);
+      if (exitCode === null) return null;
+      markCheck(block, index, exitCode === 0 ? 'passed' : 'failed');
+      if (exitCode === 0) passed += 1;
+    }
+    return passed;
   };
 
   bootButton.addEventListener('click', async () => {
@@ -293,6 +355,7 @@ const exercisesForTrack = (trackId: string) => LAB_EXERCISES.filter((exercise) =
         showResult(block, t(locale, 'lab.needsBoot'), 'muted');
         return;
       }
+      resetChecks(block, exercise.checks.length);
       showResult(block, t(locale, 'lab.prepared'), 'muted');
       terminalFrame.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       machine.focus();
@@ -314,13 +377,14 @@ const exercisesForTrack = (trackId: string) => LAB_EXERCISES.filter((exercise) =
       return;
     }
 
-    const exitCode = await machine.run(exercise.checkCommand);
-    if (exitCode === null) {
+    showResult(block, t(locale, 'lab.checking'), 'muted');
+    const passed = await runChecks(block, exercise);
+    if (passed === null) {
       showResult(block, t(locale, 'lab.resultBusy'), 'muted');
       return;
     }
 
-    if (exitCode === 0) {
+    if (passed === exercise.checks.length) {
       progress = { ...progress, [exercise.id]: true };
       saveLabProgress(progress);
       renderProgress();
@@ -328,7 +392,7 @@ const exercisesForTrack = (trackId: string) => LAB_EXERCISES.filter((exercise) =
       return;
     }
 
-    showResult(block, t(locale, 'lab.resultFailed'), 'negative');
+    showResult(block, t(locale, 'lab.resultPartial')(passed, exercise.checks.length), 'negative');
   });
 
   let resizeTimer = 0;
