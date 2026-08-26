@@ -93,6 +93,138 @@ export const usersAndPermissionsExercises: LabExercise[] = [
     solutionCommand: 'chmod u-w,g+x /root/lab/deploy.sh',
   },
   {
+    id: 'set-the-umask',
+    track: 'users-and-permissions',
+    title: { en: 'Decide the mode of new files', pt: 'Decida o modo dos arquivos novos' },
+    task: {
+      en: 'Change the mask of this shell so that files created from now on come out readable and writable by the owner, readable by the group and closed to everyone else. Then create /root/lab/fresh.txt to prove the mask is doing its job.',
+      pt: 'Mude a máscara deste shell para que os arquivos criados de agora em diante saiam legíveis e graváveis pelo dono, legíveis pelo grupo e fechados para os demais. Depois crie /root/lab/fresh.txt para provar que a máscara está funcionando.',
+    },
+    hint: {
+      en: 'umask holds the bits the kernel takes away from the default 666 of a new file. Subtracting the mode you want from 666 gives the three digits to pass, and umask without arguments prints what is set.',
+      pt: 'O umask guarda os bits que o kernel tira do padrão 666 de um arquivo novo. Subtrair o modo desejado de 666 dá os três dígitos a passar, e o umask sem argumentos imprime o que está valendo.',
+    },
+    setupCommand: 'umask 022; mkdir -p /root/lab; rm -f /root/lab/fresh.txt',
+    checks: [
+      {
+        label: { en: 'the mask of this shell is 027', pt: 'a máscara deste shell é 027' },
+        command: '[ "$(umask)" = "0027" ]',
+      },
+      {
+        label: { en: 'fresh.txt came out as rw-r-----', pt: 'fresh.txt saiu como rw-r-----' },
+        command: '[ "$(ls -ld /root/lab/fresh.txt | cut -c2-10)" = "rw-r-----" ]',
+      },
+    ],
+    solutionCommand: 'umask 027 && touch /root/lab/fresh.txt',
+  },
+  {
+    id: 'protect-a-drop-directory',
+    track: 'users-and-permissions',
+    title: { en: 'Protect a drop directory', pt: 'Proteja um diretório de entrega' },
+    task: {
+      en: 'Everyone on the machine has to be able to write into /root/lab/dropbox, and still nobody except the owner of a file may delete it. Set the directory up that way.',
+      pt: 'Todo mundo na máquina precisa poder escrever em /root/lab/dropbox, e ainda assim ninguém além do dono de um arquivo pode apagar ele. Configure o diretório desse jeito.',
+    },
+    hint: {
+      en: 'Full access for all three classes is 777, which alone would let anyone delete anyone else files. The sticky bit, the leading 1 in a four digit mode, is what restricts deletion to the owner of each file, and ls shows it as a t at the end.',
+      pt: 'Acesso completo para as três classes é 777, o que sozinho deixaria qualquer um apagar arquivo dos outros. O sticky bit, o 1 na frente de um modo de quatro dígitos, é o que restringe a remoção ao dono de cada arquivo, e o ls mostra ele como um t no final.',
+    },
+    setupCommand: 'rm -rf /root/lab/dropbox; mkdir -p /root/lab/dropbox; chmod 755 /root/lab/dropbox',
+    checks: [
+      {
+        label: { en: 'the three classes can write', pt: 'as três classes podem escrever' },
+        command: '[ "$(ls -ld /root/lab/dropbox | cut -c2-9)" = "rwxrwxrw" ]',
+      },
+      {
+        label: { en: 'the sticky bit is on', pt: 'o sticky bit está ligado' },
+        command: '[ "$(ls -ld /root/lab/dropbox | cut -c10)" = "t" ]',
+      },
+    ],
+    solutionCommand: 'chmod 1777 /root/lab/dropbox',
+  },
+  {
+    id: 'write-a-file-as-another-user',
+    track: 'users-and-permissions',
+    title: { en: 'Write a file as another user', pt: 'Escreva um arquivo como outro usuário' },
+    task: {
+      en: 'The user bruno already exists and /root/lab/incoming is open to everyone. Create /root/lab/incoming/hello.txt so that bruno, and not root, owns the file, without logging out of this shell.',
+      pt: 'O usuário bruno já existe e /root/lab/incoming está aberto para todos. Crie /root/lab/incoming/hello.txt de modo que o dono do arquivo seja bruno, e não o root, sem sair deste shell.',
+    },
+    hint: {
+      en: 'su runs a command as another account when you pass -c, and -s picks the shell to use, which matters because bruno has no login shell of his own. The file inherits the identity of whoever ran the command that created it.',
+      pt: 'O su roda um comando como outra conta quando você passa o -c, e o -s escolhe o shell a usar, o que importa porque bruno não tem um shell de login próprio. O arquivo herda a identidade de quem rodou o comando que criou ele.',
+    },
+    setupCommand:
+      'adduser -D -H bruno 2>/dev/null; rm -rf /root/lab/incoming; mkdir -p /root/lab/incoming; chmod 777 /root/lab/incoming; chmod 755 /root /root/lab; true',
+    checks: [
+      {
+        label: { en: 'hello.txt exists', pt: 'hello.txt existe' },
+        command: '[ -f /root/lab/incoming/hello.txt ]',
+      },
+      {
+        label: { en: 'bruno owns it', pt: 'o dono dele é bruno' },
+        command: '[ "$(ls -ld /root/lab/incoming/hello.txt | awk \'{print $3}\')" = "bruno" ]',
+      },
+    ],
+    solutionCommand: 'su -s /bin/sh -c "touch /root/lab/incoming/hello.txt" bruno',
+  },
+  {
+    id: 'hand-over-a-whole-tree',
+    track: 'users-and-permissions',
+    title: { en: 'Hand over a whole tree', pt: 'Entregue uma árvore inteira' },
+    task: {
+      en: 'The directory /root/lab/app and everything inside it, at every level, has to belong to ana and to the group deploy. Change all of it with one command.',
+      pt: 'O diretório /root/lab/app e tudo que está dentro dele, em todos os níveis, precisa pertencer a ana e ao grupo deploy. Mude tudo com um comando só.',
+    },
+    hint: {
+      en: 'chown walks into subdirectories when it gets -R, and the owner:group form sets both at once. Without -R it would touch only the directory itself and leave the files inside as they were.',
+      pt: 'O chown entra nos subdiretórios quando recebe o -R, e a forma dono:grupo define os dois de uma vez. Sem o -R ele mexeria só no diretório em si e deixaria os arquivos de dentro como estavam.',
+    },
+    setupCommand:
+      'addgroup deploy 2>/dev/null; adduser -D -H -G deploy ana 2>/dev/null; rm -rf /root/lab/app; mkdir -p /root/lab/app/bin /root/lab/app/etc; touch /root/lab/app/bin/run /root/lab/app/etc/app.conf /root/lab/app/README; true',
+    checks: [
+      {
+        label: { en: 'the top directory belongs to ana and deploy', pt: 'o diretório de cima pertence a ana e deploy' },
+        command: '[ "$(ls -ld /root/lab/app | awk \'{print $3 $4}\')" = "anadeploy" ]',
+      },
+      {
+        label: { en: 'nothing inside is still owned by root', pt: 'nada lá dentro ainda é do root' },
+        command: '[ -z "$(find /root/lab/app -user root)" ]',
+      },
+      {
+        label: { en: 'the deepest files carry the group too', pt: 'os arquivos mais fundos carregam o grupo também' },
+        command: '[ -z "$(find /root/lab/app ! -group deploy)" ]',
+      },
+    ],
+    solutionCommand: 'chown -R ana:deploy /root/lab/app',
+  },
+  {
+    id: 'list-what-a-user-owns',
+    track: 'users-and-permissions',
+    title: { en: 'List what a user owns', pt: 'Liste o que um usuário tem' },
+    task: {
+      en: 'Under /root/lab/mixed some files belong to ana and the rest to root. Write the path of every file owned by ana into /root/lab/ana-files.txt, sorted, with the ones owned by root left out.',
+      pt: 'Dentro de /root/lab/mixed alguns arquivos são da ana e o resto do root. Escreva o caminho de cada arquivo que pertence a ana em /root/lab/ana-files.txt, ordenado, deixando de fora os que são do root.',
+    },
+    hint: {
+      en: 'find compares the owner of each entry with -user, taking either the name or the numeric identifier. Combining it with -type f keeps directories out of the result.',
+      pt: 'O find compara o dono de cada entrada com o -user, aceitando tanto o nome quanto o identificador numérico. Combinar com -type f mantém os diretórios fora do resultado.',
+    },
+    setupCommand:
+      'addgroup deploy 2>/dev/null; adduser -D -H -G deploy ana 2>/dev/null; rm -rf /root/lab/mixed /root/lab/ana-files.txt; mkdir -p /root/lab/mixed/sub; touch /root/lab/mixed/one.txt /root/lab/mixed/two.txt /root/lab/mixed/sub/three.txt /root/lab/mixed/sub/four.txt; chown ana /root/lab/mixed/one.txt /root/lab/mixed/sub/three.txt; true',
+    checks: [
+      {
+        label: { en: 'ana-files.txt exists', pt: 'ana-files.txt existe' },
+        command: '[ -f /root/lab/ana-files.txt ]',
+      },
+      {
+        label: { en: 'it lists exactly the two files ana owns', pt: 'ele lista exatamente os dois arquivos da ana' },
+        command: 'find /root/lab/mixed -type f -user ana | sort | diff - /root/lab/ana-files.txt',
+      },
+    ],
+    solutionCommand: 'find /root/lab/mixed -type f -user ana | sort > /root/lab/ana-files.txt',
+  },
+  {
     id: 'set-up-a-shared-directory',
     track: 'users-and-permissions',
     title: { en: 'Set up a shared directory', pt: 'Prepare um diretório compartilhado' },

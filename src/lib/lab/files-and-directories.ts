@@ -133,6 +133,127 @@ export const filesAndDirectoriesExercises: LabExercise[] = [
     solutionCommand: 'cd /root/lab && ln notes.txt report-hard.txt && ln -s notes.txt report-soft.txt && cd /root',
   },
   {
+    id: 'find-the-heavy-files',
+    track: 'files-and-directories',
+    title: { en: 'Find the heavy files', pt: 'Ache os arquivos pesados' },
+    task: {
+      en: 'Under /root/lab/store there are files of very different sizes. Write the path of every file larger than 100 kilobytes into /root/lab/big-files.txt, in alphabetical order, leaving the small ones out.',
+      pt: 'Dentro de /root/lab/store existem arquivos de tamanhos bem diferentes. Escreva o caminho de cada arquivo maior que 100 kilobytes em /root/lab/big-files.txt, em ordem alfabética, deixando os pequenos de fora.',
+    },
+    hint: {
+      en: 'find takes a -size test, and the suffix picks the unit, k for kilobytes. A plus sign in front of the number means larger than that, and sort puts the paths in order before they reach the file.',
+      pt: 'O find aceita um teste -size, e o sufixo escolhe a unidade, k para kilobytes. Um sinal de mais na frente do número significa maior que aquilo, e o sort coloca os caminhos em ordem antes de chegarem ao arquivo.',
+    },
+    setupCommand:
+      'rm -rf /root/lab/store /root/lab/big-files.txt; mkdir -p /root/lab/store/archive; dd if=/dev/zero of=/root/lab/store/dump.bin bs=1k count=300 2>/dev/null; dd if=/dev/zero of=/root/lab/store/archive/backup.bin bs=1k count=250 2>/dev/null; printf "tiny\n" > /root/lab/store/notes.txt; printf "small\n" > /root/lab/store/archive/readme.txt',
+    checks: [
+      {
+        label: { en: 'big-files.txt exists', pt: 'big-files.txt existe' },
+        command: '[ -f /root/lab/big-files.txt ]',
+      },
+      {
+        label: {
+          en: 'it lists the two large files, sorted',
+          pt: 'ele lista os dois arquivos grandes, ordenados',
+        },
+        command: 'find /root/lab/store -size +100k -type f | sort | diff - /root/lab/big-files.txt',
+      },
+    ],
+    solutionCommand: 'find /root/lab/store -size +100k -type f | sort > /root/lab/big-files.txt',
+  },
+  {
+    id: 'copy-a-tree-and-prune-it',
+    track: 'files-and-directories',
+    title: { en: 'Copy a tree, then prune the copy', pt: 'Copie uma árvore e depois limpe a cópia' },
+    task: {
+      en: 'Copy the whole /root/lab/site directory into /root/lab/site-backup, keeping the subdirectories, and then delete every file ending in .tmp inside the copy. The original keeps its .tmp files untouched.',
+      pt: 'Copie o diretório /root/lab/site inteiro para /root/lab/site-backup, mantendo os subdiretórios, e depois apague todo arquivo terminado em .tmp dentro da cópia. O original mantém os arquivos .tmp intactos.',
+    },
+    hint: {
+      en: 'cp needs -r to walk into subdirectories. After the copy, find lists what has to go and -exec runs rm on each match, with the braces standing for the file it found and a quoted semicolon closing the command.',
+      pt: 'O cp precisa do -r para entrar nos subdiretórios. Depois da cópia, o find lista o que precisa sair e o -exec roda o rm em cada resultado, com as chaves representando o arquivo encontrado e um ponto e vírgula entre aspas fechando o comando.',
+    },
+    setupCommand:
+      'rm -rf /root/lab/site /root/lab/site-backup; mkdir -p /root/lab/site/css /root/lab/site/img; touch /root/lab/site/index.html /root/lab/site/css/main.css /root/lab/site/img/logo.png /root/lab/site/draft.tmp /root/lab/site/css/cache.tmp',
+    checks: [
+      {
+        label: { en: 'the copy carries the subdirectories', pt: 'a cópia carrega os subdiretórios' },
+        command: '[ -f /root/lab/site-backup/css/main.css ] && [ -f /root/lab/site-backup/img/logo.png ]',
+      },
+      {
+        label: { en: 'no .tmp file is left in the copy', pt: 'nenhum arquivo .tmp sobrou na cópia' },
+        command: '[ -z "$(find /root/lab/site-backup -name "*.tmp")" ]',
+      },
+      {
+        label: { en: 'the original still has both .tmp files', pt: 'o original ainda tem os dois arquivos .tmp' },
+        command: '[ "$(find /root/lab/site -name "*.tmp" | wc -l)" = "2" ]',
+      },
+    ],
+    solutionCommand:
+      'cp -r /root/lab/site /root/lab/site-backup && find /root/lab/site-backup -name "*.tmp" -exec rm {} ";"',
+  },
+  {
+    id: 'rename-a-batch-of-files',
+    track: 'files-and-directories',
+    title: { en: 'Rename a batch of files', pt: 'Renomeie um lote de arquivos' },
+    task: {
+      en: 'The three files in /root/lab/notes end in .txt and should end in .md instead. Rename all of them in one go, keeping the part of the name before the dot and the content of each file.',
+      pt: 'Os três arquivos em /root/lab/notes terminam em .txt e deveriam terminar em .md. Renomeie todos de uma vez, mantendo a parte do nome antes do ponto e o conteúdo de cada arquivo.',
+    },
+    hint: {
+      en: 'A for loop walks over the result of a glob, and inside it basename strips the old extension away. Building the new name with that stripped part plus .md is what mv receives as destination.',
+      pt: 'Um for percorre o resultado de um glob, e dentro dele o basename tira a extensão antiga. Montar o nome novo com essa parte sem extensão mais .md é o que o mv recebe como destino.',
+    },
+    setupCommand:
+      'rm -rf /root/lab/notes; mkdir -p /root/lab/notes; printf "alpha\n" > /root/lab/notes/one.txt; printf "beta\n" > /root/lab/notes/two.txt; printf "gamma\n" > /root/lab/notes/three.txt',
+    checks: [
+      {
+        label: { en: 'no .txt file is left', pt: 'nenhum arquivo .txt sobrou' },
+        command: '[ -z "$(find /root/lab/notes -name "*.txt")" ]',
+      },
+      {
+        label: { en: 'the three .md names are there', pt: 'os três nomes .md estão lá' },
+        command: '[ -f /root/lab/notes/one.md ] && [ -f /root/lab/notes/two.md ] && [ -f /root/lab/notes/three.md ]',
+      },
+      {
+        label: { en: 'the content survived the rename', pt: 'o conteúdo sobreviveu à renomeação' },
+        command: 'grep -qx alpha /root/lab/notes/one.md && grep -qx gamma /root/lab/notes/three.md',
+      },
+    ],
+    solutionCommand:
+      'cd /root/lab/notes && for file in *.txt; do mv "$file" "$(basename "$file" .txt).md"; done && cd /root',
+  },
+  {
+    id: 'measure-the-directories',
+    track: 'files-and-directories',
+    title: { en: 'Measure the directories', pt: 'Meça os diretórios' },
+    task: {
+      en: 'Write into /root/lab/usage.txt the size in kilobytes of each subdirectory directly under /root/lab/store, biggest first, in the two column format du prints. Only the three subdirectories show up, not the files and not /root/lab/store itself.',
+      pt: 'Escreva em /root/lab/usage.txt o tamanho em kilobytes de cada subdiretório logo abaixo de /root/lab/store, do maior para o menor, no formato de duas colunas que o du imprime. Só os três subdiretórios aparecem, não os arquivos nem o próprio /root/lab/store.',
+    },
+    hint: {
+      en: 'du -s prints one total per argument, so a glob of the subdirectories gives one line each. sort -rn reads the number in the first column and puts the biggest at the top.',
+      pt: 'O du -s imprime um total por argumento, então um glob dos subdiretórios dá uma linha para cada. O sort -rn lê o número da primeira coluna e coloca o maior no topo.',
+    },
+    setupCommand:
+      'rm -rf /root/lab/store /root/lab/usage.txt; mkdir -p /root/lab/store/logs /root/lab/store/cache /root/lab/store/tmp; dd if=/dev/zero of=/root/lab/store/logs/a.bin bs=1k count=400 2>/dev/null; dd if=/dev/zero of=/root/lab/store/cache/b.bin bs=1k count=200 2>/dev/null; dd if=/dev/zero of=/root/lab/store/tmp/c.bin bs=1k count=40 2>/dev/null',
+    checks: [
+      {
+        label: { en: 'the file has exactly three lines', pt: 'o arquivo tem exatamente três linhas' },
+        command: '[ "$(wc -l < /root/lab/usage.txt)" = "3" ]',
+      },
+      {
+        label: { en: 'logs comes first, as the biggest one', pt: 'logs vem primeiro, como o maior' },
+        command: 'head -1 /root/lab/usage.txt | grep -q "logs$"',
+      },
+      {
+        label: { en: 'tmp comes last, as the smallest one', pt: 'tmp vem por último, como o menor' },
+        command: 'tail -1 /root/lab/usage.txt | grep -q "tmp$"',
+      },
+    ],
+    solutionCommand: 'du -s /root/lab/store/* | sort -rn > /root/lab/usage.txt',
+  },
+  {
     id: 'pack-the-project',
     track: 'files-and-directories',
     title: { en: 'Pack the project into an archive', pt: 'Empacote o projeto em um arquivo' },
