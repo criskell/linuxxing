@@ -16,7 +16,7 @@ const exercisesForTrack = (trackId: string) => LAB_EXERCISES.filter((exercise) =
 <div data-lab data-locale={locale} class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:items-start">
   <section class="surface order-1 flex min-w-0 flex-col gap-4 p-4 lg:sticky lg:top-20 lg:order-2">
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <p class="text-sm font-medium text-strong" data-machine-status>{t(locale, 'lab.idleTerminal')}</p>
+      <p class="text-sm font-medium text-strong" data-machine-status>{t(locale, 'lab.idle')}</p>
       <div class="flex gap-2">
         <button type="button" data-boot class="chip chip-info interactive px-3 py-1.5">
           {t(locale, 'lab.boot')}

@@ -126,6 +126,7 @@ export const ui = {
     'lab.title': 'Linux lab',
     'lab.tagline':
       'A real Linux kernel boots inside this page and hands you a root shell. Work through the exercises and the lab checks your answer against the running system.',
+    'lab.idle': 'Machine off',
     'lab.boot': 'Boot the machine',
     'lab.downloading': (percent: number) => `Downloading the kernel image, ${percent}%`,
     'lab.booting': 'Booting the machine',
@@ -292,6 +293,7 @@ export const ui = {
     'lab.title': 'Laboratório Linux',
     'lab.tagline':
       'Um kernel Linux de verdade sobe dentro desta página e entrega um shell de root para você. Resolva os exercícios e o laboratório confere a sua resposta contra o sistema em execução.',
+    'lab.idle': 'Máquina desligada',
     'lab.boot': 'Ligar a máquina',
     'lab.downloading': (percent: number) => `Baixando a imagem do kernel, ${percent}%`,
     'lab.booting': 'Ligando a máquina',
