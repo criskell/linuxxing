@@ -126,8 +126,6 @@ export const ui = {
     'lab.title': 'Linux lab',
     'lab.tagline':
       'A real Linux kernel boots inside this page and hands you a root shell. Work through the exercises and the lab checks your answer against the running system.',
-    'lab.about':
-      'The shell runs BusyBox 1.31 on Linux 5.6, emulated by v86 compiled to WebAssembly. Everything happens in your browser, nothing you type leaves the page, and a restart wipes the machine clean.',
     'lab.boot': 'Boot the machine',
     'lab.downloading': (percent: number) => `Downloading the kernel image, ${percent}%`,
     'lab.booting': 'Booting the machine',
@@ -149,6 +147,18 @@ export const ui = {
     'lab.resultOffline': 'Boot the machine before checking your work.',
     'lab.prepared': 'The files for this exercise are in place. The shell is yours.',
     'lab.needsBoot': 'Boot the machine to start this exercise.',
+    'lab.filterUnsolved': 'Show only what is left',
+    'lab.trackProgress': (solved: number, total: number) => `${solved} of ${total} solved`,
+    'lab.sandboxHeading': 'Sandbox',
+    'lab.prepareSandbox': 'Prepare the sandbox',
+    'lab.sandboxReady': 'The sandbox is ready and the shell now sits in /root/sandbox.',
+    'lab.practiceHeading': 'Practice in the lab',
+    'lab.openWithCommand': (command: string) => `Open the lab with ${command}`,
+    'lab.openLab': 'Open the lab',
+    'lab.practiceTracks':
+      'The lab prepares each exercise on its own before you start, so the files, users and processes it talks about are already there.',
+    'lab.commandsIndexInvite':
+      'Every command marked as available also runs in the lab, on a machine that boots inside your browser.',
     'examples.label': 'Try one:',
   },
   pt: {
@@ -278,8 +288,6 @@ export const ui = {
     'lab.title': 'Laboratório Linux',
     'lab.tagline':
       'Um kernel Linux de verdade sobe dentro desta página e entrega um shell de root para você. Resolva os exercícios e o laboratório confere a sua resposta contra o sistema em execução.',
-    'lab.about':
-      'O shell roda BusyBox 1.31 sobre Linux 5.6, emulado pelo v86 compilado para WebAssembly. Tudo acontece no seu navegador, nada do que você digita sai da página, e reiniciar deixa a máquina zerada.',
     'lab.boot': 'Ligar a máquina',
     'lab.downloading': (percent: number) => `Baixando a imagem do kernel, ${percent}%`,
     'lab.booting': 'Ligando a máquina',
@@ -302,6 +310,18 @@ export const ui = {
     'lab.resultOffline': 'Ligue a máquina antes de verificar o seu trabalho.',
     'lab.prepared': 'Os arquivos deste exercício estão no lugar. O shell é seu.',
     'lab.needsBoot': 'Ligue a máquina para começar este exercício.',
+    'lab.filterUnsolved': 'Mostrar só o que falta',
+    'lab.trackProgress': (solved: number, total: number) => `${solved} de ${total} resolvidos`,
+    'lab.sandboxHeading': 'Sandbox',
+    'lab.prepareSandbox': 'Preparar o sandbox',
+    'lab.sandboxReady': 'O sandbox está pronto e o shell agora fica em /root/sandbox.',
+    'lab.practiceHeading': 'Pratique no laboratório',
+    'lab.openWithCommand': (command: string) => `Abrir o laboratório com ${command}`,
+    'lab.openLab': 'Abrir o laboratório',
+    'lab.practiceTracks':
+      'O laboratório prepara cada exercício sozinho antes de você começar, então os arquivos, usuários e processos que ele cita já estão lá.',
+    'lab.commandsIndexInvite':
+      'Todo comando marcado como disponível também roda no laboratório, em uma máquina que sobe dentro do seu navegador.',
     'examples.label': 'Tente um:',
   },
 } as const;
