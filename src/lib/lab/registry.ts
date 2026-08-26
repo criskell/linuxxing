@@ -4,6 +4,8 @@ import { textProcessingTrack, textProcessingExercises } from './text-processing'
 import { processesTrack, processesExercises } from './processes';
 import { usersAndPermissionsTrack, usersAndPermissionsExercises } from './users-and-permissions';
 import { shellAndAutomationTrack, shellAndAutomationExercises } from './shell-and-automation';
+import { systemAndKernelTrack, systemAndKernelExercises } from './system-and-kernel';
+import { networkingTrack, networkingExercises } from './networking';
 
 export const LAB_TRACKS: LabTrack[] = [
   filesAndDirectoriesTrack,
@@ -11,6 +13,8 @@ export const LAB_TRACKS: LabTrack[] = [
   processesTrack,
   usersAndPermissionsTrack,
   shellAndAutomationTrack,
+  systemAndKernelTrack,
+  networkingTrack,
 ];
 
 export const LAB_EXERCISES: LabExercise[] = [
@@ -19,4 +23,6 @@ export const LAB_EXERCISES: LabExercise[] = [
   ...processesExercises,
   ...usersAndPermissionsExercises,
   ...shellAndAutomationExercises,
+  ...systemAndKernelExercises,
+  ...networkingExercises,
 ];
