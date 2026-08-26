@@ -6,6 +6,11 @@ export interface LabTrack {
   title: LocalizedText;
 }
 
+export interface LabCheck {
+  label: LocalizedText;
+  command: string;
+}
+
 export interface LabExercise {
   id: string;
   track: string;
@@ -13,6 +18,6 @@ export interface LabExercise {
   task: LocalizedText;
   hint: LocalizedText;
   setupCommand: string;
-  checkCommand: string;
+  checks: LabCheck[];
   solutionCommand: string;
 }
