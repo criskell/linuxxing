@@ -1,0 +1,18 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import LinuxLab from '../../../components/LinuxLab.astro';
+import { t } from '../../../i18n/ui';
+
+const locale = 'pt' as const;
+---
+
+<Layout locale={locale} title={t(locale, 'lab.title')} description={t(locale, 'lab.tagline')} width="wide">
+  <div class="motion-rise flex flex-col gap-3">
+    <p class="display text-2xl md:text-3xl">{t(locale, 'lab.title')}</p>
+    <p class="max-w-[var(--measure)] text-base text-muted">{t(locale, 'lab.tagline')}</p>
+  </div>
+
+  <div class="motion-rise stagger-1 mt-10">
+    <LinuxLab locale={locale} />
+  </div>
+</Layout>
