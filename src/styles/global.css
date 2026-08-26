@@ -286,7 +286,6 @@ html {
       color var(--duration-fast) var(--ease-standard);
   }
 
-
   .eyebrow {
     font-family: var(--font-mono), ui-monospace, monospace;
     font-size: var(--step-xs);
