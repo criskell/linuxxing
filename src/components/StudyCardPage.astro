@@ -3,6 +3,7 @@ import type { Locale } from '../i18n/languages';
 import { t } from '../i18n/ui';
 import type { StudyCard, StudyTopic } from '../lib/study/types';
 import { STUDY_CARDS } from '../lib/study/registry';
+import { COMMANDS } from '../lib/commands/registry';
 import LabTrackInvite from './LabTrackInvite.astro';
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 const { locale, card, topic } = Astro.props;
 
 const relatedCards = STUDY_CARDS.filter((other) => other.topic === card.topic && other.id !== card.id).slice(0, 6);
+const documentedCommands = card.commands.filter((name) => name in COMMANDS);
 ---
 
 <div class="flex flex-col gap-8" data-card-id={card.id}>
@@ -22,7 +24,43 @@ const relatedCards = STUDY_CARDS.filter((other) => other.topic === card.topic &&
       LPIC-1 {topic.objectiveCode} · {topic.title[locale]}
     </a>
     <h1 class="display text-2xl md:text-3xl">{card.front[locale]}</h1>
-    <p class="text-base leading-relaxed text-default">{card.back[locale]}</p>
+    <p class="max-w-[var(--measure)] text-base leading-relaxed text-default">{card.back[locale]}</p>
+  </div>
+
+  <div class="flex flex-col gap-6">
+    <p class="max-w-[var(--measure)] text-base leading-relaxed text-default">{card.details[locale]}</p>
+
+    <div class="flex flex-col gap-3">
+      <h2 class="eyebrow">{t(locale, 'study.keyPointsHeading')}</h2>
+      <ul class="flex flex-col gap-3">
+        {
+          card.keyPoints.map((point) => (
+            <li class="flex gap-3 text-base leading-relaxed text-default">
+              <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-hairline-strong" />
+              <span class="max-w-[var(--measure)]">{point[locale]}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    {
+      documentedCommands.length > 0 && (
+        <div class="flex flex-col gap-3">
+          <h2 class="eyebrow">{t(locale, 'study.commandsHeading')}</h2>
+          <div class="flex flex-wrap gap-2">
+            {documentedCommands.map((name) => (
+              <a
+                href={`${import.meta.env.BASE_URL}/${locale}/commands/${name}/`}
+                class="example-chip interactive rounded-md border border-hairline bg-surface-raised px-3 py-1.5 font-mono text-sm text-muted hover:text-default"
+              >
+                {name}
+              </a>
+            ))}
+          </div>
+        </div>
+      )
+    }
   </div>
 
   <div class="surface flex flex-wrap items-center justify-between gap-3 p-5">
