@@ -22,8 +22,8 @@ const COMMAND_TIMEOUT = 20000;
 
 const TERMINAL_THEME = {
   background: '#fbfbfb',
-  foreground: '#3d3d3d',
-  cursor: '#3d3d3d',
+  foreground: '#2f2f2f',
+  cursor: '#2f2f2f',
   cursorAccent: '#fbfbfb',
   selectionBackground: '#d8d8d8',
   black: '#3d3d3d',
@@ -74,8 +74,9 @@ export class LabMachine {
       convertEol: true,
       cursorBlink: true,
       fontFamily: "'Geist Mono Variable', ui-monospace, monospace",
-      fontSize: 13,
-      lineHeight: 1.25,
+      fontSize: 14,
+      letterSpacing: 0.2,
+      lineHeight: 1.45,
       scrollback: 2000,
       theme: TERMINAL_THEME,
     });
@@ -146,7 +147,7 @@ export class LabMachine {
   private showBanner() {
     this.terminal.clear();
     this.terminal.reset();
-    this.terminal.writeln(this.banner);
+    this.banner.split('\n').forEach((line) => this.terminal.writeln(line));
     this.emulator?.serial0_send('\n');
   }
 
