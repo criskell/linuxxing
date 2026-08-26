@@ -254,6 +254,181 @@ export const textProcessingExercises: LabExercise[] = [
     solutionCommand: 'paste -d, /root/lab/names.txt /root/lab/roles.txt > /root/lab/team.csv',
   },
   {
+    id: 'clean-up-messy-text',
+    track: 'text-processing',
+    title: { en: 'Clean up messy text', pt: 'Limpe um texto bagunçado' },
+    task: {
+      en: 'The file /root/lab/messy.txt carries repeated spaces and stray carriage returns. Write a cleaned copy into /root/lab/clean.txt where every run of spaces became a single space and no carriage return is left.',
+      pt: 'O arquivo /root/lab/messy.txt tem espaços repetidos e retornos de carro perdidos. Escreva uma cópia limpa em /root/lab/clean.txt em que cada sequência de espaços virou um espaço só e nenhum retorno de carro sobrou.',
+    },
+    hint: {
+      en: 'tr -s squeezes repeated copies of a character into one, and tr -d removes a character entirely. Two calls chained by a pipe handle the spaces and the carriage returns in one pass each.',
+      pt: 'O tr -s comprime cópias repetidas de um caractere em uma só, e o tr -d remove um caractere por completo. Duas chamadas ligadas por um pipe resolvem os espaços e os retornos de carro em uma passada cada.',
+    },
+    setupCommand:
+      'mkdir -p /root/lab; rm -f /root/lab/clean.txt; printf "alpha    beta\\r\\ngamma     delta\\r\\n" > /root/lab/messy.txt',
+    checks: [
+      {
+        label: { en: 'the file came out with 23 bytes', pt: 'o arquivo saiu com 23 bytes' },
+        command: '[ -f /root/lab/clean.txt ] && [ "$(wc -c < /root/lab/clean.txt)" = "23" ]',
+      },
+      {
+        label: { en: 'the lines lost the extra spaces', pt: 'as linhas perderam os espaços extras' },
+        command:
+          '[ "$(head -1 /root/lab/clean.txt)" = "alpha beta" ] && [ "$(tail -1 /root/lab/clean.txt)" = "gamma delta" ]',
+      },
+    ],
+    solutionCommand: "tr -s ' ' < /root/lab/messy.txt | tr -d '\\r' > /root/lab/clean.txt",
+  },
+  {
+    id: 'number-a-file',
+    track: 'text-processing',
+    title: { en: 'Number the lines of a file', pt: 'Numere as linhas de um arquivo' },
+    task: {
+      en: 'Write /root/lab/numbered.txt with the content of /root/lab/poem.txt preceded by line numbers, using the tool that numbers a stream instead of building the counter yourself.',
+      pt: 'Escreva /root/lab/numbered.txt com o conteúdo de /root/lab/poem.txt precedido por números de linha, usando a ferramenta que numera um fluxo em vez de montar o contador na mão.',
+    },
+    hint: {
+      en: 'nl reads a stream and prints each line with its number in front, padded to the right. It numbers only the lines that carry text, which is what separates it from a plain counter.',
+      pt: 'O nl lê um fluxo e imprime cada linha com o número na frente, alinhado à direita. Ele numera só as linhas que têm texto, que é o que diferencia ele de um contador simples.',
+    },
+    setupCommand:
+      'mkdir -p /root/lab; rm -f /root/lab/numbered.txt; printf "first verse\nsecond verse\nthird verse\n" > /root/lab/poem.txt',
+    checks: [
+      {
+        label: { en: 'the output matches nl', pt: 'a saída bate com o nl' },
+        command: 'nl /root/lab/poem.txt | diff - /root/lab/numbered.txt',
+      },
+      {
+        label: { en: 'the third line carries the number 3', pt: 'a terceira linha carrega o número 3' },
+        command: 'sed -n 3p /root/lab/numbered.txt | grep -q "3"',
+      },
+    ],
+    solutionCommand: 'nl /root/lab/poem.txt > /root/lab/numbered.txt',
+  },
+  {
+    id: 'sort-accounts-by-identifier',
+    track: 'text-processing',
+    title: { en: 'Sort the accounts by identifier', pt: 'Ordene as contas pelo identificador' },
+    task: {
+      en: 'Write into /root/lab/by-uid.txt the name of every account in /etc/passwd, one per line, ordered by the numeric user identifier from smallest to largest, with no other field alongside.',
+      pt: 'Escreva em /root/lab/by-uid.txt o nome de cada conta do /etc/passwd, um por linha, ordenado pelo identificador numérico do usuário, do menor para o maior, sem nenhum outro campo do lado.',
+    },
+    hint: {
+      en: 'sort picks the field separator with -t and the field to compare with -k, and -n compares numbers instead of text. The identifier is the third field of the line and the name is the first.',
+      pt: 'O sort escolhe o separador de campos com o -t e o campo a comparar com o -k, e o -n compara números em vez de texto. O identificador é o terceiro campo da linha e o nome é o primeiro.',
+    },
+    setupCommand: 'mkdir -p /root/lab; rm -f /root/lab/by-uid.txt',
+    checks: [
+      {
+        label: { en: 'root comes first', pt: 'o root vem primeiro' },
+        command: '[ "$(head -1 /root/lab/by-uid.txt)" = "root" ]',
+      },
+      {
+        label: {
+          en: 'the order matches a numeric sort of the third field',
+          pt: 'a ordem bate com uma ordenação numérica do terceiro campo',
+        },
+        command: 'sort -t: -k3 -n /etc/passwd | cut -d: -f1 | diff - /root/lab/by-uid.txt',
+      },
+    ],
+    solutionCommand: 'sort -t: -k3 -n /etc/passwd | cut -d: -f1 > /root/lab/by-uid.txt',
+  },
+  {
+    id: 'select-rows-with-a-condition',
+    track: 'text-processing',
+    title: { en: 'Select rows with a condition', pt: 'Selecione linhas por uma condição' },
+    task: {
+      en: 'Write into /root/lab/regular-users.txt the name of every account in /etc/passwd whose user identifier is 1000 or higher, one per line, in the order the file lists them.',
+      pt: 'Escreva em /root/lab/regular-users.txt o nome de cada conta do /etc/passwd cujo identificador de usuário seja 1000 ou maior, um por linha, na ordem em que o arquivo lista.',
+    },
+    hint: {
+      en: 'awk takes the field separator with -F and compares fields with the usual operators, so a colon separator makes $3 the identifier and $1 the name. A condition without braces prints the whole line, so the print has to be spelled out.',
+      pt: 'O awk recebe o separador de campos com o -F e compara campos com os operadores de sempre, então um separador de dois pontos faz o $3 ser o identificador e o $1 o nome. Uma condição sem chaves imprime a linha inteira, então o print precisa ser escrito.',
+    },
+    setupCommand:
+      'addgroup deploy 2>/dev/null; adduser -D -H -G deploy ana 2>/dev/null; adduser -D -H bruno 2>/dev/null; mkdir -p /root/lab; rm -f /root/lab/regular-users.txt; true',
+    checks: [
+      {
+        label: { en: 'ana and bruno are listed', pt: 'ana e bruno estão listados' },
+        command: 'grep -qx ana /root/lab/regular-users.txt && grep -qx bruno /root/lab/regular-users.txt',
+      },
+      {
+        label: { en: 'root and the system accounts stayed out', pt: 'o root e as contas de sistema ficaram fora' },
+        command: '! grep -qx root /root/lab/regular-users.txt && ! grep -qx daemon /root/lab/regular-users.txt',
+      },
+      {
+        label: {
+          en: 'the list matches the condition on /etc/passwd',
+          pt: 'a lista bate com a condição no /etc/passwd',
+        },
+        command: "awk -F: '$3 >= 1000 {print $1}' /etc/passwd | diff - /root/lab/regular-users.txt",
+      },
+    ],
+    solutionCommand: "awk -F: '$3 >= 1000 {print $1}' /etc/passwd > /root/lab/regular-users.txt",
+  },
+  {
+    id: 'reorder-fields-with-sed',
+    track: 'text-processing',
+    title: { en: 'Reorder a date with a capture group', pt: 'Reordene uma data com grupo de captura' },
+    task: {
+      en: 'Every line of /root/lab/dates.txt holds a date written as year, month and day joined by hyphens. Write /root/lab/br-dates.txt with the same dates as day, month and year joined by slashes, keeping the order of the lines.',
+      pt: 'Cada linha de /root/lab/dates.txt tem uma data escrita como ano, mês e dia ligados por hífens. Escreva /root/lab/br-dates.txt com as mesmas datas como dia, mês e ano ligados por barras, mantendo a ordem das linhas.',
+    },
+    hint: {
+      en: 'sed -E remembers the parts of a pattern wrapped in parentheses and lets the replacement call them back as backslash one, two and three. Choosing a different delimiter for the s command avoids escaping every slash.',
+      pt: 'O sed -E lembra as partes de um padrão entre parênteses e deixa a substituição chamar elas de volta como barra invertida um, dois e três. Escolher outro delimitador para o comando s evita escapar cada barra.',
+    },
+    setupCommand:
+      'mkdir -p /root/lab; rm -f /root/lab/br-dates.txt; printf "2026-08-26\n2025-01-02\n2024-12-31\n" > /root/lab/dates.txt',
+    checks: [
+      {
+        label: { en: 'the first line reads 26/08/2026', pt: 'a primeira linha diz 26/08/2026' },
+        command: '[ "$(head -1 /root/lab/br-dates.txt)" = "26/08/2026" ]',
+      },
+      {
+        label: { en: 'the last line reads 31/12/2024', pt: 'a última linha diz 31/12/2024' },
+        command: '[ "$(tail -1 /root/lab/br-dates.txt)" = "31/12/2024" ]',
+      },
+      {
+        label: { en: 'the file still has three lines', pt: 'o arquivo continua com três linhas' },
+        command: '[ "$(wc -l < /root/lab/br-dates.txt)" = "3" ]',
+      },
+    ],
+    solutionCommand:
+      "sed -E 's|^([0-9]{4})-([0-9]{2})-([0-9]{2})$|\\3/\\2/\\1|' /root/lab/dates.txt > /root/lab/br-dates.txt",
+  },
+  {
+    id: 'keep-the-lines-that-appear-once',
+    track: 'text-processing',
+    title: { en: 'Keep the lines that appear once', pt: 'Fique com as linhas que aparecem uma vez' },
+    task: {
+      en: 'Write into /root/lab/one-timers.txt only the addresses of /root/lab/visits.txt that show up a single time in the whole file, sorted, dropping every address that repeats.',
+      pt: 'Escreva em /root/lab/one-timers.txt só os endereços de /root/lab/visits.txt que aparecem uma única vez no arquivo inteiro, ordenados, descartando todo endereço que se repete.',
+    },
+    hint: {
+      en: 'uniq -u prints only the lines that have no duplicate next to them, which means the input has to be sorted first. That is the opposite of uniq -d, which keeps only the repeated ones.',
+      pt: 'O uniq -u imprime só as linhas que não têm duplicata do lado, o que significa que a entrada precisa estar ordenada antes. É o oposto do uniq -d, que fica só com as repetidas.',
+    },
+    setupCommand:
+      'mkdir -p /root/lab; rm -f /root/lab/one-timers.txt; printf "10.0.0.1\n10.0.0.2\n10.0.0.1\n10.0.0.3\n10.0.0.4\n10.0.0.2\n" > /root/lab/visits.txt',
+    checks: [
+      {
+        label: { en: 'the two single addresses are there', pt: 'os dois endereços únicos estão lá' },
+        command: 'grep -qx "10.0.0.3" /root/lab/one-timers.txt && grep -qx "10.0.0.4" /root/lab/one-timers.txt',
+      },
+      {
+        label: { en: 'the repeated ones were dropped', pt: 'os repetidos foram descartados' },
+        command: '! grep -qx "10.0.0.1" /root/lab/one-timers.txt && ! grep -qx "10.0.0.2" /root/lab/one-timers.txt',
+      },
+      {
+        label: { en: 'the file holds exactly two lines', pt: 'o arquivo tem exatamente duas linhas' },
+        command: '[ "$(wc -l < /root/lab/one-timers.txt)" = "2" ]',
+      },
+    ],
+    solutionCommand: 'sort /root/lab/visits.txt | uniq -u > /root/lab/one-timers.txt',
+  },
+  {
     id: 'edit-a-config-in-place',
     track: 'text-processing',
     title: { en: 'Edit a config file in place', pt: 'Edite um arquivo de configuração no lugar' },

@@ -254,6 +254,122 @@ export const filesAndDirectoriesExercises: LabExercise[] = [
     solutionCommand: 'du -s /root/lab/store/* | sort -rn > /root/lab/usage.txt',
   },
   {
+    id: 'list-the-symbolic-links',
+    track: 'files-and-directories',
+    title: { en: 'List only the symbolic links', pt: 'Liste só os links simbólicos' },
+    task: {
+      en: 'Under /root/lab/bin there are regular files and symbolic links mixed together. Write the path of every symbolic link into /root/lab/links.txt, sorted, leaving the regular files out.',
+      pt: 'Dentro de /root/lab/bin existem arquivos comuns e links simbólicos misturados. Escreva o caminho de cada link simbólico em /root/lab/links.txt, ordenado, deixando os arquivos comuns de fora.',
+    },
+    hint: {
+      en: 'find selects by kind with -type, where f means a regular file and l means a symbolic link. It does not follow the link, so the name of the link itself is what comes out.',
+      pt: 'O find seleciona por tipo com o -type, em que f significa arquivo comum e l significa link simbólico. Ele não segue o link, então o nome do próprio link é o que sai.',
+    },
+    setupCommand:
+      'rm -rf /root/lab/bin /root/lab/links.txt; mkdir -p /root/lab/bin; touch /root/lab/bin/start /root/lab/bin/stop; ln -s start /root/lab/bin/run; ln -s stop /root/lab/bin/halt',
+    checks: [
+      {
+        label: { en: 'the list matches the links that exist', pt: 'a lista bate com os links que existem' },
+        command: 'find /root/lab/bin -type l | sort | diff - /root/lab/links.txt',
+      },
+      {
+        label: { en: 'no regular file slipped in', pt: 'nenhum arquivo comum entrou junto' },
+        command: '! grep -q "bin/start$" /root/lab/links.txt',
+      },
+    ],
+    solutionCommand: 'find /root/lab/bin -type l | sort > /root/lab/links.txt',
+  },
+  {
+    id: 'copy-keeping-the-timestamp',
+    track: 'files-and-directories',
+    title: { en: 'Copy without losing the timestamp', pt: 'Copie sem perder a data' },
+    task: {
+      en: 'Copy /root/lab/archive/old-report.txt to /root/lab/archive/kept-report.txt so that the copy keeps the modification time of the original, which is set in the year 2020, instead of taking the current time.',
+      pt: 'Copie /root/lab/archive/old-report.txt para /root/lab/archive/kept-report.txt de modo que a cópia mantenha a data de modificação do original, que está no ano de 2020, em vez de pegar a hora atual.',
+    },
+    hint: {
+      en: 'cp writes a brand new file and stamps it with the current time unless you ask otherwise. The -p flag preserves the mode, the ownership and the timestamps, and the test operators -nt and -ot compare two files by time.',
+      pt: 'O cp escreve um arquivo novo em folha e carimba com a hora atual a menos que você peça o contrário. A flag -p preserva o modo, o dono e as datas, e os operadores de teste -nt e -ot comparam dois arquivos pela data.',
+    },
+    setupCommand:
+      'rm -rf /root/lab/archive; mkdir -p /root/lab/archive; printf "closed quarter\n" > /root/lab/archive/old-report.txt; touch -d "2020-03-04 05:06" /root/lab/archive/old-report.txt',
+    checks: [
+      {
+        label: { en: 'the copy exists with the same content', pt: 'a cópia existe com o mesmo conteúdo' },
+        command: 'diff /root/lab/archive/old-report.txt /root/lab/archive/kept-report.txt',
+      },
+      {
+        label: { en: 'neither file is newer than the other', pt: 'nenhum dos dois é mais novo que o outro' },
+        command:
+          '[ ! /root/lab/archive/kept-report.txt -nt /root/lab/archive/old-report.txt ] && [ ! /root/lab/archive/old-report.txt -nt /root/lab/archive/kept-report.txt ]',
+      },
+      {
+        label: { en: 'the copy still reads 2020', pt: 'a cópia ainda marca 2020' },
+        command: 'ls -l /root/lab/archive/kept-report.txt | grep -q 2020',
+      },
+    ],
+    solutionCommand: 'cp -p /root/lab/archive/old-report.txt /root/lab/archive/kept-report.txt',
+  },
+  {
+    id: 'install-a-tool-into-a-new-path',
+    track: 'files-and-directories',
+    title: {
+      en: 'Install a tool into a path that does not exist yet',
+      pt: 'Instale uma ferramenta em um caminho que ainda não existe',
+    },
+    task: {
+      en: 'Put /root/lab/deploy-tool at /root/lab/opt/bin/deploy, creating the missing directories along the way and landing it executable by everyone, in a single command.',
+      pt: 'Coloque o /root/lab/deploy-tool em /root/lab/opt/bin/deploy, criando os diretórios que faltam no caminho e chegando lá executável para todos, em um comando só.',
+    },
+    hint: {
+      en: 'install copies a file and sets its mode at the same time, taking the mode after -m. With -D it also creates every directory the destination needs before writing.',
+      pt: 'O install copia um arquivo e define o modo dele ao mesmo tempo, recebendo o modo depois do -m. Com o -D ele também cria todos os diretórios de que o destino precisa antes de escrever.',
+    },
+    setupCommand:
+      'rm -rf /root/lab/opt; mkdir -p /root/lab; printf "#!/bin/sh\necho deploying\n" > /root/lab/deploy-tool; chmod 644 /root/lab/deploy-tool',
+    checks: [
+      {
+        label: { en: 'the tool sits at the new path', pt: 'a ferramenta está no caminho novo' },
+        command: '[ -f /root/lab/opt/bin/deploy ]',
+      },
+      {
+        label: { en: 'it is executable by owner, group and others', pt: 'ela é executável para dono, grupo e outros' },
+        command: '[ "$(ls -ld /root/lab/opt/bin/deploy | cut -c2-10)" = "rwxr-xr-x" ]',
+      },
+      {
+        label: { en: 'it really runs', pt: 'ela roda de verdade' },
+        command: '[ "$(/root/lab/opt/bin/deploy)" = "deploying" ]',
+      },
+    ],
+    solutionCommand: 'install -D -m 755 /root/lab/deploy-tool /root/lab/opt/bin/deploy',
+  },
+  {
+    id: 'find-what-changed-recently',
+    track: 'files-and-directories',
+    title: { en: 'Find what changed after a given file', pt: 'Ache o que mudou depois de um arquivo' },
+    task: {
+      en: 'The file /root/lab/release/marker was written when the last release went out. Write the path of every file under /root/lab/release modified after it into /root/lab/changed.txt, sorted, with the marker itself out of the list.',
+      pt: 'O arquivo /root/lab/release/marker foi escrito quando a última versão saiu. Escreva o caminho de cada arquivo abaixo de /root/lab/release modificado depois dele em /root/lab/changed.txt, ordenado, com o próprio marker fora da lista.',
+    },
+    hint: {
+      en: 'find compares timestamps with -newer, which takes a file to compare against instead of a number of days. Combining it with -type f keeps directories out of the result.',
+      pt: 'O find compara datas com o -newer, que recebe um arquivo de referência em vez de um número de dias. Combinar com -type f mantém os diretórios fora do resultado.',
+    },
+    setupCommand:
+      'rm -rf /root/lab/release /root/lab/changed.txt; mkdir -p /root/lab/release/src; touch -d "2024-01-01 00:00" /root/lab/release/src/old-one.c /root/lab/release/src/old-two.c; touch -d "2024-06-01 00:00" /root/lab/release/marker; touch -d "2025-02-02 00:00" /root/lab/release/src/new-one.c /root/lab/release/notes.md',
+    checks: [
+      {
+        label: { en: 'the list matches what find reports', pt: 'a lista bate com o que o find informa' },
+        command: 'find /root/lab/release -type f -newer /root/lab/release/marker | sort | diff - /root/lab/changed.txt',
+      },
+      {
+        label: { en: 'the two old files stayed out', pt: 'os dois arquivos antigos ficaram de fora' },
+        command: '! grep -q "old-" /root/lab/changed.txt',
+      },
+    ],
+    solutionCommand: 'find /root/lab/release -type f -newer /root/lab/release/marker | sort > /root/lab/changed.txt',
+  },
+  {
     id: 'pack-the-project',
     track: 'files-and-directories',
     title: { en: 'Pack the project into an archive', pt: 'Empacote o projeto em um arquivo' },
