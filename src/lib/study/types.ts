@@ -11,4 +11,7 @@ export interface StudyCard {
   topic: string;
   front: LocalizedText;
   back: LocalizedText;
+  details: LocalizedText;
+  keyPoints: LocalizedText[];
+  commands: string[];
 }
