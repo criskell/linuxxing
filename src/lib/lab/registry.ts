@@ -6,6 +6,8 @@ import { usersAndPermissionsTrack, usersAndPermissionsExercises } from './users-
 import { shellAndAutomationTrack, shellAndAutomationExercises } from './shell-and-automation';
 import { systemAndKernelTrack, systemAndKernelExercises } from './system-and-kernel';
 import { networkingTrack, networkingExercises } from './networking';
+import { archivesAndIntegrityTrack, archivesAndIntegrityExercises } from './archives-and-integrity';
+import { filesystemsAndMountsTrack, filesystemsAndMountsExercises } from './filesystems-and-mounts';
 
 export const LAB_TRACKS: LabTrack[] = [
   filesAndDirectoriesTrack,
@@ -14,6 +16,8 @@ export const LAB_TRACKS: LabTrack[] = [
   usersAndPermissionsTrack,
   shellAndAutomationTrack,
   systemAndKernelTrack,
+  archivesAndIntegrityTrack,
+  filesystemsAndMountsTrack,
   networkingTrack,
 ];
 
@@ -24,5 +28,7 @@ export const LAB_EXERCISES: LabExercise[] = [
   ...usersAndPermissionsExercises,
   ...shellAndAutomationExercises,
   ...systemAndKernelExercises,
+  ...archivesAndIntegrityExercises,
+  ...filesystemsAndMountsExercises,
   ...networkingExercises,
 ];
