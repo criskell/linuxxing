@@ -131,6 +131,108 @@ export const systemAndKernelExercises: LabExercise[] = [
     solutionCommand: 'sysctl -w vm.swappiness=30',
   },
   {
+    id: 'read-the-kernel-release',
+    track: 'system-and-kernel',
+    title: { en: 'Report the kernel release', pt: 'Informe a versão do kernel' },
+    task: {
+      en: 'Write into /root/lab/kernel.txt the release of the running kernel, the short string like 5.6.15 and nothing else, no system name and no build date.',
+      pt: 'Escreva em /root/lab/kernel.txt a versão do kernel em execução, a string curta como 5.6.15 e mais nada, sem nome do sistema e sem data de compilação.',
+    },
+    hint: {
+      en: 'uname prints one piece of system information per flag, and -r selects the kernel release on its own. Running it with -a instead would bring the whole line, which is more than the file should hold.',
+      pt: 'O uname imprime uma informação de sistema por flag, e o -r seleciona a versão do kernel sozinha. Rodar com -a traria a linha inteira, que é mais do que o arquivo deve guardar.',
+    },
+    setupCommand: 'mkdir -p /root/lab; rm -f /root/lab/kernel.txt',
+    checks: [
+      {
+        label: { en: 'the file matches uname -r', pt: 'o arquivo bate com o uname -r' },
+        command: '[ "$(cat /root/lab/kernel.txt)" = "$(uname -r)" ]',
+      },
+      {
+        label: { en: 'nothing else came along', pt: 'nada além disso veio junto' },
+        command: '[ "$(wc -w < /root/lab/kernel.txt)" = "1" ]',
+      },
+    ],
+    solutionCommand: 'uname -r > /root/lab/kernel.txt',
+  },
+  {
+    id: 'look-up-a-service-port',
+    track: 'system-and-kernel',
+    title: { en: 'Look up the port of a service', pt: 'Descubra a porta de um serviço' },
+    task: {
+      en: 'The file /etc/services maps service names to ports. Write the TCP port of ssh into /root/lab/ssh-port.txt as a bare number, with no protocol and no comment next to it.',
+      pt: 'O arquivo /etc/services associa nomes de serviços a portas. Escreva a porta TCP do ssh em /root/lab/ssh-port.txt como um número puro, sem o protocolo e sem comentário do lado.',
+    },
+    hint: {
+      en: 'Each line pairs the name with a port and protocol joined by a slash, like 22/tcp. awk can match the line and cut can keep the part before the slash.',
+      pt: 'Cada linha junta o nome com uma porta e um protocolo ligados por barra, como 22/tcp. O awk consegue casar a linha e o cut consegue ficar com a parte antes da barra.',
+    },
+    setupCommand: 'mkdir -p /root/lab; rm -f /root/lab/ssh-port.txt',
+    checks: [
+      {
+        label: { en: 'the file holds 22', pt: 'o arquivo guarda 22' },
+        command: '[ "$(cat /root/lab/ssh-port.txt)" = "22" ]',
+      },
+    ],
+    solutionCommand:
+      'awk \'$1 == "ssh" && $2 ~ /tcp/ {print $2}\' /etc/services | cut -d/ -f1 | head -1 > /root/lab/ssh-port.txt',
+  },
+  {
+    id: 'read-the-time-in-another-zone',
+    track: 'system-and-kernel',
+    title: { en: 'Read the time in another zone', pt: 'Veja a hora em outro fuso' },
+    task: {
+      en: 'Write the current hour in the UTC zone into /root/lab/utc-hour.txt, as two digits, without changing the clock or the zone of the machine for anything else.',
+      pt: 'Escreva a hora atual no fuso UTC em /root/lab/utc-hour.txt, com dois dígitos, sem mudar o relógio nem o fuso da máquina para mais nada.',
+    },
+    hint: {
+      en: 'date reads the TZ variable to decide which zone to print, and setting a variable in front of a command applies it to that command alone. The format %H prints the hour padded to two digits.',
+      pt: 'O date lê a variável TZ para decidir qual fuso imprimir, e definir uma variável na frente de um comando aplica ela só àquele comando. O formato %H imprime a hora com dois dígitos.',
+    },
+    setupCommand: 'mkdir -p /root/lab; rm -f /root/lab/utc-hour.txt',
+    checks: [
+      {
+        label: { en: 'the file holds two digits', pt: 'o arquivo guarda dois dígitos' },
+        command: 'grep -qE "^[0-9]{2}$" /root/lab/utc-hour.txt',
+      },
+      {
+        label: { en: 'it matches the hour in UTC', pt: 'ele bate com a hora em UTC' },
+        command: '[ "$(cat /root/lab/utc-hour.txt)" = "$(TZ=UTC date +%H)" ]',
+      },
+    ],
+    solutionCommand: 'TZ=UTC date +%H > /root/lab/utc-hour.txt',
+  },
+  {
+    id: 'collect-the-memory-parameters',
+    track: 'system-and-kernel',
+    title: { en: 'Collect a family of kernel parameters', pt: 'Junte uma família de parâmetros do kernel' },
+    task: {
+      en: 'Write into /root/lab/vm-params.txt the name of every kernel parameter under vm, one per line and sorted, with the name alone and no value beside it.',
+      pt: 'Escreva em /root/lab/vm-params.txt o nome de cada parâmetro do kernel abaixo de vm, um por linha e ordenado, com o nome sozinho e sem o valor do lado.',
+    },
+    hint: {
+      en: 'sysctl -a prints every parameter as name = value, so a filter on the beginning of the line keeps the family you want. Cutting at the equals sign and trimming the space leaves the bare name.',
+      pt: 'O sysctl -a imprime cada parâmetro como nome = valor, então um filtro no começo da linha mantém a família desejada. Cortar no sinal de igual e tirar o espaço deixa o nome puro.',
+    },
+    setupCommand: 'mkdir -p /root/lab; rm -f /root/lab/vm-params.txt',
+    checks: [
+      {
+        label: { en: 'vm.swappiness is on the list', pt: 'o vm.swappiness está na lista' },
+        command: 'grep -qx "vm.swappiness" /root/lab/vm-params.txt',
+      },
+      {
+        label: { en: 'no value came along', pt: 'nenhum valor veio junto' },
+        command: '! grep -q "=" /root/lab/vm-params.txt',
+      },
+      {
+        label: { en: 'the list matches what sysctl reports', pt: 'a lista bate com o que o sysctl informa' },
+        command:
+          'sysctl -a 2>/dev/null | grep "^vm\\." | cut -d= -f1 | tr -d " " | sort | diff - /root/lab/vm-params.txt',
+      },
+    ],
+    solutionCommand: 'sysctl -a 2>/dev/null | grep "^vm\\." | cut -d= -f1 | tr -d " " | sort > /root/lab/vm-params.txt',
+  },
+  {
     id: 'list-the-mounted-filesystem-types',
     track: 'system-and-kernel',
     title: { en: 'List the mounted filesystem types', pt: 'Liste os tipos de sistema de arquivos montados' },

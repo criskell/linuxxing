@@ -243,6 +243,155 @@ export const shellAndAutomationExercises: LabExercise[] = [
       'printf "15 7 * * 1-5 /root/lab/report.sh\\n0 0 1 * * /root/lab/backup.sh\\n" > /tmp/two-cron && crontab /tmp/two-cron',
   },
   {
+    id: 'format-numbers-with-printf',
+    track: 'shell-and-automation',
+    title: { en: 'Format numbers with printf', pt: 'Formate números com printf' },
+    task: {
+      en: 'Write an executable /root/lab/invoice.sh that takes a number as first argument and prints it padded with zeros to five digits, followed by a space and the word paid, so 42 comes out as 00042 paid.',
+      pt: 'Escreva um /root/lab/invoice.sh executável que receba um número como primeiro argumento e imprima ele preenchido com zeros até cinco dígitos, seguido de um espaço e da palavra paid, de modo que 42 saia como 00042 paid.',
+    },
+    hint: {
+      en: 'printf takes a format string where %d prints a number and a zero before the width pads with zeros instead of spaces. Unlike echo, it prints no line break unless the format asks for one.',
+      pt: 'O printf recebe um formato em que o %d imprime um número e um zero antes da largura preenche com zeros em vez de espaços. Diferente do echo, ele não imprime quebra de linha a menos que o formato peça.',
+    },
+    setupCommand: 'mkdir -p /root/lab; rm -f /root/lab/invoice.sh',
+    checks: [
+      {
+        label: { en: 'invoice.sh is executable', pt: 'invoice.sh é executável' },
+        command: '[ -x /root/lab/invoice.sh ]',
+      },
+      {
+        label: { en: '42 comes out as 00042 paid', pt: '42 sai como 00042 paid' },
+        command: '[ "$(/root/lab/invoice.sh 42)" = "00042 paid" ]',
+      },
+      {
+        label: { en: '7 comes out as 00007 paid', pt: '7 sai como 00007 paid' },
+        command: '[ "$(/root/lab/invoice.sh 7)" = "00007 paid" ]',
+      },
+    ],
+    solutionCommand:
+      'printf \'#!/bin/sh\\nprintf "%%05d paid\\\\n" "$1"\\n\' > /root/lab/invoice.sh && chmod +x /root/lab/invoice.sh',
+  },
+  {
+    id: 'do-arithmetic-in-the-shell',
+    track: 'shell-and-automation',
+    title: { en: 'Add up numbers in the shell', pt: 'Some números no shell' },
+    task: {
+      en: 'The file /root/lab/sizes.txt holds one number per line. Write an executable /root/lab/total.sh that adds them all up with shell arithmetic and prints only the total, which for this file is 150.',
+      pt: 'O arquivo /root/lab/sizes.txt tem um número por linha. Escreva um /root/lab/total.sh executável que some todos eles com aritmética de shell e imprima só o total, que para este arquivo é 150.',
+    },
+    hint: {
+      en: 'The shell evaluates arithmetic inside double parentheses preceded by a dollar sign, so a running total grows with total=$((total + value)). A while loop with read feeds one number at a time.',
+      pt: 'O shell avalia aritmética dentro de parênteses duplos precedidos de cifrão, então um acumulador cresce com total=$((total + valor)). Um laço while com read entrega um número por vez.',
+    },
+    setupCommand: 'mkdir -p /root/lab; rm -f /root/lab/total.sh; printf "10\n20\n30\n40\n50\n" > /root/lab/sizes.txt',
+    checks: [
+      {
+        label: { en: 'total.sh is executable', pt: 'total.sh é executável' },
+        command: '[ -x /root/lab/total.sh ]',
+      },
+      {
+        label: { en: 'it prints 150 for this file', pt: 'ele imprime 150 para este arquivo' },
+        command: '[ "$(/root/lab/total.sh)" = "150" ]',
+      },
+    ],
+    solutionCommand:
+      'printf \'#!/bin/sh\\ntotal=0\\nwhile read n; do total=$((total + n)); done < /root/lab/sizes.txt\\necho "$total"\\n\' > /root/lab/total.sh && chmod +x /root/lab/total.sh',
+  },
+  {
+    id: 'walk-over-the-arguments',
+    track: 'shell-and-automation',
+    title: { en: 'Walk over every argument', pt: 'Percorra todos os argumentos' },
+    task: {
+      en: 'Write an executable /root/lab/each.sh that prints one line per argument it receives, each line reading arg: followed by the argument, and prints nothing at all when it receives none.',
+      pt: 'Escreva um /root/lab/each.sh executável que imprima uma linha por argumento recebido, cada linha dizendo arg: seguido do argumento, e não imprima nada quando não receber nenhum.',
+    },
+    hint: {
+      en: 'A for loop without a list walks over the arguments of the script, and writing "$@" between double quotes keeps arguments with spaces in one piece. With no arguments the loop body simply never runs.',
+      pt: 'Um for sem lista percorre os argumentos do script, e escrever "$@" entre aspas duplas mantém inteiros os argumentos com espaço. Sem argumentos, o corpo do laço simplesmente não roda.',
+    },
+    setupCommand: 'mkdir -p /root/lab; rm -f /root/lab/each.sh',
+    checks: [
+      {
+        label: { en: 'three arguments produce three lines', pt: 'três argumentos produzem três linhas' },
+        command: '[ "$(/root/lab/each.sh a b c | wc -l)" = "3" ]',
+      },
+      {
+        label: { en: 'the second line reads arg: b', pt: 'a segunda linha diz arg: b' },
+        command: '[ "$(/root/lab/each.sh a b c | sed -n 2p)" = "arg: b" ]',
+      },
+      {
+        label: { en: 'no argument produces no output', pt: 'nenhum argumento não produz saída' },
+        command: '[ -z "$(/root/lab/each.sh)" ]',
+      },
+    ],
+    solutionCommand:
+      'printf \'#!/bin/sh\\nfor a in "$@"; do echo "arg: $a"; done\\n\' > /root/lab/each.sh && chmod +x /root/lab/each.sh',
+  },
+  {
+    id: 'put-a-directory-in-the-path',
+    track: 'shell-and-automation',
+    title: { en: 'Put your own directory in the PATH', pt: 'Coloque seu diretório no PATH' },
+    task: {
+      en: 'The executable /root/lab/bin/greet-tool runs fine by full path. Change the PATH of this shell so that typing greet-tool alone finds it, keeping every directory that was already in the PATH.',
+      pt: 'O executável /root/lab/bin/greet-tool roda bem pelo caminho completo. Mude o PATH deste shell para que digitar só greet-tool encontre ele, mantendo todos os diretórios que já estavam no PATH.',
+    },
+    hint: {
+      en: 'The PATH is a list of directories separated by colons, and the shell walks it from left to right looking for the name you typed. Rebuilding it with the old value inside keeps the directories that were there, and export makes the change reach the commands you run.',
+      pt: 'O PATH é uma lista de diretórios separados por dois pontos, e o shell percorre ela da esquerda para a direita procurando o nome digitado. Remontar ele com o valor antigo dentro mantém os diretórios que estavam lá, e o export faz a mudança chegar aos comandos que você roda.',
+    },
+    setupCommand:
+      'PATH=/usr/sbin:/usr/bin:/sbin:/bin; export PATH; rm -rf /root/lab/bin; mkdir -p /root/lab/bin; printf "#!/bin/sh\necho tool ran\n" > /root/lab/bin/greet-tool; chmod +x /root/lab/bin/greet-tool',
+    checks: [
+      {
+        label: { en: 'the PATH mentions /root/lab/bin', pt: 'o PATH cita /root/lab/bin' },
+        command: 'echo "$PATH" | grep -q "/root/lab/bin"',
+      },
+      {
+        label: { en: 'the shell finds greet-tool by name', pt: 'o shell acha o greet-tool pelo nome' },
+        command: '[ "$(command -v greet-tool)" = "/root/lab/bin/greet-tool" ]',
+      },
+      {
+        label: { en: 'the usual directories are still there', pt: 'os diretórios de sempre continuam lá' },
+        command: 'echo "$PATH" | grep -q "/usr/bin"',
+      },
+    ],
+    solutionCommand: 'PATH=/root/lab/bin:$PATH; export PATH',
+  },
+  {
+    id: 'decide-with-exit-codes',
+    track: 'shell-and-automation',
+    title: { en: 'Decide from an exit code', pt: 'Decida pelo código de saída' },
+    task: {
+      en: 'Write an executable /root/lab/scan.sh that receives a file path, writes found into /root/lab/scan-result.txt when that file contains the word ERROR, and writes clean there when it does not, deciding by the exit code of the search and not by its output.',
+      pt: 'Escreva um /root/lab/scan.sh executável que receba um caminho de arquivo, escreva found em /root/lab/scan-result.txt quando esse arquivo contiver a palavra ERROR, e escreva clean quando não contiver, decidindo pelo código de saída da busca e não pela saída dela.',
+    },
+    hint: {
+      en: 'grep -q prints nothing and answers with its exit code alone, zero when it matched. Chaining with double ampersand runs the next command after a success and double pipe runs it after a failure.',
+      pt: 'O grep -q não imprime nada e responde só pelo código de saída, zero quando casou. Encadear com e comercial duplo roda o próximo comando depois de um sucesso, e barra vertical dupla roda depois de uma falha.',
+    },
+    setupCommand:
+      'mkdir -p /root/lab; rm -f /root/lab/scan.sh /root/lab/scan-result.txt; printf "INFO ok\nERROR broken\n" > /root/lab/with-errors.log; printf "INFO ok\nINFO done\n" > /root/lab/without-errors.log',
+    checks: [
+      {
+        label: { en: 'scan.sh is executable', pt: 'scan.sh é executável' },
+        command: '[ -x /root/lab/scan.sh ]',
+      },
+      {
+        label: { en: 'a log with ERROR gives found', pt: 'um log com ERROR dá found' },
+        command:
+          '/root/lab/scan.sh /root/lab/with-errors.log >/dev/null 2>&1; [ "$(cat /root/lab/scan-result.txt)" = "found" ]',
+      },
+      {
+        label: { en: 'a log without ERROR gives clean', pt: 'um log sem ERROR dá clean' },
+        command:
+          '/root/lab/scan.sh /root/lab/without-errors.log >/dev/null 2>&1; [ "$(cat /root/lab/scan-result.txt)" = "clean" ]',
+      },
+    ],
+    solutionCommand:
+      'printf \'#!/bin/sh\\ngrep -q ERROR "$1" && echo found > /root/lab/scan-result.txt || echo clean > /root/lab/scan-result.txt\\n\' > /root/lab/scan.sh && chmod +x /root/lab/scan.sh',
+  },
+  {
     id: 'schedule-a-daily-job',
     track: 'shell-and-automation',
     title: { en: 'Schedule a daily job', pt: 'Agende uma tarefa diária' },
