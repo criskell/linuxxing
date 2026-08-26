@@ -1,0 +1,23 @@
+---
+import type { Locale } from '../i18n/languages';
+import { t } from '../i18n/ui';
+import { sandboxSummary } from '../lib/lab/sandbox';
+
+interface Props {
+  locale: Locale;
+  commandName: string;
+}
+
+const { locale, commandName } = Astro.props;
+---
+
+<div class="surface flex flex-col gap-3 p-5">
+  <p class="eyebrow">{t(locale, 'lab.practiceHeading')}</p>
+  <p class="text-sm leading-relaxed text-default">{sandboxSummary[locale]}</p>
+  <a
+    href={`${import.meta.env.BASE_URL}/${locale}/lab/?command=${encodeURIComponent(commandName)}`}
+    class="chip chip-info interactive w-fit px-3 py-1.5"
+  >
+    {t(locale, 'lab.openWithCommand')(commandName)}
+  </a>
+</div>

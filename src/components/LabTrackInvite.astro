@@ -1,0 +1,33 @@
+---
+import type { Locale } from '../i18n/languages';
+import { t } from '../i18n/ui';
+import { labTracksForObjective } from '../lib/lab/objectives';
+
+interface Props {
+  locale: Locale;
+  objectiveCode: string;
+}
+
+const { locale, objectiveCode } = Astro.props;
+
+const tracks = labTracksForObjective(objectiveCode);
+---
+
+{
+  tracks.length > 0 && (
+    <div class="surface flex flex-col gap-3 p-5">
+      <p class="eyebrow">{t(locale, 'lab.practiceHeading')}</p>
+      <p class="text-sm leading-relaxed text-default">{t(locale, 'lab.practiceTracks')}</p>
+      <div class="flex flex-wrap gap-2">
+        {tracks.map((track) => (
+          <a
+            href={`${import.meta.env.BASE_URL}/${locale}/lab/#${track.id}`}
+            class="chip chip-info interactive px-3 py-1.5"
+          >
+            {track.title[locale]}
+          </a>
+        ))}
+      </div>
+    </div>
+  )
+}
