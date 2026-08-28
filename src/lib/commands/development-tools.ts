@@ -181,6 +181,47 @@ export const developmentTools: CommandKB = {
     },
   },
 
+  cmake: {
+    desc: {
+      en: "Reads a CMakeLists.txt and generates the build files for whatever tool is actually available on the machine, Makefiles, Ninja files, or a Visual Studio project, instead of hand-writing them for each platform. The generation step and the build step are two separate commands: 'cmake -S . -B build' reads the source directory given by -S and writes generated build files into the directory given by -B, then 'cmake --build build' calls into that already-generated Makefile or Ninja file to actually compile. Keeping generated files in a separate build directory rather than mixed into the source tree is what people mean by an out-of-source build, and deleting that one folder is enough to start over from nothing.",
+      pt: 'Lê um CMakeLists.txt e gera os arquivos de build para a ferramenta que de fato estiver disponível na máquina, Makefiles, arquivos do Ninja ou um projeto do Visual Studio, em vez de escrevê-los à mão para cada plataforma. A geração e a compilação são dois comandos separados: "cmake -S . -B build" lê o diretório de código-fonte indicado por -S e escreve os arquivos de build gerados no diretório indicado por -B, e depois "cmake --build build" chama esse Makefile ou arquivo do Ninja já gerado para compilar de fato. Manter os arquivos gerados numa pasta de build separada, em vez de misturados ao código-fonte, é o que se chama de build out-of-source, e apagar essa única pasta basta para recomeçar do zero.',
+    },
+    subcommands: {},
+    flags: {
+      '-S': {
+        en: 'Points to the source directory containing CMakeLists.txt.',
+        pt: 'Aponta para o diretório de código-fonte que contém o CMakeLists.txt.',
+      },
+      '-B': {
+        en: 'Points to the build directory where generated build files are written, created automatically if it does not exist yet.',
+        pt: 'Aponta para o diretório de build onde os arquivos gerados são escritos, criado automaticamente se ainda não existir.',
+      },
+      '--build': {
+        en: 'Runs the build using the already-generated files in the given directory, instead of calling make or ninja directly.',
+        pt: 'Roda a build usando os arquivos já gerados no diretório indicado, em vez de chamar make ou ninja diretamente.',
+      },
+      '--target': {
+        en: 'Builds only the named target, instead of the default target.',
+        pt: 'Compila só o alvo indicado, em vez do alvo padrão.',
+      },
+      '-j': {
+        en: 'Runs the underlying build in parallel across the given number of jobs, passed through to the generator (make, ninja, etc).',
+        pt: 'Roda a build subjacente em paralelo usando o número de jobs indicado, repassado para a ferramenta geradora (make, ninja, etc).',
+      },
+    },
+    valueFlags: {
+      '-S': 'generic',
+      '-B': 'generic',
+      '--build': 'generic',
+      '--target': 'generic',
+      '-j': 'generic',
+    },
+    commonMistake: {
+      en: "Passing -DCMAKE_BUILD_TYPE=Release (or any -D define) only has an effect on the configure command, 'cmake -S . -B build -DCMAKE_BUILD_TYPE=Release', because that is the step that actually writes the setting into the generated build files. Adding it to 'cmake --build build' instead does nothing, the build directory already has whatever configuration was baked in the last time -S/-B ran, and reconfiguring, or deleting the build directory, is what's needed to change it.",
+      pt: 'Passar -DCMAKE_BUILD_TYPE=Release (ou qualquer -D) só tem efeito no comando de configuração, "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release", porque é essa etapa que de fato grava a definição nos arquivos de build gerados. Colocar isso em "cmake --build build" não faz nada, o diretório de build já tem qualquer configuração que foi gravada da última vez que -S/-B rodou, e reconfigurar, ou apagar o diretório de build, é o que resolve para mudar isso.',
+    },
+  },
+
   gcc: {
     desc: {
       en: "The GNU Compiler Collection's C compiler, taking C source files and turning them into an executable (or, with the right flags, stopping earlier at an object file or assembly). It handles the whole pipeline by default, preprocessing, compiling, assembling, and linking, in one command, calling out to separate tools for each stage internally, which is why a single 'gcc file.c -o program' is enough for a simple program even though several distinct programs actually ran underneath it.",
